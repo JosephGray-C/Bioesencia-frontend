@@ -1,0 +1,58 @@
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 32px;
+  background: #23272f;
+  color: #fff;
+  font-size: 1.3rem;
+  margin-bottom: 32px;
+}
+
+.header-title {
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.header-nav {
+  display: flex;
+  gap: 28px;
+}
+
+.header-link {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.header-link:hover,
+.header-link:focus {
+  color: #4f8cff;
+  text-decoration: none;
+}
+
+/* Footer */
+.footer {
+  width: 100%;
+  padding: 18px 0;
+  background: #23272f;
+  color: #b0b8c1;
+  text-align: center;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  position: fixed; 
+  left: 0;         
+  bottom: 0;        
+}
+
+/* Space for the main so the data do not overfolw under the footer*/
+main {
+  margin-bottom: 4rem;
+}
