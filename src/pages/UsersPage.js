@@ -12,7 +12,7 @@ export default function UsersPage() {
         const loadData = async () => {
             try {
                 const response = await getUsers();
-                setUsers(response.results);
+                setUsers(response);
             } catch (err) {
                 setError("Error loading Users Page data");
             }
@@ -34,7 +34,7 @@ export default function UsersPage() {
                 {
                     users.map((user) => (
                             <div key={user.id} className="user-container">
-                                <h2>{user.name.first}</h2>
+                                <h2>{user.nombre}</h2>
                                 <p>{user.email}</p>
                             </div>
                     ))
