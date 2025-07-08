@@ -1,0 +1,46 @@
+.home-main {
+  min-height: calc(100vh - 128px); /* Ajusta según la altura del header + footer */
+  width: 100vw;
+  box-sizing: border-box;
+  background: #282c34;
+  color: white;
+  font-family: "Poppins", "Avenir Next", "Oswald", sans-serif;
+  padding: 32px 12vw 32px 12vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.home-main h1 {
+  font-size: 2.8rem;
+  font-family: "Avenir Next", "Poppins", sans-serif;
+  font-weight: 700;
+  margin-bottom: 36px;
+  letter-spacing: 2px;
+  color: #fff; /* blanco como en la captura */
+  width: 100%;
+  text-align: center;
+}
+
+.home-main p {
+  font-size: 1.15rem;
+  font-family: "Poppins", "Avenir Next", "Oswald", sans-serif;
+  line-height: 1.65;
+  margin: 18px 0;
+  text-align: justify;
+  max-width: 900px;
+}
+
+@media (max-width: 800px) {
+  .home-main {
+    padding: 24px 3vw 24px 3vw;
+  }
+  .home-main h1 {
+    font-size: 2.1rem;
+  }
+  .home-main p {
+    font-size: 1.01rem;
+    max-width: 99vw;
+  }
+}
