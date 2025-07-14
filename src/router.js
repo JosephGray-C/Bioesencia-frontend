@@ -2,11 +2,14 @@
 import { createBrowserRouter } from 'react-router-dom';
 
 // Importing pages
-import Layout from './pages/templates/Layout';
-import NotFoundPage from './pages/NotFoundPage';
-import Home from './pages/HomePage';
-import AboutPage from './pages/AboutPage';
-import UsersPage from './pages/UsersPage';
+import Home from './components/Home';
+import Auth from './components/Auth';
+import NotFound from './components/NotFound';
+import About from './components/About';
+import Agendar from './components/Agendar';
+
+
+import Layout from './components/templates/Layout';
 
 // Route configuration
 const router = createBrowserRouter([
@@ -14,7 +17,7 @@ const router = createBrowserRouter([
     {
         path: '/',
         element: <Layout/>,
-        errorElement: <NotFoundPage/>,
+        errorElement: <NotFound/>,
         children: 
         [
             {   
@@ -23,11 +26,15 @@ const router = createBrowserRouter([
             },
             {
                 path: 'about',
-                element: <AboutPage/>,
+                element: <About/>,
             },
             {
-                path: 'users',
-                element: <UsersPage/>
+                path: 'agendar',
+                element: <Agendar/>
+            },
+            {
+                path: 'login',
+                element: <Auth/>,
             }
         ],
     }

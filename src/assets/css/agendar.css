@@ -1,0 +1,59 @@
+.horario-btn {
+    margin: 0.25rem;
+    background-color: #e0e0e0;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.horario-btn.selected {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.solicitar-btn {
+    margin-top: 1rem;
+    padding: 0.5rem 1.5rem;
+    background-color: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.solicitar-btn:disabled {
+    background-color: #bdbdbd;
+    cursor: not-allowed;
+}
+
+/*  */
+
+.agendar-container {
+    display: flex;
+    flex-direction: wrap;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    margin: 0 auto;
+}
+
+.agendar-container p{
+    font-size: 1.2rem;
+    color: #ffffff;
+    text-align: center;
+}
+
+.left{
+    width: 100%;
+    /* background-color: aqua; */
+    max-width: 500px;
+}
+
+.right{
+    width: 100%;
+    /* background-color: #4caf50; */
+    max-width: 500px;
+}

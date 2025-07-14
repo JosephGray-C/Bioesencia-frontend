@@ -9,6 +9,7 @@ export default function UsersPage() {
 
     useEffect(() => { 
         console.log("Component mounted");
+
         const loadData = async () => {
             try {
                 const response = await getUsers();
@@ -17,6 +18,7 @@ export default function UsersPage() {
                 setError("Error loading Users Page data");
             }
         };
+        
         loadData();
     }, []);
 
@@ -25,7 +27,7 @@ export default function UsersPage() {
 
   return (
     <>
-        <div className="center">
+        <div className="body">
             <h1>
                 Users Page
             </h1>
