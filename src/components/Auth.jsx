@@ -43,8 +43,12 @@ function Auth() {
               title: `Bienvenido, ${data.nombre}!`
             });
             setTimeout(() => {
-              navigate("/"); // Usa el hook, no window.location.href
-            }, 1500);
+              if (data.rol === "ADMIN") {
+                navigate("/admin");
+              } else {
+                navigate("/");
+              }
+            }, 1200);
           } else {
             Swal.fire({
               icon: "error",
@@ -225,7 +229,6 @@ function Auth() {
             {/* SIGNUP FORM y VERIFICACIÓN */}
             <div className="signup-form">
               <div className="title">Registro</div>
-              {/* Formulario de registro y de verificación, ambos siempre presentes */}
               <form
                 id="signupForm"
                 onSubmit={handleSignup}
