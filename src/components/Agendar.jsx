@@ -1,6 +1,6 @@
 // Imports
 import { useState } from "react";
-
+import { useUser } from "../context/UserContext";
 import Calendar from "./Calendar";
 
 const horariosDisponibles = [
@@ -13,12 +13,12 @@ const horariosDisponibles = [
     "04:00 PM"
 ];
 
-
-
 export default function AgendarPage() {
+    const { user } = useUser();
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedHora, setSelectedHora] = useState(null);
     const [mensaje, setMensaje] = useState("");
+    const [notas, setNotas] = useState(""); // Nuevo estado para las notas
 
     const solicitarCita = async () => {
         if (selectedDate && selectedHora) {
@@ -39,7 +39,8 @@ export default function AgendarPage() {
                     duracion: 60,
                     servicio: "terapia Reiki",
                     estado: "PENDIENTE",
-                    notas: "Primera cita del paciente"
+                    notas: notas || "", // Usa las notas ingresadas o una cadena vacía si no hay notas
+                    correo: user.email || "", // Asegúrate de que el correo esté definido
                 };
 
                 console.log(cita)
@@ -76,7 +77,7 @@ export default function AgendarPage() {
 
                     <div className="right"> 
                         {selectedDate && (
-                            <div style={{ textAlign: "center", marginTop: "1rem" }}>
+                            <div style={{ justifyContent: "center", marginTop: "1rem" }}>
                                 <p>
                                     Fecha seleccionada: {selectedDate.toLocaleDateString()}
                                 </p>
@@ -92,6 +93,16 @@ export default function AgendarPage() {
                                         </button>
                                     ))}
                                 </div>
+                                {/* Caja de texto para notas */}
+                                <div style={{ marginTop: "1rem" }}>
+                                    <textarea
+                                        placeholder="Notas para la cita (opcional)"
+                                        value={notas}
+                                        onChange={e => setNotas(e.target.value)}
+                                        rows={3}
+                                        style={{ width: "90%", borderRadius: 6, padding: 8, resize: "vertical" }}
+                                    />
+                                </div>
                                 <button className="solicitar-btn" disabled={!selectedHora} onClick={solicitarCita}>
                                     Solicitar cita
                                 </button>
@@ -102,10 +113,8 @@ export default function AgendarPage() {
                         )}
                     </div>
 
-                </div>
-
+                </div> 
             </section>
-
         </>
     );
 }

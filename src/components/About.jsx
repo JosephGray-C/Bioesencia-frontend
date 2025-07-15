@@ -1,5 +1,4 @@
 import React from "react";
-import "../assets/css/homepage.css";
 
 export default function About() {
     return (
