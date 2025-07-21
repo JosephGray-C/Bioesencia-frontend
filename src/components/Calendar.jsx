@@ -41,11 +41,18 @@ export default function Calendar({setSelectedDate, selectedDate}) {
         selectedDate?.getMonth() === month &&
         selectedDate?.getFullYear() === year;
 
+      // Nueva lógica: deshabilitar días pasados
+      const currentDate = new Date(year, month, i);
+      const now = new Date();
+      now.setHours(0, 0, 0, 0); // Solo comparar fecha, no hora
+      const isPast = currentDate < now;
+
       days.push(
         <li
           key={`curr-${i}`}
-          className={`${isToday ? "active" : ""} ${isSelected ? "selected" : ""}`}
-          onClick={() => setSelectedDate(new Date(year, month, i))}
+          className={`${isToday ? "active" : ""} ${isSelected ? "selected" : ""} ${isPast ? "inactive" : ""}`}
+          onClick={!isPast ? () => setSelectedDate(new Date(year, month, i)) : undefined}
+          style={isPast ? { pointerEvents: "none", opacity: 0.5, cursor: "not-allowed" } : {}}
         >
           {i}
         </li>
@@ -83,7 +90,7 @@ export default function Calendar({setSelectedDate, selectedDate}) {
             {months[date.getMonth()]} {date.getFullYear()}
           </p>
 
-          {/* Next and Previous */}
+          {/* Next and Previous */} 
           <div className="icons">
             <span id="prev" onClick={handlePrev}>❮</span>
             <span id="next" onClick={handleNext}>❯</span>

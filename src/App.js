@@ -14,6 +14,7 @@ import AdminProductos from './components/AdminProductos';
 import AdminTalleres from './components/AdminTalleres';
 import AdminServicios from './components/AdminServicios';
 import Agendar from './components/Agendar';
+import AdminCitas from "./components/AdminCitas";
 
 import { useUser } from "./context/UserContext";
 
@@ -32,6 +33,7 @@ function App() {
                 <Route path="productos" element={<AdminProductos />} />
                 <Route path="talleres" element={<AdminTalleres />} />
                 <Route path="servicios" element={<AdminServicios />} />
+                <Route path="citas" element={<AdminCitas />} />
                 <Route path="*" element={<AdminView />} />
               </Route>
             ) : (

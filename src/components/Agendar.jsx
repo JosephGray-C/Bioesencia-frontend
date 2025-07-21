@@ -1,5 +1,5 @@
 // Imports
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser } from "../context/UserContext";
 import Calendar from "./Calendar";
 
@@ -19,6 +19,17 @@ export default function AgendarPage() {
     const [selectedHora, setSelectedHora] = useState(null);
     const [mensaje, setMensaje] = useState("");
     const [notas, setNotas] = useState(""); // Nuevo estado para las notas
+    const [servicio, setServicio] = useState(""); // Estado para el servicio
+    const [serviciosDisponibles, setServiciosDisponibles] = useState([]);
+
+    useEffect(() => {
+        fetch("http://localhost:8080/api/servicios")
+            .then(res => res.json())
+            .then(data => {
+                setServiciosDisponibles(data);
+                if (data.length > 0) setServicio(data[0].nombre || data[0]);
+            });
+    }, []);
 
     const solicitarCita = async () => {
         if (selectedDate && selectedHora) {
@@ -37,29 +48,28 @@ export default function AgendarPage() {
                 const cita = {
                     fechaHora,
                     duracion: 60,
-                    servicio: "terapia Reiki",
-                    estado: "PENDIENTE",
-                    notas: notas || "", // Usa las notas ingresadas o una cadena vacía si no hay notas
-                    correo: user.email || "", // Asegúrate de que el correo esté definido
+                    servicio, // Usa el servicio seleccionado
+                    estado: "AGENDADA",
+                    notas: notas || "",
+                    correo: user.email || "",
+                    usuarioId: user.id || ""
                 };
+                
+                const response = await fetch("http://localhost:8080/api/citas", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(cita)
+                });
 
-                console.log(cita)
-
-                // const response = await fetch("http://localhost:8080/api/citas", {
-                //     method: "POST",
-                //     headers: {
-                //         "Content-Type": "application/json"
-                //     },
-                //     body: JSON.stringify(cita)
-                // });
-
-                // if (response.ok) {
+                if (response.ok) {
                     setMensaje(
                         `Cita solicitada para el ${selectedDate.toLocaleDateString()} a las ${selectedHora}`
                     );
-                // } else {
-                //     setMensaje("Error al solicitar la cita.");
-                // }
+                } else {  
+                    setMensaje("Error al solicitar la cita.");
+                }
             } catch (error) {
                 setMensaje("Error de conexión al solicitar la cita." + error.message);
             }
@@ -68,7 +78,7 @@ export default function AgendarPage() {
 
     return (
         <>
-            <section className="responsive">
+            <section className="home-main">
                 <div className="agendar-container">
                     
                     <div className="left">
@@ -81,6 +91,22 @@ export default function AgendarPage() {
                                 <p>
                                     Fecha seleccionada: {selectedDate.toLocaleDateString()}
                                 </p>
+                                {/* Dropdown para seleccionar servicio */}
+                                <div style={{ margin: "1rem 0" }}>
+                                    <label htmlFor="servicio" style={{ marginRight: 8 }}>Servicio:</label>
+                                    <select
+                                        id="servicio"
+                                        value={servicio}
+                                        onChange={e => setServicio(e.target.value)}
+                                        style={{ padding: 6, borderRadius: 6 }}
+                                    >
+                                        {serviciosDisponibles.map((s) => (
+                                            <option key={s.id || s} value={s.nombre || s}>
+                                                {s.nombre || s}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                                 <div>
                                     <p>Selecciona un horario:</p>
                                     {horariosDisponibles.map((hora) => (
