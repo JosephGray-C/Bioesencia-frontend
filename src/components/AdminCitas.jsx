@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useUser } from "../context/UserContext";
 import Swal from "sweetalert2";
 
 const API_URL = "http://localhost:8080/api/citas";
@@ -271,6 +272,7 @@ export default function AdminCitas() {
     const [paginaActual, setPaginaActual] = useState(1);
     const [busqueda, setBusqueda] = useState("");
     const citasPorPagina = 8;
+    const { user } = useUser();
 
     // Modals y forms independientes
     const [showForm, setShowForm] = useState(false);
@@ -282,7 +284,7 @@ export default function AdminCitas() {
         duracion: "",
         servicio: "",
         estado: "",
-        notas: ""
+        notas: "",
     });
 
     // Formulario para editar cita
@@ -292,7 +294,8 @@ export default function AdminCitas() {
         duracion: "",
         servicio: "",
         estado: "",
-        notas: ""
+        notas: "",
+        usuario:{}
     });
 
     // Cargar citas
@@ -340,7 +343,7 @@ export default function AdminCitas() {
             duracion: "",
             servicio: "",
             estado: "",
-            notas: ""
+            notas: "",
         });
         setShowEditForm(false);
     };
@@ -366,6 +369,7 @@ export default function AdminCitas() {
 
     // Editar cita
     const handleEditSubmit = async e => {
+        editForm.usuario = user;
         e.preventDefault();
         try {
             const res = await fetch(`${API_URL}/${editForm.id}`, {
