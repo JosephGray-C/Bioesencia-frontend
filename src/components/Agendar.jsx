@@ -33,46 +33,44 @@ export default function AgendarPage() {
 
     const solicitarCita = async () => {
         if (selectedDate && selectedHora) {
-            try {
-                // Convierte la hora seleccionada a formato 24h
-                const [hora, minutos, periodo] = selectedHora.match(/(\d+):(\d+) (\w+)/).slice(1);
-                let hora24 = parseInt(hora, 10);
-                if (periodo === "PM" && hora24 !== 12) hora24 += 12;
-                if (periodo === "AM" && hora24 === 12) hora24 = 0;
+            // Convierte la hora seleccionada a formato 24h
+            const [hora, minutos, periodo] = selectedHora.match(/(\d+):(\d+) (\w+)/).slice(1);
+            let hora24 = parseInt(hora, 10);
+            if (periodo === "PM" && hora24 !== 12) hora24 += 12;
+            if (periodo === "AM" && hora24 === 12) hora24 = 0;
+            
+            // Construye el string fechaHora
+            const fechaStr = selectedDate.toISOString().split("T")[0];
+            const horaStr = hora24.toString().padStart(2, "0") + ":" + minutos + ":00";
+            const fechaHora = `${fechaStr}T${horaStr}`;
+            
+            const cita = {
+                fechaHora,
+                duracion: 60,
+                servicio, // Usa el servicio seleccionado
+                estado: "AGENDADA",
+                notas: notas || "",
+                usuario: user
+            };
+            
+            console.log("Cita solicitada:", cita);
 
-                // Construye el string fechaHora
-                const fechaStr = selectedDate.toISOString().split("T")[0];
-                const horaStr = hora24.toString().padStart(2, "0") + ":" + minutos + ":00";
-                const fechaHora = `${fechaStr}T${horaStr}`;
+            const response = await fetch("http://localhost:8080/api/citas", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(cita)
+            });
 
-                const cita = {
-                    fechaHora,
-                    duracion: 60,
-                    servicio, // Usa el servicio seleccionado
-                    estado: "AGENDADA",
-                    notas: notas || "",
-                    correo: user.email || "",
-                    usuarioId: user.id || ""
-                };
-                
-                const response = await fetch("http://localhost:8080/api/citas", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(cita)
-                });
-
-                if (response.ok) {
-                    setMensaje(
-                        `Cita solicitada para el ${selectedDate.toLocaleDateString()} a las ${selectedHora}`
-                    );
-                } else {  
-                    setMensaje("Error al solicitar la cita.");
-                }
-            } catch (error) {
-                setMensaje("Error de conexión al solicitar la cita." + error.message);
+            if (response.ok) {
+                setMensaje(
+                    `Cita solicitada para el ${selectedDate.toLocaleDateString()} a las ${selectedHora}`
+                );
+            } else {  
+                setMensaje("Error al solicitar la cita.");
             }
+
         }
     };
 
