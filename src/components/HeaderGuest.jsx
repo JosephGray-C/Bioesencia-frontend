@@ -46,7 +46,7 @@ export default function HeaderGuest() {
       {/* Login a la derecha */}
       <Link to="/login" style={{
         fontWeight: "500",
-        color: "#5A0D0D",
+        color: "#5EA743",
         fontSize: "1.1rem",
         textDecoration: "none",
         flex: "0 0 auto"

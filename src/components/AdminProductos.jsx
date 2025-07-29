@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import "../assets/homepage.css";
 
 const API_URL = "http://localhost:8080/api/productos";
 

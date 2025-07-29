@@ -1,4 +1,3 @@
-import "../assets/homepage.css";
 import React from "react";
 
 export default function AdminView() {

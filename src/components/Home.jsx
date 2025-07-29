@@ -1,6 +1,4 @@
-// src/components/Home.jsx
 import React from "react";
-import "../assets/homepage.css";
 
 export default function Home() {
   return (

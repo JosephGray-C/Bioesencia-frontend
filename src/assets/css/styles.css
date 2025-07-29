@@ -8,7 +8,6 @@
   --biosencia-green: #5EA743;
 }
 
-
 body.no-scroll {
   overflow: hidden;
 }
@@ -17,8 +16,6 @@ body.no-scroll {
   scroll-behavior: smooth;
   font-family: var(--main-font-family);
 }
-
-
 
 html,
 body {
@@ -35,7 +32,6 @@ body {
   font-family: 'Poppins', 'Avenir Next', 'Oswald', sans-serif;
   color: #222;
 }
-
 
 .container {
   position: relative;
