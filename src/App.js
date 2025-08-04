@@ -15,6 +15,7 @@ import AdminTalleres from './components/AdminTalleres';
 import AdminServicios from './components/AdminServicios';
 import Agendar from './components/Agendar';
 import AdminCitas from "./components/AdminCitas";
+import Calendario from "./components/Calendario";
 
 import { useUser } from "./context/UserContext";
 
@@ -45,6 +46,7 @@ function App() {
                 {/* Protected route */}
                 <Route element={user ? <UserLayout /> : <></>}>
                   <Route path="/agendar" element={<Agendar />} />
+                  <Route path="/calendario" element={<Calendario />} />
                 </Route>
 
                 <Route path="/login" element={<Auth />} />

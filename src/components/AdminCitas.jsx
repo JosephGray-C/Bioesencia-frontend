@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import { useUser } from "../context/UserContext";
+import { useServicios } from "../hooks/useServicios";
+
 import Swal from "sweetalert2";
 
 const API_URL = "http://localhost:8080/api/citas";
 
 // --- Modal Crear Cita ---
-function CrearCitaModal({ form, onChange, onSubmit, onCancel }) {
-    // Opciones de estado
+function CrearCitaModal({ form, onChange, onSubmit, onCancel, serviciosDisponibles }) {
     const estadosCita = [
         "AGENDADA",
-        "PENDIENTE",
-        "CONFIRMADA",
         "CANCELADA",
         "COMPLETADA"
     ];
@@ -60,16 +59,28 @@ function CrearCitaModal({ form, onChange, onSubmit, onCancel }) {
                                             min={1}
                                         />
                                     </div>
+                                    {/* ici */}
                                     <div className="input-box">
-                                        <input
-                                            type="text"
+                                        <label htmlFor="servicio" style={{ marginRight: 8 }}>
+                                            Servicio:
+                                        </label>
+                                        <select
+                                            id="servicio"
                                             name="servicio"
-                                            placeholder="Servicio"
                                             value={form.servicio}
                                             onChange={onChange}
+                                            style={{ padding: 6, borderRadius: 6 }}
                                             required
-                                        />
+                                        >
+                                            <option value="">Selecciona un servicio</option>
+                                            {serviciosDisponibles.map((s) => (
+                                                <option key={s.id || s.nombre || s} value={s.nombre || s}>
+                                                    {s.nombre || s}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
+                                    {/* ici */}
                                     <div className="input-box">
                                         <label htmlFor="estado">Estado:</label>
                                         <select
@@ -136,14 +147,11 @@ function CrearCitaModal({ form, onChange, onSubmit, onCancel }) {
 }
 
 // --- Modal Editar Cita ---
-function EditarCitaModal({ editForm, onChange, onSubmit, onCancel }) {
-    // Opciones de estado
+function EditarCitaModal({ editForm, onChange, onSubmit, onCancel, serviciosDisponibles }) {
     const estadosCita = [
         "AGENDADA",
         "CANCELADA",
-        "COMPLETADA",
-        // "PENDIENTE",
-        // "CONFIRMADA",
+        "COMPLETADA"
     ];
 
     return (
@@ -191,16 +199,28 @@ function EditarCitaModal({ editForm, onChange, onSubmit, onCancel }) {
                                             min={1}
                                         />
                                     </div>
+                                    {/* ici */}
                                     <div className="input-box">
-                                        <input
-                                            type="text"
+                                        <label htmlFor="servicio" style={{ marginRight: 8 }}>
+                                            Servicio:
+                                        </label>
+                                        <select
+                                            id="servicio"
                                             name="servicio"
-                                            placeholder="Servicio"
                                             value={editForm.servicio}
                                             onChange={onChange}
+                                            style={{ padding: 6, borderRadius: 6 }}
                                             required
-                                        />
+                                        >
+                                            <option value="">Selecciona un servicio</option>
+                                            {serviciosDisponibles.map((s) => (
+                                                <option key={s.id || s.nombre || s} value={s.nombre || s}>
+                                                    {s.nombre || s}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
+                                    {/* ici */}
                                     <div className="input-box">
                                         <label htmlFor="estado">Estado:</label>
                                         <select
@@ -273,6 +293,7 @@ export default function AdminCitas() {
     const [busqueda, setBusqueda] = useState("");
     const citasPorPagina = 8;
     const { user } = useUser();
+    const serviciosDisponibles = useServicios();
 
     // Modals y forms independientes
     const [showForm, setShowForm] = useState(false);
@@ -281,9 +302,9 @@ export default function AdminCitas() {
     // Formulario para crear cita
     const [form, setForm] = useState({
         fechaHora: "",
-        duracion: "",
+        duracion: 60, // <-- default value
         servicio: "",
-        estado: "",
+        estado: "AGENDADA",
         notas: "",
     });
 
@@ -291,11 +312,11 @@ export default function AdminCitas() {
     const [editForm, setEditForm] = useState({
         id: "",
         fechaHora: "",
-        duracion: "",
+        duracion: 60, // <-- default value
         servicio: "",
-        estado: "",
+        estado: "AGENDADA",
         notas: "",
-        usuario:{}
+        usuario: {}
     });
 
     // Cargar citas
@@ -327,9 +348,9 @@ export default function AdminCitas() {
     const clearForm = () => {
         setForm({
             fechaHora: "",
-            duracion: "",
+            duracion: 60, // <-- default value
             servicio: "",
-            estado: "",
+            estado: "AGENDADA",
             notas: ""
         });
         setShowForm(false);
@@ -340,9 +361,9 @@ export default function AdminCitas() {
         setEditForm({
             id: "",
             fechaHora: "",
-            duracion: "",
+            duracion: 60, // <-- default value
             servicio: "",
-            estado: "",
+            estado: "AGENDADA",
             notas: "",
         });
         setShowEditForm(false);
@@ -487,6 +508,7 @@ export default function AdminCitas() {
                     onChange={handleChange}
                     onSubmit={handleSubmit}
                     onCancel={clearForm}
+                    serviciosDisponibles={serviciosDisponibles}
                 />
             )}
             {showEditForm && (
@@ -495,6 +517,7 @@ export default function AdminCitas() {
                     onChange={handleEditChange}
                     onSubmit={handleEditSubmit}
                     onCancel={clearEditForm}
+                    serviciosDisponibles={serviciosDisponibles}
                 />
             )}
 
