@@ -8,6 +8,7 @@ const sidebarOptions = [
   { path: "/", label: "Inicio", icon: "🏠" },
   { path: "/about", label: "Sobre nosotros", icon: "ℹ️" },
   { path: "/agendar", label: "Agendar cita", icon: "📅" },
+  { path: "/blogusuario", label: "Blog", icon: "📝" },
   { path: "/calendario", label: "Calendario", icon: "📆" },
 ];
 

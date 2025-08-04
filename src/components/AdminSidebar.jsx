@@ -9,6 +9,7 @@ const adminOptions = [
   { path: "/admin/talleres", label: "Talleres", icon: "📚" }, // NUEVO: enlace a talleres
   { path: "/admin/servicios", label: "Servicios", icon: "🛠️" },
   { path: "/admin/citas", label: "Citas", icon: "📅" },
+  { path: "/admin/blog", label: "Blog", icon: "📝" },
 ];
 
 export default function AdminSidebar() {

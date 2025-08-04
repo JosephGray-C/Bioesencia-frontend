@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-import { useUser } from "../context/UserContext";
 import { useServicios } from "../hooks/useServicios";
 
 import Swal from "sweetalert2";
 
 const API_URL = "http://localhost:8080/api/citas";
 
-// --- Modal Crear Cita ---
 function CrearCitaModal({ form, onChange, onSubmit, onCancel, serviciosDisponibles }) {
     const estadosCita = [
         "AGENDADA",
@@ -30,14 +28,14 @@ function CrearCitaModal({ form, onChange, onSubmit, onCancel, serviciosDisponibl
                 position: "relative",
                 boxShadow: "0 8px 32px #0004"
             }}>
-                <div className="forms" style={{ background: "#fff" }}>
+                <div className="forms" style={{background: "#fff"}}>
                     <div className="form-content">
-                        <div className="signup-form" style={{ width: "100%" }}>
-                            <div className="title" style={{ fontWeight: 600, fontSize: 26, marginBottom: 12 }}>
+                        <div className="signup-form" style={{width: "100%"}}>
+                            <div className="title" style={{fontWeight: 600, fontSize: 26, marginBottom: 12}}>
                                 Agregar cita
                             </div>
                             <form onSubmit={onSubmit}>
-                                <div className="input-boxes" style={{ marginTop: 18 }}>
+                                <div className="input-boxes" style={{marginTop: 18}}>
                                     <div className="input-box">
                                         <input
                                             type="datetime-local"
@@ -59,7 +57,6 @@ function CrearCitaModal({ form, onChange, onSubmit, onCancel, serviciosDisponibl
                                             min={1}
                                         />
                                     </div>
-                                    {/* ici */}
                                     <div className="input-box">
                                         <label htmlFor="servicio" style={{ marginRight: 8 }}>
                                             Servicio:
@@ -80,7 +77,6 @@ function CrearCitaModal({ form, onChange, onSubmit, onCancel, serviciosDisponibl
                                             ))}
                                         </select>
                                     </div>
-                                    {/* ici */}
                                     <div className="input-box">
                                         <label htmlFor="estado">Estado:</label>
                                         <select
@@ -89,8 +85,9 @@ function CrearCitaModal({ form, onChange, onSubmit, onCancel, serviciosDisponibl
                                             value={form.estado}
                                             onChange={onChange}
                                             required
-                                            style={{ width: "100%", padding: "8px", borderRadius: 6 }}
+                                            style={{width: "100%", padding: "8px", borderRadius: 6}}
                                         >
+                                            <option value="">Seleccionar estado</option>
                                             {estadosCita.map(e => (
                                                 <option key={e} value={e}>{e}</option>
                                             ))}
@@ -103,16 +100,16 @@ function CrearCitaModal({ form, onChange, onSubmit, onCancel, serviciosDisponibl
                                             value={form.notas}
                                             onChange={onChange}
                                             rows={3}
-                                            style={{ resize: "vertical", width: "100%" }}
+                                            style={{resize: "vertical", width: "100%"}}
                                         />
                                     </div>
-                                    <div className="button input-box" style={{ marginTop: 26 }}>
+                                    <div className="button input-box" style={{marginTop: 26}}>
                                         <input
                                             type="submit"
                                             value="Guardar cita"
                                         />
                                     </div>
-                                    <div style={{ marginTop: 8, textAlign: "right" }}>
+                                    <div style={{marginTop: 8, textAlign: "right"}}>
                                         <button
                                             type="button"
                                             onClick={onCancel}
@@ -126,7 +123,8 @@ function CrearCitaModal({ form, onChange, onSubmit, onCancel, serviciosDisponibl
                                                 fontSize: "1rem",
                                                 cursor: "pointer"
                                             }}
-                                        >Cancelar</button>
+                                        >Cancelar
+                                        </button>
                                     </div>
                                 </div>
                             </form>
@@ -140,13 +138,13 @@ function CrearCitaModal({ form, onChange, onSubmit, onCancel, serviciosDisponibl
                         background: "none", border: "none", cursor: "pointer", color: "#888"
                     }}
                     title="Cerrar"
-                >×</button>
+                >×
+                </button>
             </div>
         </div>
     );
 }
 
-// --- Modal Editar Cita ---
 function EditarCitaModal({ editForm, onChange, onSubmit, onCancel, serviciosDisponibles }) {
     const estadosCita = [
         "AGENDADA",
@@ -170,14 +168,15 @@ function EditarCitaModal({ editForm, onChange, onSubmit, onCancel, serviciosDisp
                 position: "relative",
                 boxShadow: "0 8px 32px #0004"
             }}>
-                <div className="forms" style={{ background: "#fff" }}>
+                <div className="forms" style={{background: "#fff"}}>
                     <div className="form-content">
-                        <div className="signup-form" style={{ width: "100%" }}>
-                            <div className="title" style={{ fontWeight: 600, fontSize: 26, marginBottom: 12, color: "#5EA743" }}>
+                        <div className="signup-form" style={{width: "100%"}}>
+                            <div className="title"
+                                 style={{fontWeight: 600, fontSize: 26, marginBottom: 12, color: "#5EA743"}}>
                                 Editar cita
                             </div>
                             <form onSubmit={onSubmit}>
-                                <div className="input-boxes" style={{ marginTop: 18 }}>
+                                <div className="input-boxes" style={{marginTop: 18}}>
                                     <div className="input-box">
                                         <input
                                             type="datetime-local"
@@ -199,7 +198,6 @@ function EditarCitaModal({ editForm, onChange, onSubmit, onCancel, serviciosDisp
                                             min={1}
                                         />
                                     </div>
-                                    {/* ici */}
                                     <div className="input-box">
                                         <label htmlFor="servicio" style={{ marginRight: 8 }}>
                                             Servicio:
@@ -220,7 +218,6 @@ function EditarCitaModal({ editForm, onChange, onSubmit, onCancel, serviciosDisp
                                             ))}
                                         </select>
                                     </div>
-                                    {/* ici */}
                                     <div className="input-box">
                                         <label htmlFor="estado">Estado:</label>
                                         <select
@@ -229,7 +226,7 @@ function EditarCitaModal({ editForm, onChange, onSubmit, onCancel, serviciosDisp
                                             value={editForm.estado}
                                             onChange={onChange}
                                             required
-                                            style={{ width: "100%", padding: "8px", borderRadius: 6 }}
+                                            style={{width: "100%", padding: "8px", borderRadius: 6}}
                                         >
                                             {estadosCita.map(e => (
                                                 <option key={e} value={e}>{e}</option>
@@ -243,16 +240,16 @@ function EditarCitaModal({ editForm, onChange, onSubmit, onCancel, serviciosDisp
                                             value={editForm.notas}
                                             onChange={onChange}
                                             rows={3}
-                                            style={{ resize: "vertical", width: "100%" }}
+                                            style={{resize: "vertical", width: "100%"}}
                                         />
                                     </div>
-                                    <div className="button input-box" style={{ marginTop: 26 }}>
+                                    <div className="button input-box" style={{marginTop: 26}}>
                                         <input
                                             type="submit"
                                             value="Guardar cambios"
                                         />
                                     </div>
-                                    <div style={{ marginTop: 8, textAlign: "right" }}>
+                                    <div style={{marginTop: 8, textAlign: "right"}}>
                                         <button
                                             type="button"
                                             onClick={onCancel}
@@ -266,7 +263,8 @@ function EditarCitaModal({ editForm, onChange, onSubmit, onCancel, serviciosDisp
                                                 fontSize: "1rem",
                                                 cursor: "pointer"
                                             }}
-                                        >Cancelar</button>
+                                        >Cancelar
+                                        </button>
                                     </div>
                                 </div>
                             </form>
@@ -280,7 +278,8 @@ function EditarCitaModal({ editForm, onChange, onSubmit, onCancel, serviciosDisp
                         background: "none", border: "none", cursor: "pointer", color: "#888"
                     }}
                     title="Cerrar"
-                >×</button>
+                >×
+                </button>
             </div>
         </div>
     );
@@ -292,7 +291,6 @@ export default function AdminCitas() {
     const [paginaActual, setPaginaActual] = useState(1);
     const [busqueda, setBusqueda] = useState("");
     const citasPorPagina = 8;
-    const { user } = useUser();
     const serviciosDisponibles = useServicios();
 
     // Modals y forms independientes
@@ -301,6 +299,7 @@ export default function AdminCitas() {
 
     // Formulario para crear cita
     const [form, setForm] = useState({
+        usuarioId: "",
         fechaHora: "",
         duracion: 60, // <-- default value
         servicio: "",
@@ -319,7 +318,6 @@ export default function AdminCitas() {
         usuario: {}
     });
 
-    // Cargar citas
     useEffect(() => {
         fetch(API_URL)
             .then(res => res.json())
@@ -328,7 +326,7 @@ export default function AdminCitas() {
 
     // Cambios en formulario crear
     const handleChange = e => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setForm(f => ({
             ...f,
             [name]: value
@@ -337,7 +335,7 @@ export default function AdminCitas() {
 
     // Cambios en formulario editar
     const handleEditChange = e => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setEditForm(f => ({
             ...f,
             [name]: value
@@ -347,6 +345,7 @@ export default function AdminCitas() {
     // Limpiar y cerrar modal crear
     const clearForm = () => {
         setForm({
+            usuarioId: "",
             fechaHora: "",
             duracion: 60, // <-- default value
             servicio: "",
@@ -365,6 +364,7 @@ export default function AdminCitas() {
             servicio: "",
             estado: "AGENDADA",
             notas: "",
+            usuario: null
         });
         setShowEditForm(false);
     };
@@ -372,11 +372,23 @@ export default function AdminCitas() {
     // Crear cita
     const handleSubmit = async e => {
         e.preventDefault();
+        // Validar usuario
+        if (!form.usuarioId) {
+            Swal.fire("Error", "Debes seleccionar un usuario.", "error");
+            return;
+        }
+        // Construir objeto para el backend
+        const payload = {
+            ...form,
+            usuario: {id: form.usuarioId}
+        };
+        delete payload.usuarioId;
+
         try {
             const res = await fetch(API_URL, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form)
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(payload)
             });
             if (!res.ok) throw new Error(await res.text());
             const nueva = await res.json();
@@ -390,13 +402,15 @@ export default function AdminCitas() {
 
     // Editar cita
     const handleEditSubmit = async e => {
-        editForm.usuario = user;
         e.preventDefault();
+        // No editar usuario aquí
+        const payload = {...editForm};
+        delete payload.usuario; // quitar usuario del payload
         try {
             const res = await fetch(`${API_URL}/${editForm.id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(editForm)
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(payload)
             });
             if (!res.ok) throw new Error(await res.text());
             const actualizada = await res.json();
@@ -438,7 +452,15 @@ export default function AdminCitas() {
 
     // Preparar datos cuando se va a editar
     const onEdit = cita => {
-        setEditForm({ ...cita });
+        setEditForm({
+            id: cita.id,
+            fechaHora: cita.fechaHora,
+            duracion: cita.duracion,
+            servicio: cita.servicio,
+            estado: cita.estado,
+            notas: cita.notas,
+            usuario: cita.usuario || null
+        });
         setShowEditForm(true);
     };
 
@@ -465,7 +487,7 @@ export default function AdminCitas() {
                 width: "100%"
             }}>
                 {/* Search */}
-                <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
+                <div style={{flex: 1, display: "flex", alignItems: "center"}}>
                     <input
                         type="text"
                         placeholder="Buscar cita"
@@ -482,7 +504,7 @@ export default function AdminCitas() {
                     />
                 </div>
                 {/* Botones */}
-                <div style={{ display: "flex", gap: 10, flexShrink: 0 }}>
+                <div style={{display: "flex", gap: 10, flexShrink: 0}}>
                     <button
                         onClick={() => setShowForm(true)}
                         style={{
@@ -522,90 +544,90 @@ export default function AdminCitas() {
             )}
 
             {/* DATATABLE */}
-            <table style={{ width: "100%", background: "#23272f", borderCollapse: "collapse", color: "#fff" }}>
+            <table style={{width: "100%", background: "#23272f", borderCollapse: "collapse", color: "#fff"}}>
                 <thead>
-                    <tr style={{ background: "#20232b" }}>
-                        <th style={{ padding: 12, textAlign: "left" }}>Fecha y hora</th>
-                        <th style={{ padding: 12, textAlign: "left" }}>Servicio</th>
-                        <th style={{ padding: 12, textAlign: "center" }}>Estado</th>
-                        <th style={{ padding: 12, textAlign: "left" }}>Notas</th>
-                        <th style={{ padding: 12, textAlign: "center" }}>Acciones</th>
-                    </tr>
+                <tr style={{background: "#20232b"}}>
+                    <th style={{padding: 12, textAlign: "left"}}>Fecha y hora</th>
+                    <th style={{padding: 12, textAlign: "left"}}>Servicio</th>
+                    <th style={{padding: 12, textAlign: "center"}}>Estado</th>
+                    <th style={{padding: 12, textAlign: "left"}}>Notas</th>
+                    <th style={{padding: 12, textAlign: "center"}}>Acciones</th>
+                </tr>
                 </thead>
                 <tbody>
-                    {citasPagina.length === 0 ? (
-                        <tr>
-                            <td colSpan={5} style={{ textAlign: "center", padding: 20 }}>No hay citas</td>
-                        </tr>
-                    ) : (
-                        citasPagina.map(c => (
-                            <tr key={c.id} style={{ borderBottom: "1px solid #222" }}>
-                                <td style={{ padding: 10, textAlign: "left", verticalAlign: "middle" }}>
-                                    {c.fechaHora?.replace("T", " ").slice(0, 16)}
-                                </td>
-                                <td style={{ padding: 10, textAlign: "left", verticalAlign: "middle" }}>{c.servicio}</td>
-                                <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>{c.estado}</td>
-                                <td style={{
-                                    padding: 10,
-                                    textAlign: "left",
-                                    verticalAlign: "middle",
-                                    maxWidth: 200,
-                                    overflow: "hidden",
-                                    textOverflow: "ellipsis",
-                                    whiteSpace: "nowrap"
-                                }}
-                                    title={c.notas}
+                {citasPagina.length === 0 ? (
+                    <tr>
+                        <td colSpan={5} style={{textAlign: "center", padding: 20}}>No hay citas</td>
+                    </tr>
+                ) : (
+                    citasPagina.map(c => (
+                        <tr key={c.id} style={{borderBottom: "1px solid #222"}}>
+                            <td style={{padding: 10, textAlign: "left", verticalAlign: "middle"}}>
+                                {c.fechaHora?.replace("T", " ").slice(0, 16)}
+                            </td>
+                            <td style={{padding: 10, textAlign: "left", verticalAlign: "middle"}}>{c.servicio}</td>
+                            <td style={{padding: 10, textAlign: "center", verticalAlign: "middle"}}>{c.estado}</td>
+                            <td style={{
+                                padding: 10,
+                                textAlign: "left",
+                                verticalAlign: "middle",
+                                maxWidth: 200,
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap"
+                            }}
+                                title={c.notas}
+                            >
+                                {c.notas?.length > 90
+                                    ? c.notas.slice(0, 90) + "..."
+                                    : c.notas}
+                            </td>
+                            <td style={{padding: 10, textAlign: "center", verticalAlign: "middle"}}>
+                                <button
+                                    onClick={() => onEdit(c)}
+                                    style={{
+                                        marginRight: 8,
+                                        background: "#fff",
+                                        color: "#FF9800",
+                                        border: "none",
+                                        borderRadius: 5,
+                                        padding: "5px 8px",
+                                        fontSize: 16,
+                                        cursor: "pointer"
+                                    }}
+                                    title="Editar cita"
                                 >
-                                    {c.notas?.length > 90
-                                        ? c.notas.slice(0, 90) + "..."
-                                        : c.notas}
-                                </td>
-                                <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>
-                                    <button
-                                        onClick={() => onEdit(c)}
-                                        style={{
-                                            marginRight: 8,
-                                            background: "#fff",
-                                            color: "#FF9800",
-                                            border: "none",
-                                            borderRadius: 5,
-                                            padding: "5px 8px",
-                                            fontSize: 16,
-                                            cursor: "pointer"
-                                        }}
-                                        title="Editar cita"
-                                    >
-                                        <i className="fas fa-edit"></i>
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(c.id)}
-                                        style={{
-                                            background: "#fff",
-                                            color: "#B71C1C",
-                                            border: "none",
-                                            borderRadius: 5,
-                                            padding: "5px 8px",
-                                            fontSize: 16,
-                                            cursor: "pointer"
-                                        }}
-                                        title="Eliminar cita"
-                                    >
-                                        <i className="fas fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        ))
-                    )}
+                                    <i className="fas fa-edit"></i>
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(c.id)}
+                                    style={{
+                                        background: "#fff",
+                                        color: "#B71C1C",
+                                        border: "none",
+                                        borderRadius: 5,
+                                        padding: "5px 8px",
+                                        fontSize: 16,
+                                        cursor: "pointer"
+                                    }}
+                                    title="Eliminar cita"
+                                >
+                                    <i className="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    ))
+                )}
                 </tbody>
             </table>
 
             {/* FOOTER + PAGINACIÓN */}
-            <div style={{ width: "100%", marginTop: 20 }}>
-                <span style={{ color: "#ccc", display: "block", marginBottom: 8, textAlign: "center" }}>
+            <div style={{width: "100%", marginTop: 20}}>
+                <span style={{color: "#ccc", display: "block", marginBottom: 8, textAlign: "center"}}>
                     Mostrando {citasPagina.length} de {citasFiltradas.length}
                 </span>
-                <div style={{ display: "flex", justifyContent: "center", gap: 4 }}>
-                    {Array.from({ length: totalPaginas }, (_, i) => (
+                <div style={{display: "flex", justifyContent: "center", gap: 4}}>
+                    {Array.from({length: totalPaginas}, (_, i) => (
                         <button
                             key={i}
                             onClick={() => setPaginaActual(i + 1)}

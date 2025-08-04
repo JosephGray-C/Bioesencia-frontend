@@ -15,9 +15,13 @@ import AdminTalleres from './components/AdminTalleres';
 import AdminServicios from './components/AdminServicios';
 import Agendar from './components/Agendar';
 import AdminCitas from "./components/AdminCitas";
+import Blog from "./components/Blog";
+import CrearPost from "./components/CrearPost";
+import EditarPost from "./components/EditarPost";
 import Calendario from "./components/Calendario";
 
 import { useUser } from "./context/UserContext";
+import BlogUsuario from "./components/BlogUsuario";
 
 function App() {
   const { user } = useUser();
@@ -35,6 +39,10 @@ function App() {
                 <Route path="talleres" element={<AdminTalleres />} />
                 <Route path="servicios" element={<AdminServicios />} />
                 <Route path="citas" element={<AdminCitas />} />
+                <Route path="blog" element={<Blog />} />
+                <Route path="blog/crear" element={<CrearPost />} />
+                <Route path="blog/editar/:id" element={<EditarPost />} />
+                {/* Add more admin routes as needed */}
                 <Route path="*" element={<AdminView />} />
               </Route>
             ) : (
@@ -42,10 +50,12 @@ function App() {
                 {/* Public routes, but wrapped with sidebar if logged in */}
                 <Route path="/" element={user ? <UserLayout><Home /></UserLayout> : <Home />}/>
                 <Route path="/about" element={user ? <UserLayout><About /></UserLayout> : <About />}/>
+                <Route path="/blogusuario" element={user ? <UserLayout><BlogUsuario /></UserLayout> : <BlogUsuario />} />
 
                 {/* Protected route */}
                 <Route element={user ? <UserLayout /> : <></>}>
                   <Route path="/agendar" element={<Agendar />} />
+                  <Route path="/blog" element={<Blog />} />
                   <Route path="/calendario" element={<Calendario />} />
                 </Route>
 
