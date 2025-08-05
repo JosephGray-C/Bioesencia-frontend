@@ -13,50 +13,61 @@ import AdminView from './components/AdminView';
 import AdminProductos from './components/AdminProductos';
 import AdminTalleres from './components/AdminTalleres';
 import AdminServicios from './components/AdminServicios';
-import Agendar from './components/Agendar';
 import AdminCitas from "./components/AdminCitas";
 
+import Productos from './components/Productos';
+import Carrito from './components/Carrito';
+import ResumenCompra from './components/ResumenCompra';
+import OrdenConfirmada from './components/OrdenConfirmada';
+
+import Agendar from './components/Agendar';
 import { useUser } from "./context/UserContext";
 
 function App() {
-  const { user } = useUser();
+    const { user } = useUser();
 
-  return (
-    <Router>
-      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-        <HeaderSwitcher />
-        <div style={{ flex: 1 }}>
-          <Routes>
-            {user && user.rol === "ADMIN" ? (
-              <Route path="/admin/*" element={<AdminLayout />}>
-                <Route index element={<AdminView />} />
-                <Route path="productos" element={<AdminProductos />} />
-                <Route path="talleres" element={<AdminTalleres />} />
-                <Route path="servicios" element={<AdminServicios />} />
-                <Route path="citas" element={<AdminCitas />} />
-                <Route path="*" element={<AdminView />} />
-              </Route>
-            ) : (
-              <>
-                {/* Public routes, but wrapped with sidebar if logged in */}
-                <Route path="/" element={user ? <UserLayout><Home /></UserLayout> : <Home />}/>
-                <Route path="/about" element={user ? <UserLayout><About /></UserLayout> : <About />}/>
+    return (
+        <Router>
+            <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+                <HeaderSwitcher />
+                <div style={{ flex: 1 }}>
+                    <Routes>
 
-                {/* Protected route */}
-                <Route element={user ? <UserLayout /> : <></>}>
-                  <Route path="/agendar" element={<Agendar />} />
-                </Route>
+                        {/* ADMIN */}
+                        {user && user.rol === "ADMIN" ? (
+                            <Route path="/admin/*" element={<AdminLayout />}>
+                                <Route index element={<AdminView />} />
+                                <Route path="productos" element={<AdminProductos />} />
+                                <Route path="talleres" element={<AdminTalleres />} />
+                                <Route path="servicios" element={<AdminServicios />} />
+                                <Route path="citas" element={<AdminCitas />} />
+                                <Route path="*" element={<AdminView />} />
+                            </Route>
+                        ) : (
+                            <>
+                                {/* Rutas públicas */}
+                                <Route path="/" element={user ? <UserLayout><Home /></UserLayout> : <Home />} />
+                                <Route path="/about" element={user ? <UserLayout><About /></UserLayout> : <About />} />
 
-                <Route path="/login" element={<Auth />} />
-                <Route path="*" element={<NotFound />} />
-              </>
-            )}
-          </Routes>
-        </div>
-        <Footer />
-      </div>
-    </Router>
-  );
+                                {/* Rutas protegidas con layout de usuario */}
+                                <Route element={user ? <UserLayout /> : <></>}>
+                                    <Route path="/productos" element={<Productos />} />
+                                    <Route path="/carrito" element={<Carrito />} />
+                                    <Route path="/resumen" element={<ResumenCompra />} />
+                                    <Route path="/orden/:codigo" element={<OrdenConfirmada />} />
+                                    <Route path="/agendar" element={<Agendar />} />
+                                </Route>
+
+                                <Route path="/login" element={<Auth />} />
+                                <Route path="*" element={<NotFound />} />
+                            </>
+                        )}
+                    </Routes>
+                </div>
+                <Footer />
+            </div>
+        </Router>
+    );
 }
 
 export default App;
