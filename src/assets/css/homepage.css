@@ -1,0 +1,63 @@
+.home-main {
+  width: 100%;
+  box-sizing: border-box;
+  background: white;
+  font-family: "Poppins", "Avenir Next", "Oswald", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0 auto;    
+  color: #5A0D0D;
+  padding-top: 50px;
+}
+
+
+.home-main h1 {
+  font-size: 2.8rem;
+  font-family: "Avenir Next", "Poppins", sans-serif;
+  font-weight: 400;
+  letter-spacing: 2px;
+  width: 100%;
+  text-align: center;
+  color: #5A0D0D;
+  margin-top: 10dvh;
+}
+
+.home-main p {
+  font-size: 1.15rem;
+  font-family: "Poppins", "Avenir Next", "Oswald", sans-serif;
+  line-height: 1.65;
+  margin: 18px 0;
+  text-align: justify;
+  max-width: 900px;
+  color: #5A0D0D;
+}
+
+@media (max-width: 800px) {
+  .home-main {
+    padding: 24px 3vw 24px 3vw;
+  }
+  .home-main h1 {
+    font-size: 2.1rem;
+  }
+  .home-main p {
+    font-size: 1.01rem;
+    max-width: 99vw;
+  }
+}
+
+.home-crud {
+  min-height: calc(100vh - 128px);
+  width: 100%;
+  box-sizing: border-box;
+  background: #282c34;
+  color: white;
+  font-family: "Poppins", "Avenir Next", "Oswald", sans-serif;
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin: 0 auto;
+}
