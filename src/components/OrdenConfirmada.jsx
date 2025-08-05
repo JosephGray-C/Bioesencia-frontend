@@ -1,59 +1,42 @@
 // src/components/OrdenConfirmada.jsx
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useUser } from "../context/UserContext";
-
-const API_ORDENES_PDF = "http://localhost:8080/api/ordenes/pdf";
+import React from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 export default function OrdenConfirmada() {
     const { codigo } = useParams();
-    const { user } = useUser();
-    const [pdfUrl, setPdfUrl] = useState(null);
-
-    useEffect(() => {
-        const fetchPdf = async () => {
-            try {
-                const res = await fetch(`${API_ORDENES_PDF}/${codigo}`);
-                if (!res.ok) throw new Error("No se pudo cargar el PDF");
-
-                const blob = await res.blob();
-                const pdfBlobUrl = URL.createObjectURL(blob);
-                setPdfUrl(pdfBlobUrl);
-            } catch (err) {
-                console.error("Error al obtener PDF:", err);
-            }
-        };
-
-        if (codigo) fetchPdf();
-    }, [codigo]);
+    const navigate = useNavigate();
 
     return (
-        <div style={{ background: "#f2f2f2", minHeight: "100vh", padding: "60px 20px" }}>
+        <div style={{ padding: "40px", display: "flex", justifyContent: "center" }}>
             <div style={{
                 background: "#fff",
-                maxWidth: "900px",
-                margin: "0 auto",
                 padding: "40px",
-                boxShadow: "0 0 10px rgba(0,0,0,0.2)",
-                borderRadius: 12,
-                textAlign: "center"
+                borderRadius: 16,
+                boxShadow: "0 0 10px rgba(0,0,0,0.15)",
+                width: "100%",
+                maxWidth: "900px"
             }}>
-                <h2 style={{ marginBottom: 30, color: "#5EA743" }}>
-                    ¡Gracias por tu compra, {user?.nombre}!
-                </h2>
-                <p>Tu orden fue confirmada exitosamente. Aquí puedes visualizar el comprobante oficial:</p>
+                <h2 style={{ color: "#5EA743", textAlign: "center" }}>¡Gracias por tu compra!</h2>
+                <p style={{ textAlign: "center", marginBottom: "20px" }}>
+                    Tu orden fue confirmada exitosamente. En tu correo puedes visualizar tu orden de compra: <strong>#{codigo}</strong>.
+                </p>
 
-                {pdfUrl ? (
-                    <iframe
-                        src={pdfUrl}
-                        title="Orden PDF"
-                        width="100%"
-                        height="600px"
-                        style={{ marginTop: 30, border: "1px solid #ccc" }}
-                    />
-                ) : (
-                    <p style={{ marginTop: 40 }}>Cargando comprobante...</p>
-                )}
+                <div style={{ marginTop: "30px", display: "flex", justifyContent: "center" }}>
+                    <button
+                        onClick={() => navigate("/")}
+                        style={{
+                            background: "#5EA743",
+                            color: "#fff",
+                            padding: "12px 24px",
+                            border: "none",
+                            borderRadius: 8,
+                            cursor: "pointer",
+                            fontSize: "1rem"
+                        }}
+                    >
+                        Cerrar
+                    </button>
+                </div>
             </div>
         </div>
     );

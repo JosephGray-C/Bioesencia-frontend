@@ -64,7 +64,7 @@ export default function ResumenCompra() {
                 title: "Orden generada",
                 text: "Te hemos enviado el PDF de tu orden de compra",
                 icon: "success",
-                confirmButtonText: "Ver PDF",
+                confirmButtonText: "Finalizar",
                 confirmButtonColor: "#5EA743"
             }).then(() => {
                 navigate(`/orden/${ordenGuardada.codigoOrden}`);
