@@ -1,16 +1,13 @@
-import React, {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
+import { useServicios } from "../hooks/useServicios";
+
 import Swal from "sweetalert2";
 
 const API_URL = "http://localhost:8080/api/citas";
-const USERS_URL = "http://localhost:8080/api/usuarios?rol=CLIENTE";
 
-// --- Modal Crear Cita ---
-function CrearCitaModal({form, onChange, onSubmit, onCancel, usuarios}) {
-    // Opciones de estado
+function CrearCitaModal({ form, onChange, onSubmit, onCancel, serviciosDisponibles }) {
     const estadosCita = [
         "AGENDADA",
-        "PENDIENTE",
-        "CONFIRMADA",
         "CANCELADA",
         "COMPLETADA"
     ];
@@ -39,28 +36,6 @@ function CrearCitaModal({form, onChange, onSubmit, onCancel, usuarios}) {
                             </div>
                             <form onSubmit={onSubmit}>
                                 <div className="input-boxes" style={{marginTop: 18}}>
-                                    {/* Dropdown de usuario */}
-                                    <div className="input-box">
-                                        <select
-                                            name="usuarioId"
-                                            value={form.usuarioId}
-                                            onChange={onChange}
-                                            required
-                                            style={{
-                                                width: "100%",
-                                                padding: "8px",
-                                                borderRadius: 6,
-                                                background: "#f2f2f2"
-                                            }}
-                                        >
-                                            <option value="">Seleccionar usuario</option>
-                                            {usuarios.map(u => (
-                                                <option key={u.id} value={u.id}>
-                                                    {u.email}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
                                     <div className="input-box">
                                         <input
                                             type="datetime-local"
@@ -83,14 +58,24 @@ function CrearCitaModal({form, onChange, onSubmit, onCancel, usuarios}) {
                                         />
                                     </div>
                                     <div className="input-box">
-                                        <input
-                                            type="text"
+                                        <label htmlFor="servicio" style={{ marginRight: 8 }}>
+                                            Servicio:
+                                        </label>
+                                        <select
+                                            id="servicio"
                                             name="servicio"
-                                            placeholder="Servicio"
                                             value={form.servicio}
                                             onChange={onChange}
+                                            style={{ padding: 6, borderRadius: 6 }}
                                             required
-                                        />
+                                        >
+                                            <option value="">Selecciona un servicio</option>
+                                            {serviciosDisponibles.map((s) => (
+                                                <option key={s.id || s.nombre || s} value={s.nombre || s}>
+                                                    {s.nombre || s}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
                                     <div className="input-box">
                                         <label htmlFor="estado">Estado:</label>
@@ -160,14 +145,11 @@ function CrearCitaModal({form, onChange, onSubmit, onCancel, usuarios}) {
     );
 }
 
-// --- Modal Editar Cita ---
-function EditarCitaModal({editForm, onChange, onSubmit, onCancel, usuarioEmail}) {
+function EditarCitaModal({ editForm, onChange, onSubmit, onCancel, serviciosDisponibles }) {
     const estadosCita = [
         "AGENDADA",
         "CANCELADA",
-        "COMPLETADA",
-        // "PENDIENTE",
-        // "CONFIRMADA",
+        "COMPLETADA"
     ];
 
     return (
@@ -196,23 +178,6 @@ function EditarCitaModal({editForm, onChange, onSubmit, onCancel, usuarioEmail})
                             <form onSubmit={onSubmit}>
                                 <div className="input-boxes" style={{marginTop: 18}}>
                                     <div className="input-box">
-                                        <label style={{fontWeight: 500, color: "#333"}}>
-                                            Usuario ligado a esta cita:
-                                        </label>
-                                        <div
-                                            style={{
-                                                padding: "10px 14px",
-                                                background: "#f2f2f2",
-                                                color: "#222",
-                                                borderRadius: 6,
-                                                fontWeight: 600,
-                                                marginTop: 4
-                                            }}
-                                        >
-                                            {usuarioEmail || "No asignado"}
-                                        </div>
-                                    </div>
-                                    <div className="input-box">
                                         <input
                                             type="datetime-local"
                                             name="fechaHora"
@@ -234,14 +199,24 @@ function EditarCitaModal({editForm, onChange, onSubmit, onCancel, usuarioEmail})
                                         />
                                     </div>
                                     <div className="input-box">
-                                        <input
-                                            type="text"
+                                        <label htmlFor="servicio" style={{ marginRight: 8 }}>
+                                            Servicio:
+                                        </label>
+                                        <select
+                                            id="servicio"
                                             name="servicio"
-                                            placeholder="Servicio"
                                             value={editForm.servicio}
                                             onChange={onChange}
+                                            style={{ padding: 6, borderRadius: 6 }}
                                             required
-                                        />
+                                        >
+                                            <option value="">Selecciona un servicio</option>
+                                            {serviciosDisponibles.map((s) => (
+                                                <option key={s.id || s.nombre || s} value={s.nombre || s}>
+                                                    {s.nombre || s}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
                                     <div className="input-box">
                                         <label htmlFor="estado">Estado:</label>
@@ -316,6 +291,7 @@ export default function AdminCitas() {
     const [paginaActual, setPaginaActual] = useState(1);
     const [busqueda, setBusqueda] = useState("");
     const citasPorPagina = 8;
+    const serviciosDisponibles = useServicios();
 
     // Modals y forms independientes
     const [showForm, setShowForm] = useState(false);
@@ -325,39 +301,27 @@ export default function AdminCitas() {
     const [form, setForm] = useState({
         usuarioId: "",
         fechaHora: "",
-        duracion: "",
+        duracion: 60, // <-- default value
         servicio: "",
-        estado: "",
-        notas: ""
+        estado: "AGENDADA",
+        notas: "",
     });
 
     // Formulario para editar cita
     const [editForm, setEditForm] = useState({
         id: "",
         fechaHora: "",
-        duracion: "",
+        duracion: 60, // <-- default value
         servicio: "",
-        estado: "",
+        estado: "AGENDADA",
         notas: "",
-        usuario: null // para evitar null pointer
+        usuario: {}
     });
 
-    const [usuarios, setUsuarios] = useState([]);
-    const [usuarioEmail, setUsuarioEmail] = useState("");
-
-    // Cargar citas
     useEffect(() => {
         fetch(API_URL)
             .then(res => res.json())
             .then(setCitas);
-    }, []);
-
-    // Cargar usuarios CLIENTE
-    useEffect(() => {
-        fetch(USERS_URL)
-            .then(res => res.json())
-            .then(setUsuarios)
-            .catch(() => setUsuarios([]));
     }, []);
 
     // Cambios en formulario crear
@@ -383,9 +347,9 @@ export default function AdminCitas() {
         setForm({
             usuarioId: "",
             fechaHora: "",
-            duracion: "",
+            duracion: 60, // <-- default value
             servicio: "",
-            estado: "",
+            estado: "AGENDADA",
             notas: ""
         });
         setShowForm(false);
@@ -396,13 +360,12 @@ export default function AdminCitas() {
         setEditForm({
             id: "",
             fechaHora: "",
-            duracion: "",
+            duracion: 60, // <-- default value
             servicio: "",
-            estado: "",
+            estado: "AGENDADA",
             notas: "",
             usuario: null
         });
-        setUsuarioEmail("");
         setShowEditForm(false);
     };
 
@@ -501,16 +464,6 @@ export default function AdminCitas() {
         setShowEditForm(true);
     };
 
-    // Cargar correo de usuario al abrir el modal de editar
-    useEffect(() => {
-        if (showEditForm && editForm.id) {
-            fetch(`${API_URL}/${editForm.id}/usuario-email`)
-                .then(res => res.ok ? res.json() : Promise.reject("No encontrado"))
-                .then(data => setUsuarioEmail(data.email || ""))
-                .catch(() => setUsuarioEmail(""));
-        }
-    }, [showEditForm, editForm.id]);
-
     // Filtrado y paginación
     const citasFiltradas = citas.filter(c =>
         c.servicio?.toLowerCase().includes(busqueda.toLowerCase())
@@ -577,7 +530,7 @@ export default function AdminCitas() {
                     onChange={handleChange}
                     onSubmit={handleSubmit}
                     onCancel={clearForm}
-                    usuarios={usuarios}
+                    serviciosDisponibles={serviciosDisponibles}
                 />
             )}
             {showEditForm && (
@@ -586,7 +539,7 @@ export default function AdminCitas() {
                     onChange={handleEditChange}
                     onSubmit={handleEditSubmit}
                     onCancel={clearEditForm}
-                    usuarioEmail={usuarioEmail}
+                    serviciosDisponibles={serviciosDisponibles}
                 />
             )}
 

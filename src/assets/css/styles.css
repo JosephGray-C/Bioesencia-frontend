@@ -28,7 +28,6 @@ body {
   padding: 0;
   min-height: 100vh;
   background: #23272f !important;
-  /* fondo gris claro */
   font-family: 'Poppins', 'Avenir Next', 'Oswald', sans-serif;
   color: #222;
 }
@@ -319,6 +318,6 @@ body {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: 8vh;            /* <-- Y aquí ajustas el espacio superior */
+  padding-top: 8vh;
 }
 
