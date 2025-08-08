@@ -27,6 +27,7 @@ import OrdenConfirmada from './components/OrdenConfirmada';
 import Agendar from './components/Agendar';
 import {useUser} from "./context/UserContext";
 import BlogUsuario from "./components/BlogUsuario";
+import AdminOrdenes from './components/AdminOrdenes';
 
 function App() {
     const {user} = useUser();
@@ -48,7 +49,7 @@ function App() {
                                 <Route path="blog" element={<Blog/>}/>
                                 <Route path="blog/crear" element={<CrearPost/>}/>
                                 <Route path="blog/editar/:id" element={<EditarPost/>}/>
-                                {/* Add more admin routes as needed */}
+                                <Route path="ordenes" element={<AdminOrdenes />} />
                                 <Route path="*" element={<AdminView/>}/>
                             </Route>
                         ) : (
