@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function Calendar({setSelectedDate, selectedDate}) {
+export default function Calendar({setSelectedDate, selectedDate, comp}) {
   const [date, setDate] = useState(new Date());
 
   useEffect(() => {
@@ -41,11 +41,14 @@ export default function Calendar({setSelectedDate, selectedDate}) {
         selectedDate?.getMonth() === month &&
         selectedDate?.getFullYear() === year;
 
-      // Nueva lógica: deshabilitar días pasados
-      const currentDate = new Date(year, month, i);
-      const now = new Date();
-      now.setHours(0, 0, 0, 0); // Solo comparar fecha, no hora
-      const isPast = currentDate < now;
+      let isPast = false;
+      if (comp === "agendar") {
+        const currentDate = new Date(year, month, i);
+        const now = new Date();
+        now.setHours(0, 0, 0, 0); // Solo comparar fecha, no hora
+        isPast = currentDate < now;
+      }
+      // Si es "calendario", isPast siempre será false (todos los días habilitados)
 
       days.push(
         <li

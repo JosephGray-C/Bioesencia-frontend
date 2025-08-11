@@ -459,14 +459,14 @@ export default function AdminTalleres() {
         e.preventDefault();
 
         // Validar que ambos campos tengan valor
-        if (!form.fechaInicio || !form.fechaFin) {
+        if (!editForm.fechaInicio || !editForm.fechaFin) {
             Swal.fire("Error", "Debes ingresar la fecha y hora de inicio y fin.", "error");
             return;
         }
 
         // Convertir a objeto Date y validar que no sean "Invalid Date"
-        const inicio = new Date(form.fechaInicio);
-        const fin = new Date(form.fechaFin);
+        const inicio = new Date(editForm.fechaInicio);
+        const fin = new Date(editForm.fechaFin);
         if (isNaN(inicio.getTime()) || isNaN(fin.getTime())) {
             Swal.fire("Error", "Fechas inválidas. Por favor selecciona correctamente las fechas y horas.", "error");
             return;
@@ -524,7 +524,17 @@ export default function AdminTalleres() {
 
     // Preparar datos cuando se va a editar
     const onEdit = taller => {
-        setEditForm({ ...taller });
+        setEditForm({
+            id: taller.id ?? "",
+            titulo: taller.titulo ?? "",
+            descripcion: taller.descripcion ?? "",
+            fechaInicio: taller.fechaInicio ?? "",
+            fechaFin: taller.fechaFin ?? "",
+            lugar: taller.lugar ?? "",
+            cupoMaximo: taller.cupoMaximo ?? "",
+            precio: taller.precio ?? "",
+            activo: typeof taller.activo === "boolean" ? taller.activo : true
+        });
         setShowEditForm(true);
     };
 

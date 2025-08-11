@@ -7,8 +7,9 @@ import Swal from "sweetalert2";
 const sidebarOptions = [
   { path: "/", label: "Inicio", icon: "🏠" },
   { path: "/about", label: "Sobre nosotros", icon: "ℹ️" },
-  { path: "/agendar", label: "Agendar cita", icon: "📅" },
   { path: "/blogusuario", label: "Blog", icon: "📝" },
+  { path: "/agendar", label: "Agendar cita", icon: "📅" },
+  { path: "/talleres", label: "Talleres", icon: "🛠️" },
   { path: "/calendario", label: "Calendario", icon: "📆" },
 ];
 

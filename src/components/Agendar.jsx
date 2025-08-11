@@ -1,18 +1,28 @@
 // Imports
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAgendar } from "../hooks/useAgendar";
 import { useServicios } from "../hooks/useServicios";
 import { useHorarios } from "../hooks/useHorarios";
 import Calendar from "./Calendar";
 
 export default function AgendarPage() {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState();
   const [selectedHora, setSelectedHora] = useState(null);
   const [notas, setNotas] = useState("");
+  const [procesando, setProcesando] = useState(false); // Nuevo estado
   const [servicio, setServicio] = useState("");
   const serviciosDisponibles = useServicios();
   const [horariosDisponibles, setHorariosDisponibles] = useHorarios(selectedDate);
   const { mensaje, solicitarCita } = useAgendar();
+
+  useEffect(() => {
+    if (
+      serviciosDisponibles.length > 0 &&
+      (servicio === "" || !serviciosDisponibles.some(s => (s.nombre || s) === servicio))
+    ) {
+      setServicio(serviciosDisponibles[0].nombre || serviciosDisponibles[0]);
+    }
+  }, [serviciosDisponibles, servicio]);
 
   return (
     <>
@@ -22,6 +32,7 @@ export default function AgendarPage() {
             <Calendar
               setSelectedDate={setSelectedDate}
               selectedDate={selectedDate}
+              comp="agendar"
             />
           </div>
 
@@ -85,18 +96,17 @@ export default function AgendarPage() {
                 </div>
                 <button
                   className="solicitar-btn"
-                  disabled={!selectedHora}
-                  onClick={() =>
-                    solicitarCita({
-                      selectedHora,
-                      selectedDate,
-                      notas,
-                      servicio,
-                      setHorariosDisponibles
-                    })
-                  }
+                  disabled={!selectedHora || procesando}
+                  onClick={() => solicitarCita({
+                    selectedHora,
+                    selectedDate,
+                    notas,
+                    servicio,
+                    setHorariosDisponibles,
+                    setProcesando // <-- pasa el setter aquí
+                  })}
                 >
-                  Solicitar cita
+                  {procesando ? "Procesando..." : "Solicitar cita"}
                 </button>
                 {mensaje && (
                   <p style={{ color: "green", marginTop: "1rem" }}>{mensaje}</p>

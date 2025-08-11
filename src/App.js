@@ -19,6 +19,8 @@ import Blog from "./components/Blog";
 import CrearPost from "./components/CrearPost";
 import EditarPost from "./components/EditarPost";
 import Calendario from "./components/Calendario";
+import TalleresPage from "./components/TalleresPage";
+import TallerDetallePage from "./components/TallerDetallePage";
 
 import { useUser } from "./context/UserContext";
 import BlogUsuario from "./components/BlogUsuario";
@@ -57,6 +59,8 @@ function App() {
                   <Route path="/agendar" element={<Agendar />} />
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/calendario" element={<Calendario />} />
+                  <Route path="/talleres" element={<TalleresPage />} />
+                  <Route path="/talleres/:id" element={<TallerDetallePage />} />
                 </Route>
 
                 <Route path="/login" element={<Auth />} />

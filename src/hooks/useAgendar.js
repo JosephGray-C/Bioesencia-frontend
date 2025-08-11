@@ -5,37 +5,42 @@ export function useAgendar() {
     const { user } = useUser();
     const [mensaje, setMensaje] = useState("");
     
-    const solicitarCita = async ({ selectedHora, selectedDate, notas, servicio, setHorariosDisponibles }) => {
+    const solicitarCita = async ({ selectedHora, selectedDate, notas, servicio, setHorariosDisponibles, setProcesando }) => {
         if (!selectedDate || !selectedHora) {
             alert("Debes seleccionar una fecha y una hora.");
             return;
         }
+        setProcesando && setProcesando(true); // <-- activa procesando
 
-        const fechaStr = selectedDate.toISOString().split("T")[0];
-        const fechaHora = `${fechaStr}T${selectedHora}`;
+        try {
+            const fechaStr = selectedDate.toISOString().split("T")[0];
+            const fechaHora = `${fechaStr}T${selectedHora}`;
 
-        const cita = {
-            fechaHora,
-            duracion: 60,
-            servicio,
-            estado: "AGENDADA",
-            notas: notas || "",
-            usuario: user,
-        };
+            const cita = {
+                fechaHora,
+                duracion: 60,
+                servicio,
+                estado: "AGENDADA",
+                notas: notas || "",
+                usuario: user,
+            };
 
-        const response = await fetch("http://localhost:8080/api/citas", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(cita),
-        });
+            const response = await fetch("http://localhost:8080/api/citas", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(cita),
+            });
 
-        if (response.ok) {
-            setMensaje(`Cita solicitada para el ${selectedDate.toLocaleDateString()} a las ${selectedHora}`);
-            const res = await fetch(`http://localhost:8080/api/citas/horariosDisponibles?fecha=${fechaStr}`);
-            const nuevosHorarios = await res.json();
-            setHorariosDisponibles(nuevosHorarios);
-        } else {
-            setMensaje("Error al solicitar la cita.");
+            if (response.ok) {
+                setMensaje(`Cita solicitada para el ${selectedDate.toLocaleDateString()} a las ${selectedHora}`);
+                const res = await fetch(`http://localhost:8080/api/citas/horariosDisponibles?fecha=${fechaStr}`);
+                const nuevosHorarios = await res.json();
+                setHorariosDisponibles(nuevosHorarios);
+            } else {
+                setMensaje("Error al solicitar la cita.");
+            }
+        } finally {
+            setProcesando && setProcesando(false); // <-- desactiva procesando
         }
     };
 
