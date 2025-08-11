@@ -5,24 +5,19 @@ import Swal from "sweetalert2";
 
 // Opciones de navegación para el usuario normal
 const sidebarOptions = [
-    { path: "/", label: "Inicio", icon: "🏠" },
-    { path: "/about", label: "Sobre nosotros", icon: "ℹ️" },
-    { path: "/productos", label: "Comprar", icon: "🛒" },         // Nueva opción para catálogo de productos
-    { path: "/agendar", label: "Agendar cita", icon: "📅" },
-    { path: "/blogusuario", label: "Blog", icon: "📝" },
-    { path: "/calendario", label: "Calendario", icon: "📆" },
-];
-
-const sidebarBottomOptions = [
-    { path: "/carrito", label: "Carrito", icon: "🛍️" },         // Carrito de compras (irá debajo)
-    { path: "/perfil", label: "Perfil", icon: "👤", disabled: true }
+  { path: "/", label: "Inicio", icon: "🏠" },
+  { path: "/about", label: "Sobre nosotros", icon: "ℹ️" },
+  { path: "/agendar", label: "Agendar cita", icon: "📅" },
+  { path: "/blogusuario", label: "Blog", icon: "📝" },
+  { path: "/calendario", label: "Calendario", icon: "📆" },
+  { path: "/talleres", label: "Talleres", icon: "🛠️" },
 ];
 
 export default function UserSidebar() {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const { setUser } = useUser();
-    const logoutMutation = useLogout();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { setUser } = useUser();
+  const logoutMutation = useLogout();
 
   const handleLogout = async () => {
     const result = await Swal.fire({
@@ -72,7 +67,7 @@ export default function UserSidebar() {
           zIndex: 10,
         }}
       >
-        <nav style={{ flex: 1 }}>
+        <nav style={{ flex: 1}}>
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             {sidebarOptions.map((opt) => (
               <li key={opt.path}>
@@ -100,58 +95,8 @@ export default function UserSidebar() {
             ))}
           </ul>
         </nav>
-          <div style={{ marginBottom: 16 }}>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                  {sidebarBottomOptions.map((opt) =>
-                      opt.disabled ? (
-                          <li
-                              key={opt.path}
-                              style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: 14,
-                                  padding: "14px 30px",
-                                  color: "#aaa",
-                                  borderRadius: 12,
-                                  fontWeight: 600,
-                                  fontSize: "1.06rem",
-                                  marginBottom: 2,
-                                  cursor: "not-allowed",
-                                  opacity: 0.65,
-                                  userSelect: "none"
-                              }}
-                          >
-                              <span style={{ fontSize: "1.3rem" }}>{opt.icon}</span>
-                              {opt.label}
-                          </li>
-                      ) : (
-                          <li key={opt.path}>
-                              <Link
-                                  to={opt.path}
-                                  style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      gap: 14,
-                                      padding: "14px 30px",
-                                      color: location.pathname === opt.path ? "#5EA743" : "#fff",
-                                      background: location.pathname === opt.path ? "#23272f" : "transparent",
-                                      borderRadius: 12,
-                                      fontWeight: 600,
-                                      textDecoration: "none",
-                                      fontSize: "1.06rem",
-                                      marginBottom: 2,
-                                      transition: "color 0.2s, background 0.2s"
-                                  }}
-                              >
-                                  <span style={{ fontSize: "1.3rem" }}>{opt.icon}</span>
-                                  {opt.label}
-                              </Link>
-                          </li>
-                      )
-                  )}
-              </ul>
-          </div>
-        <div
+        {/* Botón cerrar sesión abajo */}
+        <div 
           style={{
             padding: "0 24px 24px 24px",
             marginTop: "auto",

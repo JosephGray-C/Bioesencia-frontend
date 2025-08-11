@@ -10,6 +10,7 @@ export function useAgendar() {
             alert("Debes seleccionar una fecha y una hora.");
             return;
         }
+        
 
         const fechaStr = selectedDate.toISOString().split("T")[0];
         const fechaHora = `${fechaStr}T${selectedHora}`;

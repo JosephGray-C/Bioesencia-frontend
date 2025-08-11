@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 const API_URL = "http://localhost:8080/api/talleres";
+const INS_API  = "http://localhost:8080/api/inscripciones"; // <-- NUEVO
 
 // --- Modal Crear ---
 function CrearTallerModal({ form, onChange, onSubmit, onCancel }) {
@@ -522,6 +523,69 @@ export default function AdminTalleres() {
         }
     };
 
+    // NUEVO: Ver inscritos de un taller
+    const handleVerInscritos = async (taller) => {
+        try {
+            const res = await fetch(`${INS_API}/taller/${taller.id}`);
+            if (!res.ok) throw new Error(await res.text());
+            const lista = await res.json();
+
+            if (!Array.isArray(lista) || lista.length === 0) {
+                await Swal.fire({
+                    icon: "info",
+                    title: "Sin inscripciones",
+                    text: `No hay usuarios inscritos en "${taller.titulo}".`,
+                    confirmButtonColor: "#5EA743",
+                });
+                return;
+            }
+
+            const muestraFecha = lista.some(x => x?.fecha || x?.createdAt);
+            const filas = lista.map((i, idx) => {
+                const u = i?.usuario || {};
+                const fecha = i?.fecha || i?.createdAt;
+                return `
+                    <tr>
+                      <td style="padding:6px">${idx + 1}</td>
+                      <td style="padding:6px">${u.nombre ?? u.username ?? "—"}</td>
+                      <td style="padding:6px">${u.email ?? "—"}</td>
+                      ${muestraFecha ? `<td style="padding:6px">${fecha ? new Date(fecha).toLocaleString() : "—"}</td>` : ""}
+                    </tr>`;
+            }).join("");
+
+            const tabla = `
+                <div style="max-height:60vh;overflow:auto;text-align:left">
+                  <p><b>Taller:</b> ${taller.titulo}</p>
+                  <p style="margin-top:4px"><b>Total inscritos:</b> ${lista.length}</p>
+                  <table style="width:100%;border-collapse:collapse">
+                    <thead>
+                      <tr>
+                        <th style="text-align:left;padding:6px">#</th>
+                        <th style="text-align:left;padding:6px">Usuario</th>
+                        <th style="text-align:left;padding:6px">Email</th>
+                        ${muestraFecha ? `<th style="text-align:left;padding:6px">Fecha inscrip.</th>` : ""}
+                      </tr>
+                    </thead>
+                    <tbody>${filas}</tbody>
+                  </table>
+                </div>`;
+
+            await Swal.fire({
+                title: "Inscritos",
+                html: tabla,
+                width: 720,
+                confirmButtonColor: "#5EA743",
+            });
+        } catch (e) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: e.message || "No se pudieron cargar las inscripciones.",
+                confirmButtonColor: "#5A0D0D",
+            });
+        }
+    };
+
     // Preparar datos cuando se va a editar
     const onEdit = taller => {
         setEditForm({ ...taller });
@@ -654,37 +718,61 @@ export default function AdminTalleres() {
                                 </td>
                                 <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>{t.activo ? "Sí" : "No"}</td>
                                 <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>
-                                    <button
-                                        onClick={() => onEdit(t)}
-                                        style={{
-                                            marginRight: 8,
-                                            background: "#fff",
-                                            color: "#FF9800",
-                                            border: "none",
-                                            borderRadius: 5,
-                                            padding: "5px 8px",
-                                            fontSize: 16,
-                                            cursor: "pointer"
-                                        }}
-                                        title="Editar taller"
-                                    >
-                                        <i className="fas fa-edit"></i>
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(t.id)}
-                                        style={{
-                                            background: "#fff",
-                                            color: "#B71C1C",
-                                            border: "none",
-                                            borderRadius: 5,
-                                            padding: "5px 8px",
-                                            fontSize: 16,
-                                            cursor: "pointer"
-                                        }}
-                                        title="Eliminar taller"
-                                    >
-                                        <i className="fas fa-trash-alt"></i>
-                                    </button>
+                                    <div style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        alignItems: "center",
+                                        gap: 8
+                                    }}>
+                                        <button
+                                            onClick={() => onEdit(t)}
+                                            style={{
+                                                background: "#fff",
+                                                color: "#FF9800",
+                                                border: "none",
+                                                borderRadius: 5,
+                                                padding: "5px 8px",
+                                                fontSize: 16,
+                                                cursor: "pointer",
+                                                width: 40
+                                            }}
+                                            title="Editar taller"
+                                        >
+                                            <i className="fas fa-edit"></i>
+                                        </button>
+                                        <button
+                                            onClick={() => handleVerInscritos(t)}
+                                            style={{
+                                                background: "#fff",
+                                                color: "#1976D2",
+                                                border: "none",
+                                                borderRadius: 5,
+                                                padding: "5px 8px",
+                                                fontSize: 16,
+                                                cursor: "pointer",
+                                                width: 40
+                                            }}
+                                            title="Ver inscritos"
+                                        >
+                                            <i className="fas fa-users"></i>
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(t.id)}
+                                            style={{
+                                                background: "#fff",
+                                                color: "#B71C1C",
+                                                border: "none",
+                                                borderRadius: 5,
+                                                padding: "5px 8px",
+                                                fontSize: 16,
+                                                cursor: "pointer",
+                                                width: 40
+                                            }}
+                                            title="Eliminar taller"
+                                        >
+                                            <i className="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))
