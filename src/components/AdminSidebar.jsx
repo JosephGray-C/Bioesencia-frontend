@@ -11,6 +11,7 @@ const adminOptions = [
   { path: "/admin/citas", label: "Citas", icon: "📅" },
   { path: "/admin/blog", label: "Blog", icon: "📝" },
   { path: "/admin/inscripciones", label: "Inscripciones", icon: "📝" },
+
 ];
 
 export default function AdminSidebar() {
