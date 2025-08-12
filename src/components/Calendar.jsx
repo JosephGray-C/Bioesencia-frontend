@@ -43,21 +43,29 @@ export default function Calendar({setSelectedDate, selectedDate, comp}) {
 
       const currentDate = new Date(year, month, i);
       let isPast = false;
+      let isAfterMax = false;
+
       if (comp === "agendar") {
         const now = new Date();
         now.setHours(0, 0, 0, 0);
         isPast = currentDate < now;
+
+        // Limitar solo para agendar
+        const maxDate = new Date();
+        maxDate.setMonth(maxDate.getMonth() + 3);
+        maxDate.setDate(0); // Último día del tercer mes siguiente
+        isAfterMax = currentDate > maxDate;
       }
 
-      // Deshabilitar sábados (6) y domingos (0)
+      // Deshabilitar domingos
       const isWeekend = currentDate.getDay() === 0;
 
       days.push(
         <li
           key={`curr-${i}`}
-          className={`${isToday ? "active" : ""} ${isSelected ? "selected" : ""} ${(isPast || isWeekend) ? "inactive" : ""}`}
-          onClick={!(isPast || isWeekend) ? () => setSelectedDate(new Date(year, month, i)) : undefined}
-          style={(isPast || isWeekend) ? { pointerEvents: "none", opacity: 0.5, cursor: "not-allowed" } : {}}
+          className={`${isToday ? "active" : ""} ${isSelected ? "selected" : ""} ${(isPast || isWeekend || isAfterMax) ? "inactive" : ""}`}
+          onClick={!(isPast || isWeekend || isAfterMax) ? () => setSelectedDate(new Date(year, month, i)) : undefined}
+          style={(isPast || isWeekend || isAfterMax) ? { pointerEvents: "none", opacity: 0.5, cursor: "not-allowed" } : {}}
         >
           {i}
         </li>
