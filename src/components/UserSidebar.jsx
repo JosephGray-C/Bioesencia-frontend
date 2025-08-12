@@ -15,8 +15,7 @@ const sidebarOptions = [
 ];
 
 const sidebarBottomOptions = [
-    { path: "/carrito", label: "Carrito", icon: "🛍️" },         // Carrito de compras (irá debajo)
-    { path: "/perfil", label: "Perfil", icon: "👤", disabled: true }
+    { path: "/carrito", label: "Carrito", icon: "🛍️" },
 ];
 
 export default function UserSidebar() {
