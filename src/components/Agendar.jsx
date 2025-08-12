@@ -5,6 +5,13 @@ import { useServicios } from "../hooks/useServicios";
 import { useHorarios } from "../hooks/useHorarios";
 import Calendar from "./Calendar";
 
+function formatoHoraAmPm(hora24) {
+  const [h, m] = hora24.split(":").map(Number);
+  const ampm = h >= 12 ? "PM" : "AM";
+  const hora12 = h % 12 === 0 ? 12 : h % 12;
+  return `${hora12}:${m.toString().padStart(2, "0")} ${ampm}`;
+}
+
 export default function AgendarPage() {
   const [selectedDate, setSelectedDate] = useState();
   const [selectedHora, setSelectedHora] = useState(null);
@@ -23,6 +30,19 @@ export default function AgendarPage() {
       setServicio(serviciosDisponibles[0].nombre || serviciosDisponibles[0]);
     }
   }, [serviciosDisponibles, servicio]);
+
+  // Filtra los horarios si es sábado
+  let horariosParaMostrar = horariosDisponibles;
+  if (
+    selectedDate &&
+    selectedDate.getDay() === 6 // 6 = sábado
+  ) {
+    horariosParaMostrar = horariosDisponibles.filter(hora => {
+      // Asume formato "HH:mm"
+      const [h, m] = hora.split(":").map(Number);
+      return h >= 9 && h <= 15;
+    });
+  }
 
   return (
     <>
@@ -62,9 +82,8 @@ export default function AgendarPage() {
                 </div>
                 <div>
                   <p>Selecciona un horario:</p>
-                  {Array.isArray(horariosDisponibles) &&
-                  horariosDisponibles.length > 0 ? (
-                    horariosDisponibles.map((hora) => (
+                  {Array.isArray(horariosParaMostrar) && horariosParaMostrar.length > 0 ? (
+                    horariosParaMostrar.map((hora) => (
                       <button
                         key={hora}
                         className={`horario-btn${
@@ -72,7 +91,7 @@ export default function AgendarPage() {
                         }`}
                         onClick={() => setSelectedHora(hora)}
                       >
-                        {hora}
+                        {formatoHoraAmPm(hora)}
                       </button>
                     ))
                   ) : (

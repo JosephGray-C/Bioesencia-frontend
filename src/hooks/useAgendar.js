@@ -23,7 +23,9 @@ export function useAgendar() {
                 estado: "AGENDADA",
                 notas: notas || "",
                 usuario: user,
-            };
+            };  
+
+            console.log(user)
 
             const response = await fetch("http://localhost:8080/api/citas", {
                 method: "POST",

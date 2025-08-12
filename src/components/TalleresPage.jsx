@@ -18,6 +18,7 @@ export default function TalleresPage() {
         setLoading(false);
       })
       .catch((err) => {
+        console.log("Error al cargar talleres:", err);
         setError("⚠️ No se pudieron cargar los talleres.");
         setLoading(false);
       });

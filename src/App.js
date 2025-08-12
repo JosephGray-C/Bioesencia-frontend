@@ -15,6 +15,7 @@ import AdminTalleres from './components/AdminTalleres';
 import AdminServicios from './components/AdminServicios';
 import Agendar from './components/Agendar';
 import AdminCitas from "./components/AdminCitas";
+import AdminInscripciones from "./components/AdminInscripciones";
 import Blog from "./components/Blog";
 import CrearPost from "./components/CrearPost";
 import EditarPost from "./components/EditarPost";
@@ -41,6 +42,7 @@ function App() {
                 <Route path="talleres" element={<AdminTalleres />} />
                 <Route path="servicios" element={<AdminServicios />} />
                 <Route path="citas" element={<AdminCitas />} />
+                <Route path="inscripciones" element={<AdminInscripciones />} />
                 <Route path="blog" element={<Blog />} />
                 <Route path="blog/crear" element={<CrearPost />} />
                 <Route path="blog/editar/:id" element={<EditarPost />} />

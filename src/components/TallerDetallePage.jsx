@@ -1,80 +1,159 @@
 // src/components/TallerDetallePage.jsx
-import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useUser } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export default function TallerDetallePage() {
-  const { id } = useParams();
   const { user } = useUser();
   const navigate = useNavigate();
+
   const [taller, setTaller] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [inscrito, setInscrito] = useState(false);
   const [cupoLleno, setCupoLleno] = useState(false);
+  const [inscritos, setInscritos] = useState(0);
 
-  const usuarioId = user.id; // Reemplaza con el ID del usuario autenticado
-  console.log(user.id)
+  // Último segmento de la URL: /talleres/1 -> "1"
+  const tallerId = window.location.pathname.replace(/\/+$/, "").split("/").pop();
+  const usuarioId = user?.id ? Number(user.id) : null;
 
   useEffect(() => {
-    // Cargar datos del taller
-    fetch(`http://localhost:8080/api/talleres/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Error al cargar el taller");
-        return res.json();
-      })
-      .then((data) => {
-        setTaller(data);
-        setCupoLleno(data.inscripciones.length >= data.cupoMaximo);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
+    if (!tallerId) return;
+    setLoading(true);
 
-    // Verificar si el usuario ya está inscrito
-    fetch(`http://localhost:8080/api/inscripciones/usuario/${usuarioId}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Error al verificar inscripción");
-        return res.json();
-      })
-      .then((inscripciones) => {
-        const yaInscrito = inscripciones.some((i) => i.taller.id === parseInt(id));
+    Promise.all([
+      fetch(`http://localhost:8080/api/talleres/${tallerId}`),
+      fetch(`http://localhost:8080/api/inscripciones/resumen/taller/${tallerId}`)
+    ])
+      .then(async ([resTaller, resInscripciones]) => {
+        if (resTaller.status === 404) {
+          Swal.fire({
+            icon: "warning",
+            title: "Taller no encontrado",
+            text: "El taller no existe o fue eliminado.",
+            confirmButtonColor: "#5A0D0D",
+          }).then(() => navigate("/talleres"));
+          return;
+        }
+        if (!resTaller.ok) throw new Error("Error al cargar el taller");
+
+        const dataTaller = await resTaller.json();
+        let listaIns = resInscripciones.ok ? await resInscripciones.json() : [];
+        // Asegura que sea array
+        if (!Array.isArray(listaIns)) {
+          listaIns = listaIns ? [listaIns] : [];
+        }
+
+        setTaller(dataTaller);
+        setInscritos(listaIns.length);
+
+        // Cupo lleno
+        setCupoLleno(Number(listaIns.length) >= Number(dataTaller.cupoMaximo ?? Infinity));
+
+        // Usuario ya inscrito
+        const yaInscrito = usuarioId
+          ? listaIns.some((i) => Number(i?.usuarioId) === usuarioId)
+          : false;
         setInscrito(yaInscrito);
       })
-      .catch(() => setInscrito(false));
-  }, [id]);
+      .catch((e) => {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: e.message || "No se pudieron cargar los datos.",
+          confirmButtonColor: "#5A0D0D",
+        });
+      })
+      .finally(() => setLoading(false));
+  }, [tallerId, usuarioId, navigate]);
 
   const handleInscripcion = async () => {
-    console.log(usuarioId)
+    // Requisitos previos
+    if (!usuarioId) {
+      Swal.fire({
+        icon: "info",
+        title: "Inicia sesión",
+        text: "Debes iniciar sesión para inscribirte.",
+        confirmButtonColor: "#5A0D0D",
+      });
+      return;
+    }
+    if (!taller?.id) return;
+
+    // Confirmación
+    const confirm = await Swal.fire({
+      title: "Confirmar inscripción",
+      text: `¿Deseas inscribirte en "${taller.titulo}"?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Sí, inscribirme",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#8FDE58",
+      cancelButtonColor: "#7A7670",
+    });
+    if (!confirm.isConfirmed) return;
+
     try {
-      const inscripcion = {
-        estado: "PENDIENTE",
-        fechaInscripcion: new Date().toISOString(),
-        taller: { id: taller.id },
+      // Revalidar cupo y duplicados inmediatamente antes de enviar
+      const resCheck = await fetch(`http://localhost:8080/api/inscripciones/taller/${taller.id}`);
+      const listaIns = resCheck.ok ? await resCheck.json() : [];
+
+      if (listaIns.some((i) => Number(i?.usuario?.id) === usuarioId)) {
+        setInscrito(true);
+        Swal.fire({
+          icon: "info",
+          title: "Ya estás inscrito",
+          text: "Tu inscripción ya se encuentra registrada.",
+          confirmButtonColor: "#5A0D0D",
+        });
+        return;
+      }
+
+      if (listaIns.length >= (taller.cupoMaximo ?? 0)) {
+        setCupoLleno(true);
+        Swal.fire({
+          icon: "warning",
+          title: "Cupo lleno",
+          text: "Este taller ya no tiene cupo disponible.",
+          confirmButtonColor: "#5A0D0D",
+        });
+        return;
+      }
+
+      const body = {
         usuario: { id: usuarioId },
+        taller: { id: Number(taller.id) },
       };
 
       const res = await fetch("http://localhost:8080/api/inscripciones", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(inscripcion),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
       });
 
       if (!res.ok) throw new Error("No se pudo realizar la inscripción");
 
-      alert("✅ Inscripción exitosa");
+      await Swal.fire({
+        icon: "success",
+        title: "¡Inscripción exitosa!",
+        text: "Te has inscrito correctamente.",
+        confirmButtonColor: "#8FDE58",
+      });
+
       navigate("/talleres");
     } catch (err) {
-      alert("❌ Error: " + err.message);
+      Swal.fire({
+        icon: "error",
+        title: "Error en la inscripción",
+        text: err.message || "Inténtalo de nuevo más tarde.",
+        confirmButtonColor: "#5A0D0D",
+      });
     }
   };
 
   if (loading) return <p style={{ padding: 20 }}>Cargando taller...</p>;
-  if (error) return <p style={{ padding: 20 }}>{error}</p>;
+  if (!taller) return <p style={{ padding: 20 }}>No se encontró el taller.</p>;
 
   return (
     <div
@@ -91,16 +170,26 @@ export default function TallerDetallePage() {
     >
       <h2 style={{ color: "#8FDE58" }}>{taller.titulo}</h2>
       <p><strong>Descripción:</strong> {taller.descripcion}</p>
-      <p><strong>Fecha:</strong> {new Date(taller.fechaInicio).toLocaleString()} - {new Date(taller.fechaFin).toLocaleString()}</p>
+      <p>
+        <strong>Fecha:</strong>{" "}
+        {new Date(taller.fechaInicio).toLocaleString()} -{" "}
+        {new Date(taller.fechaFin).toLocaleString()}
+      </p>
       <p><strong>Lugar:</strong> {taller.lugar}</p>
       <p><strong>Cupo máximo:</strong> {taller.cupoMaximo}</p>
-      <p><strong>Precio:</strong> {taller.precio.toLocaleString("es-CR", { style: "currency", currency: "CRC" })}</p>
-
-      {inscrito ? (
-        <p style={{ color: "#8FDE58", marginTop: 20 }}>✅ Ya estás inscrito en este taller.</p>
-      ) : cupoLleno ? (
-        <p style={{ color: "#f44336", marginTop: 20 }}>❌ Este taller ya no tiene cupo disponible.</p>
-      ) : (
+      <p><strong>Inscritos:</strong> {inscritos}</p>
+      {cupoLleno && (
+        <div style={{ color: "red", fontWeight: "bold", margin: "1rem 0" }}>
+          ❌ Este taller ya no tiene cupo disponible.
+        </div>
+      )}
+      {inscrito && (
+        <div style={{ color: "#8FDE58", fontWeight: "bold", margin: "1rem 0" }}>
+          Ya estás inscrito en este taller.
+        </div>
+      )}
+      {/* Botón de inscripción solo si hay cupo y no está inscrito */}
+      {!cupoLleno && !inscrito && (
         <button
           onClick={handleInscripcion}
           style={{

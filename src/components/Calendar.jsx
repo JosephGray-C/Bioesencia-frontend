@@ -41,21 +41,23 @@ export default function Calendar({setSelectedDate, selectedDate, comp}) {
         selectedDate?.getMonth() === month &&
         selectedDate?.getFullYear() === year;
 
+      const currentDate = new Date(year, month, i);
       let isPast = false;
       if (comp === "agendar") {
-        const currentDate = new Date(year, month, i);
         const now = new Date();
-        now.setHours(0, 0, 0, 0); // Solo comparar fecha, no hora
+        now.setHours(0, 0, 0, 0);
         isPast = currentDate < now;
       }
-      // Si es "calendario", isPast siempre será false (todos los días habilitados)
+
+      // Deshabilitar sábados (6) y domingos (0)
+      const isWeekend = currentDate.getDay() === 0;
 
       days.push(
         <li
           key={`curr-${i}`}
-          className={`${isToday ? "active" : ""} ${isSelected ? "selected" : ""} ${isPast ? "inactive" : ""}`}
-          onClick={!isPast ? () => setSelectedDate(new Date(year, month, i)) : undefined}
-          style={isPast ? { pointerEvents: "none", opacity: 0.5, cursor: "not-allowed" } : {}}
+          className={`${isToday ? "active" : ""} ${isSelected ? "selected" : ""} ${(isPast || isWeekend) ? "inactive" : ""}`}
+          onClick={!(isPast || isWeekend) ? () => setSelectedDate(new Date(year, month, i)) : undefined}
+          style={(isPast || isWeekend) ? { pointerEvents: "none", opacity: 0.5, cursor: "not-allowed" } : {}}
         >
           {i}
         </li>

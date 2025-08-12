@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 const API_URL = "http://localhost:8080/api/talleres";
+const INS_API = "http://localhost:8080/api/inscripciones/resumen"; // <-- resumen plano
 
 // --- Modal Crear ---
 function CrearTallerModal({ form, onChange, onSubmit, onCancel }) {
@@ -325,6 +326,7 @@ function EditarTallerModal({ editForm, onChange, onSubmit, onCancel }) {
 // --- Componente principal ---
 export default function AdminTalleres() {
     const [talleres, setTalleres] = useState([]);
+    const [inscripciones, setInscripciones] = useState([]); // <-- nuevo estado
     const [paginaActual, setPaginaActual] = useState(1);
     const [busqueda, setBusqueda] = useState("");
     const talleresPorPagina = 6;
@@ -358,12 +360,23 @@ export default function AdminTalleres() {
         activo: true
     });
 
-    // Cargar talleres
+    // Cargar talleres y todas las inscripciones
     useEffect(() => {
         fetch(API_URL)
             .then(res => res.json())
             .then(setTalleres);
+        fetch(INS_API)
+            .then(res => res.json())
+            .then(data => setInscripciones(Array.isArray(data) ? data : []));
     }, []);
+
+    // Contar inscripciones por tallerId
+    const inscripcionesPorTaller = {};
+    inscripciones.forEach(i => {
+        if (i.tallerId) {
+            inscripcionesPorTaller[i.tallerId] = (inscripcionesPorTaller[i.tallerId] || 0) + 1;
+        }
+    });
 
     // Cambios en formulario crear
     const handleChange = e => {
@@ -522,6 +535,55 @@ export default function AdminTalleres() {
         }
     };
 
+    // NUEVO: Ver inscritos de un taller (filtra localmente)
+    const handleVerInscritos = (taller) => {
+        // Filtra inscripciones locales por el id del taller
+        const lista = inscripciones.filter(i => i.tallerId === taller.id);
+
+        if (!Array.isArray(lista) || lista.length === 0) {
+            Swal.fire({
+                icon: "info",
+                title: "Sin inscripciones",
+                text: `No hay usuarios inscritos en "${taller.titulo}".`,
+                confirmButtonColor: "#5EA743",
+            });
+            return;
+        }
+
+        const filas = lista.map((i, idx) => `
+            <tr>
+              <td style="padding:6px">${idx + 1}</td>
+              <td style="padding:6px">${i.nombreUsuario ?? "—"}</td>
+              <td style="padding:6px">${i.emailUsuario ?? "—"}</td>
+              <td style="padding:6px">${i.fechaInscripcion ? new Date(i.fechaInscripcion).toLocaleString() : "—"}</td>
+            </tr>
+        `).join("");
+
+        const tabla = `
+            <div style="max-height:60vh;overflow:auto;text-align:left">
+              <p><b>Taller:</b> ${taller.titulo}</p>
+              <p style="margin-top:4px"><b>Total inscritos:</b> ${lista.length}</p>
+              <table style="width:100%;border-collapse:collapse">
+                <thead>
+                  <tr>
+                    <th style="text-align:left;padding:6px">#</th>
+                    <th style="text-align:left;padding:6px">Usuario</th>
+                    <th style="text-align:left;padding:6px">Email</th>
+                    <th style="text-align:left;padding:6px">Fecha inscrip.</th>
+                  </tr>
+                </thead>
+                <tbody>${filas}</tbody>
+              </table>
+            </div>`;
+
+        Swal.fire({
+            title: "Inscritos",
+            html: tabla,
+            width: 720,
+            confirmButtonColor: "#5EA743",
+        });
+    };
+
     // Preparar datos cuando se va a editar
     const onEdit = taller => {
         setEditForm({
@@ -625,13 +687,14 @@ export default function AdminTalleres() {
                         <th style={{ padding: 12, width: 70, textAlign: "center" }}>Cupo</th>
                         <th style={{ padding: 12, width: 90, textAlign: "center" }}>Precio</th>
                         <th style={{ padding: 12, width: 70, textAlign: "center" }}>Activo</th>
+                        <th style={{ padding: 12, width: 90, textAlign: "center" }}>Inscritos</th>
                         <th style={{ padding: 12, width: 90, textAlign: "center" }}>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {talleresPagina.length === 0 ? (
                         <tr>
-                            <td colSpan={9} style={{ textAlign: "center", padding: 20 }}>No hay talleres</td>
+                            <td colSpan={10} style={{ textAlign: "center", padding: 20 }}>No hay talleres</td>
                         </tr>
                     ) : (
                         talleresPagina.map(t => (
@@ -664,37 +727,64 @@ export default function AdminTalleres() {
                                 </td>
                                 <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>{t.activo ? "Sí" : "No"}</td>
                                 <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>
-                                    <button
-                                        onClick={() => onEdit(t)}
-                                        style={{
-                                            marginRight: 8,
-                                            background: "#fff",
-                                            color: "#FF9800",
-                                            border: "none",
-                                            borderRadius: 5,
-                                            padding: "5px 8px",
-                                            fontSize: 16,
-                                            cursor: "pointer"
-                                        }}
-                                        title="Editar taller"
-                                    >
-                                        <i className="fas fa-edit"></i>
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(t.id)}
-                                        style={{
-                                            background: "#fff",
-                                            color: "#B71C1C",
-                                            border: "none",
-                                            borderRadius: 5,
-                                            padding: "5px 8px",
-                                            fontSize: 16,
-                                            cursor: "pointer"
-                                        }}
-                                        title="Eliminar taller"
-                                    >
-                                        <i className="fas fa-trash-alt"></i>
-                                    </button>
+                                    {inscripcionesPorTaller[t.id] || 0}
+                                </td>
+                                <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>
+                                    <div style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        alignItems: "center",
+                                        gap: 8
+                                    }}>
+                                        <button
+                                            onClick={() => onEdit(t)}
+                                            style={{
+                                                background: "#fff",
+                                                color: "#FF9800",
+                                                border: "none",
+                                                borderRadius: 5,
+                                                padding: "5px 8px",
+                                                fontSize: 16,
+                                                cursor: "pointer",
+                                                width: 40
+                                            }}
+                                            title="Editar taller"
+                                        >
+                                            <i className="fas fa-edit"></i>
+                                        </button>
+                                        <button
+                                            onClick={() => handleVerInscritos(t)}
+                                            style={{
+                                                background: "#fff",
+                                                color: "#1976D2",
+                                                border: "none",
+                                                borderRadius: 5,
+                                                padding: "5px 8px",
+                                                fontSize: 16,
+                                                cursor: "pointer",
+                                                width: 40
+                                            }}
+                                            title="Ver inscritos"
+                                        >
+                                            <i className="fas fa-users"></i>
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(t.id)}
+                                            style={{
+                                                background: "#fff",
+                                                color: "#B71C1C",
+                                                border: "none",
+                                                borderRadius: 5,
+                                                padding: "5px 8px",
+                                                fontSize: 16,
+                                                cursor: "pointer",
+                                                width: 40
+                                            }}
+                                            title="Eliminar taller"
+                                        >
+                                            <i className="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))
