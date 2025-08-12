@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function Calendar({setSelectedDate, selectedDate}) {
+export default function Calendar({setSelectedDate, selectedDate, comp}) {
   const [date, setDate] = useState(new Date());
 
   useEffect(() => {
@@ -41,18 +41,23 @@ export default function Calendar({setSelectedDate, selectedDate}) {
         selectedDate?.getMonth() === month &&
         selectedDate?.getFullYear() === year;
 
-      // Nueva lógica: deshabilitar días pasados
       const currentDate = new Date(year, month, i);
-      const now = new Date();
-      now.setHours(0, 0, 0, 0); // Solo comparar fecha, no hora
-      const isPast = currentDate < now;
+      let isPast = false;
+      if (comp === "agendar") {
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+        isPast = currentDate < now;
+      }
+
+      // Deshabilitar sábados (6) y domingos (0)
+      const isWeekend = currentDate.getDay() === 0;
 
       days.push(
         <li
           key={`curr-${i}`}
-          className={`${isToday ? "active" : ""} ${isSelected ? "selected" : ""} ${isPast ? "inactive" : ""}`}
-          onClick={!isPast ? () => setSelectedDate(new Date(year, month, i)) : undefined}
-          style={isPast ? { pointerEvents: "none", opacity: 0.5, cursor: "not-allowed" } : {}}
+          className={`${isToday ? "active" : ""} ${isSelected ? "selected" : ""} ${(isPast || isWeekend) ? "inactive" : ""}`}
+          onClick={!(isPast || isWeekend) ? () => setSelectedDate(new Date(year, month, i)) : undefined}
+          style={(isPast || isWeekend) ? { pointerEvents: "none", opacity: 0.5, cursor: "not-allowed" } : {}}
         >
           {i}
         </li>

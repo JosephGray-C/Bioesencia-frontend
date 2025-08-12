@@ -7,10 +7,16 @@ import Swal from "sweetalert2";
 const sidebarOptions = [
   { path: "/", label: "Inicio", icon: "🏠" },
   { path: "/about", label: "Sobre nosotros", icon: "ℹ️" },
+  { path: "/productos", label: "Comprar", icon: "🛒" },   
   { path: "/agendar", label: "Agendar cita", icon: "📅" },
+  { path: "/talleres", label: "Talleres", icon: "🛠️" },
   { path: "/blogusuario", label: "Blog", icon: "📝" },
   { path: "/calendario", label: "Calendario", icon: "📆" },
-  { path: "/talleres", label: "Talleres", icon: "🛠️" },
+];
+
+const sidebarBottomOptions = [
+    { path: "/carrito", label: "Carrito", icon: "🛍️" },         // Carrito de compras (irá debajo)
+    { path: "/perfil", label: "Perfil", icon: "👤", disabled: true }
 ];
 
 export default function UserSidebar() {
@@ -95,6 +101,58 @@ export default function UserSidebar() {
             ))}
           </ul>
         </nav>
+        {/* Opciones secundarias (Carrito, Perfil) */}
+        <div style={{ marginBottom: 16 }}>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                {sidebarBottomOptions.map((opt) =>
+                    opt.disabled ? (
+                        <li
+                            key={opt.path}
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 14,
+                                padding: "14px 30px",
+                                color: "#aaa",
+                                borderRadius: 12,
+                                fontWeight: 600,
+                                fontSize: "1.06rem",
+                                marginBottom: 2,
+                                cursor: "not-allowed",
+                                opacity: 0.65,
+                                userSelect: "none"
+                            }}
+                        >
+                            <span style={{ fontSize: "1.3rem" }}>{opt.icon}</span>
+                            {opt.label}
+                        </li>
+                    ) : (
+                        <li key={opt.path}>
+                            <Link
+                                to={opt.path}
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 14,
+                                    padding: "14px 30px",
+                                    color: location.pathname === opt.path ? "#5EA743" : "#fff",
+                                    background: location.pathname === opt.path ? "#23272f" : "transparent",
+                                    borderRadius: 12,
+                                    fontWeight: 600,
+                                    textDecoration: "none",
+                                    fontSize: "1.06rem",
+                                    marginBottom: 2,
+                                    transition: "color 0.2s, background 0.2s"
+                                }}
+                            >
+                                <span style={{ fontSize: "1.3rem" }}>{opt.icon}</span>
+                                {opt.label}
+                            </Link>
+                        </li>
+                    )
+                )}
+            </ul>
+        </div>
         {/* Botón cerrar sesión abajo */}
         <div 
           style={{

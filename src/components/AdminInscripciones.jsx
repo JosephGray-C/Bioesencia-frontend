@@ -14,7 +14,7 @@ export default function AdminInscripciones() {
   const cargar = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch(API_URL);
+      const res = await fetch(`${API_URL}/resumen`);
       if (!res.ok) throw new Error("No se pudo cargar la lista de inscripciones.");
       const data = await res.json();
       setInscripciones(Array.isArray(data) ? data : []);
@@ -38,26 +38,12 @@ export default function AdminInscripciones() {
     const html = `
       <div style="text-align:left">
         <p><b>ID inscripción:</b> ${i?.id ?? "—"}</p>
-        <p><b>Fecha:</b> ${i?.fecha ? new Date(i.fecha).toLocaleString() : "—"}</p>
+        <p><b>Fecha inscripción:</b> ${i?.fechaInscripcion ? new Date(i.fechaInscripcion).toLocaleString() : "—"}</p>
         <hr/>
-        <p><b>Taller:</b> ${i?.taller?.titulo ?? "—"}</p>
-        <p><b>Fecha taller:</b> ${
-          i?.taller?.fechaInicio ? new Date(i.taller.fechaInicio).toLocaleString() : "—"
-        } ${
-          i?.taller?.fechaFin ? " - " + new Date(i.taller.fechaFin).toLocaleString() : ""
-        }</p>
-        <p><b>Lugar:</b> ${i?.taller?.lugar ?? "—"}</p>
-        <p><b>Precio:</b> ${
-          typeof i?.taller?.precio === "number"
-            ? i.taller.precio.toLocaleString("es-CR", { style: "currency", currency: "CRC" })
-            : "—"
-        }</p>
-        <hr/>
-        <p><b>Usuario:</b> ${i?.usuario?.nombre ?? i?.usuario?.username ?? "—"}</p>
-        <p><b>Email:</b> ${i?.usuario?.email ?? "—"}</p>
-        <p><b>Teléfono:</b> ${i?.usuario?.telefono ?? "—"}</p>
+        <p><b>Taller:</b> ${i?.nombreTaller ?? "—"}</p>
+        <p><b>Usuario:</b> ${i?.nombreUsuario ?? "—"}</p>
+        <p><b>Email:</b> ${i?.emailUsuario ?? "—"}</p>
         ${i?.estado ? `<hr/><p><b>Estado:</b> ${i.estado}</p>` : ""}
-        ${i?.notas ? `<p><b>Notas:</b> ${i.notas}</p>` : ""}
       </div>
     `;
     Swal.fire({
@@ -105,11 +91,11 @@ export default function AdminInscripciones() {
   const filtros = busqueda.trim().toLowerCase();
   const listaFiltrada = inscripciones.filter((i) => {
     const a = [
-      i?.taller?.titulo,
-      i?.usuario?.nombre,
-      i?.usuario?.email,
+      i?.fechaInscripcion,
+      i?.nombreTaller,
+      i?.nombreUsuario,
+      i?.emailUsuario,
       i?.estado,
-      i?.notas,
     ]
       .filter(Boolean)
       .join(" ")
@@ -214,8 +200,8 @@ export default function AdminInscripciones() {
             page.map((i) => (
               <tr key={i.id} style={{ borderBottom: "1px solid #222" }}>
                 <td style={{ padding: 10, verticalAlign: "middle" }}>
-                  {i?.fecha
-                    ? new Date(i.fecha).toLocaleString()
+                  {i?.fechaInscripcion
+                    ? new Date(i.fechaInscripcion).toLocaleString()
                     : i?.createdAt
                     ? new Date(i.createdAt).toLocaleString()
                     : "—"}
@@ -229,15 +215,15 @@ export default function AdminInscripciones() {
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
                   }}
-                  title={i?.taller?.titulo || ""}
+                  title={i?.nombreTaller || ""}
                 >
-                  {i?.taller?.titulo ?? "—"}
+                  {i?.nombreTaller ?? "—"}
                 </td>
                 <td style={{ padding: 10, verticalAlign: "middle" }}>
-                  {i?.usuario?.nombre ?? i?.usuario?.username ?? "—"}
+                  {i?.nombreUsuario ?? "—"}
                 </td>
                 <td style={{ padding: 10, verticalAlign: "middle" }}>
-                  {i?.usuario?.email ?? "—"}
+                  {i?.emailUsuario ?? "—"}
                 </td>
                 <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>
                   {i?.estado ?? "—"}
@@ -289,7 +275,7 @@ export default function AdminInscripciones() {
         <div style={{ display: "flex", justifyContent: "center", gap: 4 }}>
           {Array.from({ length: totalPaginas }, (_, i) => (
             <button
-              key={i}
+              key={`pagina-${i + 1}`}
               onClick={() => setPaginaActual(i + 1)}
               style={{
                 margin: "0 2px",

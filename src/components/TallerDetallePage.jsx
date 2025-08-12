@@ -1,8 +1,8 @@
 // src/components/TallerDetallePage.jsx
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
 import { useUser } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export default function TallerDetallePage() {
   const { user } = useUser();
@@ -12,6 +12,7 @@ export default function TallerDetallePage() {
   const [loading, setLoading] = useState(true);
   const [inscrito, setInscrito] = useState(false);
   const [cupoLleno, setCupoLleno] = useState(false);
+  const [inscritos, setInscritos] = useState(0);
 
   // Último segmento de la URL: /talleres/1 -> "1"
   const tallerId = window.location.pathname.replace(/\/+$/, "").split("/").pop();
@@ -19,18 +20,13 @@ export default function TallerDetallePage() {
 
   useEffect(() => {
     if (!tallerId) return;
+    setLoading(true);
 
-    const controller = new AbortController();
-
-    (async () => {
-      try {
-        setLoading(true);
-
-        const [resTaller, resInscripciones] = await Promise.all([
-          fetch(`http://localhost:8080/api/talleres/${tallerId}`, { signal: controller.signal }),
-          fetch(`http://localhost:8080/api/inscripciones/taller/${tallerId}`, { signal: controller.signal }),
-        ]);
-
+    Promise.all([
+      fetch(`http://localhost:8080/api/talleres/${tallerId}`),
+      fetch(`http://localhost:8080/api/inscripciones/resumen/taller/${tallerId}`)
+    ])
+      .then(async ([resTaller, resInscripciones]) => {
         if (resTaller.status === 404) {
           Swal.fire({
             icon: "warning",
@@ -40,40 +36,36 @@ export default function TallerDetallePage() {
           }).then(() => navigate("/talleres"));
           return;
         }
-
-        if (!resTaller.ok) {
-          throw new Error("Error al cargar el taller");
-        }
+        if (!resTaller.ok) throw new Error("Error al cargar el taller");
 
         const dataTaller = await resTaller.json();
-        const listaIns = resInscripciones.ok ? await resInscripciones.json() : [];
+        let listaIns = resInscripciones.ok ? await resInscripciones.json() : [];
+        // Asegura que sea array
+        if (!Array.isArray(listaIns)) {
+          listaIns = listaIns ? [listaIns] : [];
+        }
 
         setTaller(dataTaller);
+        setInscritos(listaIns.length);
 
-        // Cupo
-        const cantidad = Array.isArray(listaIns) ? listaIns.length : 0;
-        setCupoLleno(Number(cantidad) >= Number(dataTaller.cupoMaximo ?? Infinity));
+        // Cupo lleno
+        setCupoLleno(Number(listaIns.length) >= Number(dataTaller.cupoMaximo ?? Infinity));
 
-        // ¿Usuario ya inscrito en este taller?
+        // Usuario ya inscrito
         const yaInscrito = usuarioId
-          ? listaIns.some((i) => Number(i?.usuario?.id) === usuarioId)
+          ? listaIns.some((i) => Number(i?.usuarioId) === usuarioId)
           : false;
         setInscrito(yaInscrito);
-      } catch (e) {
-        if (e.name !== "AbortError") {
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: e.message || "No se pudieron cargar los datos.",
-            confirmButtonColor: "#5A0D0D",
-          });
-        }
-      } finally {
-        setLoading(false);
-      }
-    })();
-
-    return () => controller.abort();
+      })
+      .catch((e) => {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: e.message || "No se pudieron cargar los datos.",
+          confirmButtonColor: "#5A0D0D",
+        });
+      })
+      .finally(() => setLoading(false));
   }, [tallerId, usuarioId, navigate]);
 
   const handleInscripcion = async () => {
@@ -161,7 +153,7 @@ export default function TallerDetallePage() {
   };
 
   if (loading) return <p style={{ padding: 20 }}>Cargando taller...</p>;
-  if (!taller)  return null;
+  if (!taller) return <p style={{ padding: 20 }}>No se encontró el taller.</p>;
 
   return (
     <div
@@ -185,22 +177,19 @@ export default function TallerDetallePage() {
       </p>
       <p><strong>Lugar:</strong> {taller.lugar}</p>
       <p><strong>Cupo máximo:</strong> {taller.cupoMaximo}</p>
-      <p>
-        <strong>Precio:</strong>{" "}
-        {typeof taller.precio === "number"
-          ? taller.precio.toLocaleString("es-CR", { style: "currency", currency: "CRC" })
-          : "—"}
-      </p>
-
-      {inscrito ? (
-        <p style={{ color: "#8FDE58", marginTop: 20 }}>
-          ✅ Ya estás inscrito en este taller.
-        </p>
-      ) : cupoLleno ? (
-        <p style={{ color: "#f44336", marginTop: 20 }}>
+      <p><strong>Inscritos:</strong> {inscritos}</p>
+      {cupoLleno && (
+        <div style={{ color: "red", fontWeight: "bold", margin: "1rem 0" }}>
           ❌ Este taller ya no tiene cupo disponible.
-        </p>
-      ) : (
+        </div>
+      )}
+      {inscrito && (
+        <div style={{ color: "#8FDE58", fontWeight: "bold", margin: "1rem 0" }}>
+          Ya estás inscrito en este taller.
+        </div>
+      )}
+      {/* Botón de inscripción solo si hay cupo y no está inscrito */}
+      {!cupoLleno && !inscrito && (
         <button
           onClick={handleInscripcion}
           style={{

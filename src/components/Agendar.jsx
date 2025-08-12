@@ -1,18 +1,48 @@
 // Imports
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAgendar } from "../hooks/useAgendar";
 import { useServicios } from "../hooks/useServicios";
 import { useHorarios } from "../hooks/useHorarios";
 import Calendar from "./Calendar";
 
+function formatoHoraAmPm(hora24) {
+  const [h, m] = hora24.split(":").map(Number);
+  const ampm = h >= 12 ? "PM" : "AM";
+  const hora12 = h % 12 === 0 ? 12 : h % 12;
+  return `${hora12}:${m.toString().padStart(2, "0")} ${ampm}`;
+}
+
 export default function AgendarPage() {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState();
   const [selectedHora, setSelectedHora] = useState(null);
   const [notas, setNotas] = useState("");
+  const [procesando, setProcesando] = useState(false); // Nuevo estado
   const [servicio, setServicio] = useState("");
   const serviciosDisponibles = useServicios();
   const [horariosDisponibles, setHorariosDisponibles] = useHorarios(selectedDate);
   const { mensaje, solicitarCita } = useAgendar();
+
+  useEffect(() => {
+    if (
+      serviciosDisponibles.length > 0 &&
+      (servicio === "" || !serviciosDisponibles.some(s => (s.nombre || s) === servicio))
+    ) {
+      setServicio(serviciosDisponibles[0].nombre || serviciosDisponibles[0]);
+    }
+  }, [serviciosDisponibles, servicio]);
+
+  // Filtra los horarios si es sábado
+  let horariosParaMostrar = horariosDisponibles;
+  if (
+    selectedDate &&
+    selectedDate.getDay() === 6 // 6 = sábado
+  ) {
+    horariosParaMostrar = horariosDisponibles.filter(hora => {
+      // Asume formato "HH:mm"
+      const [h, m] = hora.split(":").map(Number);
+      return h >= 9 && h <= 15;
+    });
+  }
 
   return (
     <>
@@ -22,6 +52,7 @@ export default function AgendarPage() {
             <Calendar
               setSelectedDate={setSelectedDate}
               selectedDate={selectedDate}
+              comp="agendar"
             />
           </div>
 
@@ -51,9 +82,8 @@ export default function AgendarPage() {
                 </div>
                 <div>
                   <p>Selecciona un horario:</p>
-                  {Array.isArray(horariosDisponibles) &&
-                  horariosDisponibles.length > 0 ? (
-                    horariosDisponibles.map((hora) => (
+                  {Array.isArray(horariosParaMostrar) && horariosParaMostrar.length > 0 ? (
+                    horariosParaMostrar.map((hora) => (
                       <button
                         key={hora}
                         className={`horario-btn${
@@ -61,7 +91,7 @@ export default function AgendarPage() {
                         }`}
                         onClick={() => setSelectedHora(hora)}
                       >
-                        {hora}
+                        {formatoHoraAmPm(hora)}
                       </button>
                     ))
                   ) : (
@@ -85,18 +115,17 @@ export default function AgendarPage() {
                 </div>
                 <button
                   className="solicitar-btn"
-                  disabled={!selectedHora}
-                  onClick={() =>
-                    solicitarCita({
-                      selectedHora,
-                      selectedDate,
-                      notas,
-                      servicio,
-                      setHorariosDisponibles
-                    })
-                  }
+                  disabled={!selectedHora || procesando}
+                  onClick={() => solicitarCita({
+                    selectedHora,
+                    selectedDate,
+                    notas,
+                    servicio,
+                    setHorariosDisponibles,
+                    setProcesando // <-- pasa el setter aquí
+                  })}
                 >
-                  Solicitar cita
+                  {procesando ? "Procesando..." : "Solicitar cita"}
                 </button>
                 {mensaje && (
                   <p style={{ color: "green", marginTop: "1rem" }}>{mensaje}</p>

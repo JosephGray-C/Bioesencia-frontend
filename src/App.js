@@ -13,18 +13,27 @@ import AdminView from './components/AdminView';
 import AdminProductos from './components/AdminProductos';
 import AdminTalleres from './components/AdminTalleres';
 import AdminServicios from './components/AdminServicios';
-import Agendar from './components/Agendar';
 import AdminCitas from "./components/AdminCitas";
-import AdminInscripciones from "./components/AdminInscripciones";
+import AdminOrdenes from './components/AdminOrdenes';
+
+import Productos from './components/Productos';
+import Carrito from './components/Carrito';
+import ResumenCompra from './components/ResumenCompra';
+import OrdenConfirmada from './components/OrdenConfirmada';
+
 import Blog from "./components/Blog";
 import CrearPost from "./components/CrearPost";
 import EditarPost from "./components/EditarPost";
-import Calendario from "./components/Calendario";
+import BlogUsuario from "./components/BlogUsuario";
+
 import TalleresPage from "./components/TalleresPage";
 import TallerDetallePage from "./components/TallerDetallePage";
+import AdminInscripciones from "./components/AdminInscripciones";
+
+import Calendario from "./components/Calendario";
+import Agendar from './components/Agendar';
 
 import { useUser } from "./context/UserContext";
-import BlogUsuario from "./components/BlogUsuario";
 
 function App() {
   const { user } = useUser();
@@ -47,6 +56,7 @@ function App() {
                 <Route path="blog/crear" element={<CrearPost />} />
                 <Route path="blog/editar/:id" element={<EditarPost />} />
                 {/* Add more admin routes as needed */}
+                <Route path="ordenes" element={<AdminOrdenes />} />
                 <Route path="*" element={<AdminView />} />
               </Route>
             ) : (
@@ -58,6 +68,10 @@ function App() {
 
                 {/* Protected route */}
                 <Route element={user ? <UserLayout /> : <></>}>
+                <Route path="/productos" element={<Productos />} />
+                  <Route path="/carrito" element={<Carrito />} />
+                  <Route path="/resumen" element={<ResumenCompra />} />
+                  <Route path="/orden/:codigo" element={<OrdenConfirmada />} />
                   <Route path="/agendar" element={<Agendar />} />
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/calendario" element={<Calendario />} />

@@ -6,12 +6,12 @@ import Swal from "sweetalert2";
 // Añade aquí todas las opciones de navegación admin
 const adminOptions = [
   { path: "/admin/productos", label: "Productos", icon: "🛒" },
-  { path: "/admin/talleres", label: "Talleres", icon: "📚" }, // NUEVO: enlace a talleres
+  { path: "/admin/talleres", label: "Talleres", icon: "📚" },
   { path: "/admin/servicios", label: "Servicios", icon: "🛠️" },
   { path: "/admin/citas", label: "Citas", icon: "📅" },
-  { path: "/admin/blog", label: "Blog", icon: "📝" },
   { path: "/admin/inscripciones", label: "Inscripciones", icon: "📝" },
-
+  { path: "/admin/ordenes", label: "Órdenes", icon: "📦" },
+  { path: "/admin/blog", label: "Blog", icon: "📝" },
 ];
 
 export default function AdminSidebar() {
