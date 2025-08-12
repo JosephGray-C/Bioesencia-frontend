@@ -44,6 +44,14 @@ export default function AgendarPage() {
     });
   }
 
+  const limpiarForm = () => {
+    setSelectedHora(null);
+    setNotas("");
+    // Si quieres, también puedes limpiar la fecha o el servicio
+    setSelectedDate(undefined);
+    setServicio(serviciosDisponibles[0]?.nombre || "");
+  };
+
   return (
     <>
       <section className="home-main">
@@ -122,7 +130,8 @@ export default function AgendarPage() {
                     notas,
                     servicio,
                     setHorariosDisponibles,
-                    setProcesando // <-- pasa el setter aquí
+                    setProcesando,
+                    onSuccess: limpiarForm // <-- pasa el callback aquí
                   })}
                 >
                   {procesando ? "Procesando..." : "Solicitar cita"}

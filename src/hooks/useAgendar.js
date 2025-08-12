@@ -5,7 +5,7 @@ export function useAgendar() {
     const { user } = useUser();
     const [mensaje, setMensaje] = useState("");
     
-    const solicitarCita = async ({ selectedHora, selectedDate, notas, servicio, setHorariosDisponibles, setProcesando }) => {
+    const solicitarCita = async ({ selectedHora, selectedDate, notas, servicio, setHorariosDisponibles, setProcesando, onSuccess }) => {
         if (!selectedDate || !selectedHora) {
             alert("Debes seleccionar una fecha y una hora.");
             return;
@@ -38,6 +38,7 @@ export function useAgendar() {
                 const res = await fetch(`http://localhost:8080/api/citas/horariosDisponibles?fecha=${fechaStr}`);
                 const nuevosHorarios = await res.json();
                 setHorariosDisponibles(nuevosHorarios);
+                if (typeof onSuccess === "function") onSuccess();
             } else {
                 setMensaje("Error al solicitar la cita.");
             }
