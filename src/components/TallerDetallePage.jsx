@@ -152,7 +152,7 @@ export default function TallerDetallePage() {
     }
   };
 
-  if (loading) return <p style={{ padding: 20 }}>Cargando taller...</p>;
+  if (loading) return <p style={{ padding: 20, color: "green" }}>Cargando taller...</p>;
   if (!taller) return <p style={{ padding: 20 }}>No se encontró el taller.</p>;
 
   return (

@@ -24,7 +24,7 @@ export default function TalleresPage() {
       });
   }, []);
 
-  if (loading) return <div style={{ padding: 20, color: "#8FDE58" }}>Cargando talleres...</div>;
+  if (loading) return <p style={{ padding: 20, color: "green" }}>Cargando talleres...</p>;
 
   if (error)
     return (

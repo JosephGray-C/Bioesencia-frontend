@@ -6,27 +6,20 @@ export function useAgendar() {
     const [mensaje, setMensaje] = useState("");
     
     const solicitarCita = async ({ selectedHora, selectedDate, notas, servicio, setHorariosDisponibles, setProcesando, onSuccess }) => {
-        if (!selectedDate || !selectedHora) {
-            alert("Debes seleccionar una fecha y una hora.");
-            return;
-        }
-        setProcesando && setProcesando(true); // <-- activa procesando
-
+        const fechaStr = selectedDate.toISOString().split("T")[0];
+        const fechaHora = `${fechaStr}T${selectedHora}`;
+        
+        const cita = {
+            fechaHora,
+            duracion: 60,
+            servicio,
+            estado: "AGENDADA",
+            notas: notas || "",
+            usuario: user,
+        };
+        
         try {
-            const fechaStr = selectedDate.toISOString().split("T")[0];
-            const fechaHora = `${fechaStr}T${selectedHora}`;
-
-            const cita = {
-                fechaHora,
-                duracion: 60,
-                servicio,
-                estado: "AGENDADA",
-                notas: notas || "",
-                usuario: user,
-            };  
-
-            console.log(user)
-
+            setProcesando && setProcesando(true);
             const response = await fetch("http://localhost:8080/api/citas", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -43,7 +36,7 @@ export function useAgendar() {
                 setMensaje("Error al solicitar la cita.");
             }
         } finally {
-            setProcesando && setProcesando(false); // <-- desactiva procesando
+            setProcesando && setProcesando(false);
         }
     };
 

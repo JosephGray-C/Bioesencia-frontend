@@ -544,45 +544,48 @@ export default function AdminCitas() {
             )}
 
             {/* DATATABLE */}
-            <table style={{width: "100%", background: "#23272f", borderCollapse: "collapse", color: "#fff"}}>
+            <table style={{ width: "100%", background: "#23272f", borderCollapse: "collapse", color: "#fff" }}>
                 <thead>
-                <tr style={{background: "#20232b"}}>
-                    <th style={{padding: 12, textAlign: "left"}}>Fecha y hora</th>
-                    <th style={{padding: 12, textAlign: "left"}}>Servicio</th>
-                    <th style={{padding: 12, textAlign: "center"}}>Estado</th>
-                    <th style={{padding: 12, textAlign: "left"}}>Notas</th>
-                    <th style={{padding: 12, textAlign: "center"}}>Acciones</th>
+                <tr style={{ background: "#20232b" }}>
+                    <th style={{ padding: 12, textAlign: "left" }}>Fecha y hora</th>
+                    <th style={{ padding: 12, textAlign: "left" }}>Servicio</th>
+                    <th style={{ padding: 12, textAlign: "left" }}>Usuario</th>
+                    <th style={{ padding: 12, textAlign: "left" }}>Correo</th>
+                    <th style={{ padding: 12, textAlign: "center" }}>Estado</th>
+                    <th style={{ padding: 12, textAlign: "left" }}>Notas</th>
+                    <th style={{ padding: 12, textAlign: "center" }}>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
                 {citasPagina.length === 0 ? (
                     <tr>
-                        <td colSpan={5} style={{textAlign: "center", padding: 20}}>No hay citas</td>
+                        <td colSpan={7} style={{ textAlign: "center", padding: 20 }}>No hay citas</td>
                     </tr>
                 ) : (
                     citasPagina.map(c => (
-                        <tr key={c.id} style={{borderBottom: "1px solid #222"}}>
-                            <td style={{padding: 10, textAlign: "left", verticalAlign: "middle"}}>
+                        <tr key={c.id} style={{ borderBottom: "1px solid #222" }}>
+                            <td style={{ padding: 10, textAlign: "left", verticalAlign: "middle" }}>
                                 {c.fechaHora?.replace("T", " ").slice(0, 16)}
                             </td>
-                            <td style={{padding: 10, textAlign: "left", verticalAlign: "middle"}}>{c.servicio}</td>
-                            <td style={{padding: 10, textAlign: "center", verticalAlign: "middle"}}>{c.estado}</td>
-                            <td style={{
-                                padding: 10,
-                                textAlign: "left",
-                                verticalAlign: "middle",
-                                maxWidth: 200,
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap"
-                            }}
+                            <td style={{ padding: 10, textAlign: "left", verticalAlign: "middle" }}>{c.servicio}</td>
+                            <td style={{ padding: 10, textAlign: "left", verticalAlign: "middle" }}>{c.usuarioNombre ?? "—"}</td>
+                            <td style={{ padding: 10, textAlign: "left", verticalAlign: "middle" }}>{c.usuarioCorreo ?? "—"}</td>
+                            <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>{c.estado}</td>
+                            <td
+                                style={{
+                                    padding: 10,
+                                    textAlign: "left",
+                                    verticalAlign: "middle",
+                                    maxWidth: 200,
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    whiteSpace: "nowrap"
+                                }}
                                 title={c.notas}
                             >
-                                {c.notas?.length > 90
-                                    ? c.notas.slice(0, 90) + "..."
-                                    : c.notas}
+                                {c.notas?.length > 90 ? c.notas.slice(0, 90) + "..." : c.notas}
                             </td>
-                            <td style={{padding: 10, textAlign: "center", verticalAlign: "middle"}}>
+                            <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>
                                 <button
                                     onClick={() => onEdit(c)}
                                     style={{

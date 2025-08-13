@@ -16,7 +16,7 @@ export default function AgendarPage() {
   const [selectedDate, setSelectedDate] = useState();
   const [selectedHora, setSelectedHora] = useState(null);
   const [notas, setNotas] = useState("");
-  const [procesando, setProcesando] = useState(false); // Nuevo estado
+  const [procesando, setProcesando] = useState(false);
   const [servicio, setServicio] = useState("");
   const serviciosDisponibles = useServicios();
   const [horariosDisponibles, setHorariosDisponibles] = useHorarios(selectedDate);
@@ -47,7 +47,6 @@ export default function AgendarPage() {
   const limpiarForm = () => {
     setSelectedHora(null);
     setNotas("");
-    // Si quieres, también puedes limpiar la fecha o el servicio
     setSelectedDate(undefined);
     setServicio(serviciosDisponibles[0]?.nombre || "");
   };
