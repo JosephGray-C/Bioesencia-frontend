@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 const API_URL = "http://localhost:8080/api/talleres";
-const INS_API = "http://localhost:8080/api/inscripciones/resumen"; // <-- resumen plano
+const INS_API = "http://localhost:8080/api/inscripciones";
 
 // --- Modal Crear ---
 function CrearTallerModal({ form, onChange, onSubmit, onCancel }) {
@@ -552,29 +552,37 @@ export default function AdminTalleres() {
 
         const filas = lista.map((i, idx) => `
             <tr>
-              <td style="padding:6px">${idx + 1}</td>
-              <td style="padding:6px">${i.nombreUsuario ?? "—"}</td>
-              <td style="padding:6px">${i.emailUsuario ?? "—"}</td>
-              <td style="padding:6px">${i.fechaInscripcion ? new Date(i.fechaInscripcion).toLocaleString() : "—"}</td>
+              <td style="padding:6px;white-space:nowrap;">${idx + 1}</td>
+              <td style="padding:6px;white-space:nowrap;">${i.usuarioNombre ?? "—"}</td>
+              <td style="padding:6px;white-space:nowrap;">${i.usuarioApellido ?? "—"}</td>
+              <td style="padding:6px;white-space:nowrap;">${i.usuarioEmail ?? "—"}</td>
+              <td style="padding:6px;white-space:nowrap;">${i.fechaInscripcion ? new Date(i.fechaInscripcion).toLocaleString() : "—"}</td>
+              <td style="padding:6px;white-space:nowrap;">${i.estado ?? "—"}</td>
             </tr>
         `).join("");
 
         const tabla = `
-            <div style="max-height:60vh;overflow:auto;text-align:left">
-              <p><b>Taller:</b> ${taller.titulo}</p>
-              <p style="margin-top:4px"><b>Total inscritos:</b> ${lista.length}</p>
-              <table style="width:100%;border-collapse:collapse">
+          <div style="max-height:60vh;overflow:auto;text-align:left">
+            <p><b>Taller:</b> ${taller.titulo}</p>
+            <p style="margin-top:4px"><b>Total inscritos:</b> ${lista.length}</p>
+            <div style="overflow-x:auto;">
+              <table style="width:100%;border-collapse:collapse;table-layout:auto;">
                 <thead>
                   <tr>
-                    <th style="text-align:left;padding:6px">#</th>
-                    <th style="text-align:left;padding:6px">Usuario</th>
-                    <th style="text-align:left;padding:6px">Email</th>
-                    <th style="text-align:left;padding:6px">Fecha inscrip.</th>
+                    <th style="text-align:left;padding:6px;white-space:nowrap;">#</th>
+                    <th style="text-align:left;padding:6px;white-space:nowrap;">Nombre</th>
+                    <th style="text-align:left;padding:6px;white-space:nowrap;">Apellido</th>
+                    <th style="text-align:left;padding:6px;white-space:nowrap;">Email</th>
+                    <th style="text-align:left;padding:6px;white-space:nowrap;">Fecha inscrip.</th>
+                    <th style="text-align:left;padding:6px;white-space:nowrap;">Estado</th>
                   </tr>
                 </thead>
-                <tbody>${filas}</tbody>
+                <tbody>
+                  ${filas}
+                </tbody>
               </table>
-            </div>`;
+            </div>
+          </div>`;
 
         Swal.fire({
             title: "Inscritos",
@@ -688,13 +696,14 @@ export default function AdminTalleres() {
                         <th style={{ padding: 12, width: 90, textAlign: "center" }}>Precio</th>
                         <th style={{ padding: 12, width: 70, textAlign: "center" }}>Activo</th>
                         <th style={{ padding: 12, width: 90, textAlign: "center" }}>Inscritos</th>
+                        <th style={{ padding: 12, width: 90, textAlign: "center" }}>Disponibles</th> {/* NUEVO */}
                         <th style={{ padding: 12, width: 90, textAlign: "center" }}>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {talleresPagina.length === 0 ? (
                         <tr>
-                            <td colSpan={10} style={{ textAlign: "center", padding: 20 }}>No hay talleres</td>
+                            <td colSpan={11} style={{ textAlign: "center", padding: 20 }}>No hay talleres</td>
                         </tr>
                     ) : (
                         talleresPagina.map(t => (
@@ -728,6 +737,9 @@ export default function AdminTalleres() {
                                 <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>{t.activo ? "Sí" : "No"}</td>
                                 <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>
                                     {inscripcionesPorTaller[t.id] || 0}
+                                </td>
+                                <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>
+                                    {Math.max(0, (t.cupoMaximo || 0) - (inscripcionesPorTaller[t.id] || 0))}
                                 </td>
                                 <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>
                                     <div style={{

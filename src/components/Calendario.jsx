@@ -26,9 +26,6 @@ export default function Calendario() {
             .then(setTalleres);
         } 
     }, [selectedDate, activeTab, user.id]);
-    
-    console.log("Citas:", citas);
-    console.log("Talleres:", talleres);
 
     return (
         <div style={{
