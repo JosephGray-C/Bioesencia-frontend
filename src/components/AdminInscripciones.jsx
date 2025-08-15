@@ -14,7 +14,7 @@ export default function AdminInscripciones() {
   const cargar = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${API_URL}/resumen`);
+      const res = await fetch(`${API_URL}`);
       if (!res.ok) throw new Error("No se pudo cargar la lista de inscripciones.");
       const data = await res.json();
       setInscripciones(Array.isArray(data) ? data : []);
@@ -40,9 +40,9 @@ export default function AdminInscripciones() {
         <p><b>ID inscripción:</b> ${i?.id ?? "—"}</p>
         <p><b>Fecha inscripción:</b> ${i?.fechaInscripcion ? new Date(i.fechaInscripcion).toLocaleString() : "—"}</p>
         <hr/>
-        <p><b>Taller:</b> ${i?.nombreTaller ?? "—"}</p>
-        <p><b>Usuario:</b> ${i?.nombreUsuario ?? "—"}</p>
-        <p><b>Email:</b> ${i?.emailUsuario ?? "—"}</p>
+        <p><b>Taller:</b> ${i?.tallerNombre ?? "—"}</p>
+        <p><b>Usuario:</b> ${i?.usuarioNombre ?? "—"} ${i?.usuarioApellido ?? ""}</p>
+        <p><b>Email:</b> ${i?.usuarioEmail ?? "—"}</p>
         ${i?.estado ? `<hr/><p><b>Estado:</b> ${i.estado}</p>` : ""}
       </div>
     `;
@@ -92,9 +92,10 @@ export default function AdminInscripciones() {
   const listaFiltrada = inscripciones.filter((i) => {
     const a = [
       i?.fechaInscripcion,
-      i?.nombreTaller,
-      i?.nombreUsuario,
-      i?.emailUsuario,
+      i?.tallerNombre,
+      i?.usuarioNombre,
+      i?.usuarioApellido,
+      i?.usuarioEmail,
       i?.estado,
     ]
       .filter(Boolean)
@@ -177,7 +178,8 @@ export default function AdminInscripciones() {
           <tr style={{ background: "#20232b" }}>
             <th style={{ padding: 12, textAlign: "left" }}>Fecha inscrip.</th>
             <th style={{ padding: 12, textAlign: "left" }}>Taller</th>
-            <th style={{ padding: 12, textAlign: "left" }}>Usuario</th>
+            <th style={{ padding: 12, textAlign: "left" }}>Nombre</th>
+            <th style={{ padding: 12, textAlign: "left" }}>Apellido</th>
             <th style={{ padding: 12, textAlign: "left" }}>Email</th>
             <th style={{ padding: 12, textAlign: "center" }}>Estado</th>
             <th style={{ padding: 12, textAlign: "center" }}>Acciones</th>
@@ -186,13 +188,13 @@ export default function AdminInscripciones() {
         <tbody>
           {loading ? (
             <tr>
-              <td colSpan={6} style={{ textAlign: "center", padding: 20 }}>
+              <td colSpan={7} style={{ textAlign: "center", padding: 20 }}>
                 Cargando…
               </td>
             </tr>
           ) : page.length === 0 ? (
             <tr>
-              <td colSpan={6} style={{ textAlign: "center", padding: 20 }}>
+              <td colSpan={7} style={{ textAlign: "center", padding: 20 }}>
                 No hay inscripciones
               </td>
             </tr>
@@ -202,8 +204,6 @@ export default function AdminInscripciones() {
                 <td style={{ padding: 10, verticalAlign: "middle" }}>
                   {i?.fechaInscripcion
                     ? new Date(i.fechaInscripcion).toLocaleString()
-                    : i?.createdAt
-                    ? new Date(i.createdAt).toLocaleString()
                     : "—"}
                 </td>
                 <td
@@ -215,15 +215,18 @@ export default function AdminInscripciones() {
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
                   }}
-                  title={i?.nombreTaller || ""}
+                  title={i?.tallerNombre || ""}
                 >
-                  {i?.nombreTaller ?? "—"}
+                  {i?.tallerNombre ?? "—"}
                 </td>
                 <td style={{ padding: 10, verticalAlign: "middle" }}>
-                  {i?.nombreUsuario ?? "—"}
+                  {i?.usuarioNombre ?? "—"}
                 </td>
                 <td style={{ padding: 10, verticalAlign: "middle" }}>
-                  {i?.emailUsuario ?? "—"}
+                  {i?.usuarioApellido ?? "—"}
+                </td>
+                <td style={{ padding: 10, verticalAlign: "middle" }}>
+                  {i?.usuarioEmail ?? "—"}
                 </td>
                 <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>
                   {i?.estado ?? "—"}
