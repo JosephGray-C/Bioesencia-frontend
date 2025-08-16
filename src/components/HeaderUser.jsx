@@ -14,105 +14,68 @@ export default function HeaderUser() {
   useEffect(() => {
     const handleScroll = () => {
       const currentScroll = window.scrollY;
-      if (currentScroll > lastScroll && currentScroll > 50) {
-        setHidden(true);    // bajando → ocultar
-      } else {
-        setHidden(false);   // subiendo → mostrar
-      }
+      if (currentScroll > lastScroll && currentScroll > 50) setHidden(true);
+      else setHidden(false);
       setLastScroll(currentScroll);
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScroll]);
 
   const handleLogout = async () => {
-    try {
-      if (logout) await logout();
-    } finally {
-      navigate("/");
-    }
+    try { if (logout) await logout(); } finally { navigate("/"); }
   };
 
   return (
     <>
-      <header
-        style={{
-          position: "sticky",
-          top: hidden ? "-90px" : "0",
-          transition: "top 0.3s ease",
-          zIndex: 1000,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "20px 40px",
-          background: "#A9C499",
-          color: "#5A0D0D",
-          boxShadow: "0 2px 8px #0001",
-        }}
-      >
-        {/* Logo izquierda */}
-        <div
-          style={{
-            fontWeight: "bold",
-            fontSize: "2rem",
-            fontFamily: "Avenir Next, sans-serif",
-            flex: "0 0 auto",
-          }}
-        >
-          Bioesencia
-        </div>
+      <style>{`
+        .hu{position:sticky;top:0;z-index:1000;background:#A9C499;color:#5A0D0D;box-shadow:0 2px 8px #0001;transition:top .3s ease;}
+        .hu--hidden{top:-90px;}
+        .hu__wrap{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;}
+        .hu__brand{font-weight:900;font-size:clamp(20px,5.5vw,32px);font-family:Avenir Next,system-ui,sans-serif;letter-spacing:.4px;}
+        .hu__nav{display:flex;gap:28px;align-items:center;}
+        .hu__right{display:flex;gap:16px;align-items:center;}
+        .hu__link{font-weight:600;text-decoration:none;font-size:1.05rem;color:#5A0D0D;}
+        .hu__menu{background:transparent;border:none;width:40px;height:40px;font-size:24px;line-height:40px;cursor:pointer;color:#5A0D0D;}
+        /* Responsive */
+        @media (max-width: 900px){ .hu__nav{display:none;} }         /* oculta links en móvil */
+        @media (max-width: 600px){ .hu__wrap{padding:12px 14px;} .hu__right>a{display:none;} } /* oculta "Hola, Diego" en móvil */
+      `}</style>
 
-        {/* Links centrados (desktop) */}
-        <nav
-          style={{
-            display: "flex",
-            gap: "32px",
-            color: "#5A0D0D",
-            alignItems: "center",
-          }}
-        >
-          <Link to="/" style={linkStyle}>Inicio</Link>
-          <Link to="/productos" style={linkStyle}>Productos</Link>
-          <Link to="/talleres" style={linkStyle}>Talleres</Link>
-          <Link to="/blog" style={linkStyle}>Blog</Link>
-          <Link to="/calendario" style={linkStyle}>Calendario</Link>
-        </nav>
+      <header className={`hu ${hidden ? "hu--hidden" : ""}`}>
+        <div className="hu__wrap">
+          {/* Izquierda: logo */}
+          <div className="hu__brand">Bioesencia</div>
 
-        {/* Controles derecha: perfil + logout + hamburguesa */}
-        <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
-          <Link to="/perfilusuario" style={{ ...linkStyle, fontWeight: 600 }}>
-            {user?.nombre ? `Hola, ${user.nombre}` : "Mi perfil"}
-          </Link>
+          {/* Centro: links (solo desktop) */}
+          <nav className="hu__nav">
+            <Link to="/" className="hu__link">Inicio</Link>
+            <Link to="/productos" className="hu__link">Productos</Link>
+            <Link to="/talleres" className="hu__link">Talleres</Link>
+            <Link to="/blog" className="hu__link">Blog</Link>
+            <Link to="/calendario" className="hu__link">Calendario</Link>
+          </nav>
 
-         
+          {/* Derecha: perfil (desktop) + hamburguesa (siempre visible) */}
+          <div className="hu__right">
+            <Link to="/perfilusuario" className="hu__link">
+              {user?.nombre ? `Hola, ${user.nombre}` : "Mi perfil"}
+            </Link>
 
-          {/* Botón hamburguesa pegado al header */}
-          <button
-            aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
-            onClick={() => setMenuOpen((v) => !v)}
-            style={{
-              background: "transparent",
-              border: "none",
-              fontSize: "1.6rem",
-              lineHeight: 1,
-              cursor: "pointer",
-              color: "#5A0D0D",
-            }}
-          >
-            {menuOpen ? "✖" : "☰"}
-          </button>
+            <button
+              aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+              className="hu__menu"
+              onClick={() => setMenuOpen(v => !v)}
+              title={menuOpen ? "Cerrar menú" : "Abrir menú"}
+            >
+              {menuOpen ? "✖" : "☰"}
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Menú desplegable controlado por el header */}
+      {/* Menú lateral controlado */}
       <UserSidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
     </>
   );
 }
-
-const linkStyle = {
-  fontWeight: 600,
-  textDecoration: "none",
-  fontSize: "1.1rem",
-  color: "#5A0D0D",
-};

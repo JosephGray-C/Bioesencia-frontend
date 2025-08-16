@@ -39,11 +39,15 @@ export default function UserSidebar({ open, onClose }) {
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
   useEffect(() => {
-    const onKey = (e) => { if (e.key === "Escape") onClose?.(); };
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose?.();
+    };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
@@ -72,9 +76,17 @@ export default function UserSidebar({ open, onClose }) {
       await logoutMutation.mutateAsync();
       setUser(null);
       navigate("/");
-      Swal.fire({ icon: "success", title: "Sesión cerrada", text: "Has cerrado sesión correctamente." });
+      Swal.fire({
+        icon: "success",
+        title: "Sesión cerrada",
+        text: "Has cerrado sesión correctamente.",
+      });
     } catch (err) {
-      Swal.fire({ icon: "error", title: "Error al cerrar sesión", text: err.message });
+      Swal.fire({
+        icon: "error",
+        title: "Error al cerrar sesión",
+        text: err.message,
+      });
     }
   };
 
@@ -107,7 +119,7 @@ export default function UserSidebar({ open, onClose }) {
           visibility: open ? "visible" : "hidden",
           opacity: open ? 1 : 0,
           transition: "all .5s cubic-bezier(0.25, 1, 0.5, 1)",
-          position: "absolute",
+          position: "fixed", // 🔹 ahora fijo al viewport
           top: headerHeightRef.current,
           left: 0,
           height: `calc(100dvh - ${headerHeightRef.current}px)`,
@@ -133,7 +145,6 @@ export default function UserSidebar({ open, onClose }) {
                 display: "flex",
                 alignItems: "center",
                 paddingLeft: "clamp(14px, 3.8vw, 36px)",
-                // tamaño ligeramente mayor que el anterior
                 fontSize: "clamp(16px, 1.3vw, 19px)",
               }}
             >

@@ -10,7 +10,9 @@
   --biosencia-wine: #5A0D0D;
   --biosencia-green: #A9C499;
 }
-
+body{
+    background-color: #fff;
+}
 .App {
   text-align: center;
 }
