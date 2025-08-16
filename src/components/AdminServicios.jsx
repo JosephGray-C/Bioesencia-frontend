@@ -1,30 +1,77 @@
-import React, { useEffect, useState } from "react";
+// src/components/AdminServicios.jsx
+import React, { useMemo, useState } from "react";
 import Swal from "sweetalert2";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const API_URL = "http://localhost:8080/api/servicios";
+const serviciosPorPagina = 8;
 
-// --- Modal Crear Servicio ---
+async function fetchServicios({ signal }) {
+    const res = await fetch(API_URL, { signal });
+    if (!res.ok) throw new Error(await res.text());
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+}
+
+async function crearServicio(payload) {
+    const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+}
+
+async function actualizarServicio({ id, payload }) {
+    const res = await fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+}
+
+async function eliminarServicio(id) {
+    const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+    if (!res.ok) throw new Error(await res.text());
+    return true;
+}
+
 function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
     return (
         <div
             style={{
                 position: "fixed",
-                top: 0, left: 0, width: "100vw", height: "100vh",
+                top: 0,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
                 background: "rgba(0,0,0,0.25)",
                 zIndex: 1050,
-                display: "flex", alignItems: "center", justifyContent: "center"
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
             }}
         >
-            <div className="container" style={{
-                maxWidth: 600,
-                width: "100%",
-                position: "relative",
-                boxShadow: "0 8px 32px #0004"
-            }}>
+            <div
+                className="container"
+                style={{
+                    maxWidth: 600,
+                    width: "100%",
+                    position: "relative",
+                    boxShadow: "0 8px 32px #0004",
+                }}
+            >
                 <div className="forms" style={{ background: "#fff" }}>
                     <div className="form-content">
                         <div className="signup-form" style={{ width: "100%" }}>
-                            <div className="title" style={{ fontWeight: 600, fontSize: 26, marginBottom: 12 }}>
+                            <div
+                                className="title"
+                                style={{ fontWeight: 600, fontSize: 26, marginBottom: 12 }}
+                            >
                                 Agregar servicio
                             </div>
                             <form onSubmit={onSubmit}>
@@ -65,10 +112,7 @@ function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
                                         />
                                     </div>
                                     <div className="button input-box" style={{ marginTop: 26 }}>
-                                        <input
-                                            type="submit"
-                                            value="Guardar servicio"
-                                        />
+                                        <input type="submit" value="Guardar servicio" />
                                     </div>
                                     <div style={{ marginTop: 8, textAlign: "right" }}>
                                         <button
@@ -82,9 +126,11 @@ function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
                                                 padding: "8px 18px",
                                                 fontWeight: 500,
                                                 fontSize: "1rem",
-                                                cursor: "pointer"
+                                                cursor: "pointer",
                                             }}
-                                        >Cancelar</button>
+                                        >
+                                            Cancelar
+                                        </button>
                                     </div>
                                 </div>
                             </form>
@@ -94,38 +140,61 @@ function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
                 <button
                     onClick={onCancel}
                     style={{
-                        position: "absolute", top: 12, right: 18, fontSize: 26,
-                        background: "none", border: "none", cursor: "pointer", color: "#888"
+                        position: "absolute",
+                        top: 12,
+                        right: 18,
+                        fontSize: 26,
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        color: "#888",
                     }}
                     title="Cerrar"
-                >×</button>
+                >
+                    ×
+                </button>
             </div>
         </div>
     );
 }
 
-// --- Modal Editar Servicio ---
 function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
     return (
         <div
             style={{
                 position: "fixed",
-                top: 0, left: 0, width: "100vw", height: "100vh",
+                top: 0,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
                 background: "rgba(0,0,0,0.25)",
                 zIndex: 1050,
-                display: "flex", alignItems: "center", justifyContent: "center"
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
             }}
         >
-            <div className="container" style={{
-                maxWidth: 600,
-                width: "100%",
-                position: "relative",
-                boxShadow: "0 8px 32px #0004"
-            }}>
+            <div
+                className="container"
+                style={{
+                    maxWidth: 600,
+                    width: "100%",
+                    position: "relative",
+                    boxShadow: "0 8px 32px #0004",
+                }}
+            >
                 <div className="forms" style={{ background: "#fff" }}>
                     <div className="form-content">
                         <div className="signup-form" style={{ width: "100%" }}>
-                            <div className="title" style={{ fontWeight: 600, fontSize: 26, marginBottom: 12, color: "#5EA743" }}>
+                            <div
+                                className="title"
+                                style={{
+                                    fontWeight: 600,
+                                    fontSize: 26,
+                                    marginBottom: 12,
+                                    color: "#5EA743",
+                                }}
+                            >
                                 Editar servicio
                             </div>
                             <form onSubmit={onSubmit}>
@@ -166,10 +235,7 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
                                         />
                                     </div>
                                     <div className="button input-box" style={{ marginTop: 26 }}>
-                                        <input
-                                            type="submit"
-                                            value="Guardar cambios"
-                                        />
+                                        <input type="submit" value="Guardar cambios" />
                                     </div>
                                     <div style={{ marginTop: 8, textAlign: "right" }}>
                                         <button
@@ -183,9 +249,11 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
                                                 padding: "8px 18px",
                                                 fontWeight: 500,
                                                 fontSize: "1rem",
-                                                cursor: "pointer"
+                                                cursor: "pointer",
                                             }}
-                                        >Cancelar</button>
+                                        >
+                                            Cancelar
+                                        </button>
                                     </div>
                                 </div>
                             </form>
@@ -195,130 +263,128 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
                 <button
                     onClick={onCancel}
                     style={{
-                        position: "absolute", top: 12, right: 18, fontSize: 26,
-                        background: "none", border: "none", cursor: "pointer", color: "#888"
+                        position: "absolute",
+                        top: 12,
+                        right: 18,
+                        fontSize: 26,
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        color: "#888",
                     }}
                     title="Cerrar"
-                >×</button>
+                >
+                    ×
+                </button>
             </div>
         </div>
     );
 }
 
-// --- Componente principal ---
 export default function AdminServicios() {
-    const [servicios, setServicios] = useState([]);
+    const qc = useQueryClient();
+
     const [paginaActual, setPaginaActual] = useState(1);
     const [busqueda, setBusqueda] = useState("");
-    const serviciosPorPagina = 8;
 
-    // Modals y forms independientes
     const [showForm, setShowForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
 
-    // Formulario para crear servicio
     const [form, setForm] = useState({
         nombre: "",
         detalle: "",
-        precio: ""
+        precio: "",
     });
 
-    // Formulario para editar servicio
     const [editForm, setEditForm] = useState({
         id: "",
         nombre: "",
         detalle: "",
-        precio: ""
+        precio: "",
     });
 
-    // Cargar servicios
-    useEffect(() => {
-        fetch(API_URL)
-            .then(res => res.json())
-            .then(setServicios);
-    }, []);
+    const { data: servicios = [], isFetching } = useQuery({
+        queryKey: ["servicios"],
+        queryFn: fetchServicios,
+        initialData: () => qc.getQueryData(["servicios"]) || [],
+    });
 
-    // Cambios en formulario crear
-    const handleChange = e => {
+    const showSpinner = isFetching && servicios.length === 0;
+
+
+    const mCrear = useMutation({
+        mutationFn: crearServicio,
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: ["servicios"] });
+            setShowForm(false);
+            setForm({ nombre: "", detalle: "", precio: "" });
+            Swal.fire("¡Creado!", "Servicio agregado.", "success");
+        },
+        onError: (e) =>
+            Swal.fire("Error", e.message || "No se pudo crear", "error"),
+    });
+
+    const mEditar = useMutation({
+        mutationFn: actualizarServicio,
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: ["servicios"] });
+            setShowEditForm(false);
+            Swal.fire("¡Actualizado!", "Servicio modificado.", "success");
+        },
+        onError: (e) =>
+            Swal.fire("Error", e.message || "No se pudo actualizar", "error"),
+    });
+
+    const mEliminar = useMutation({
+        mutationFn: eliminarServicio,
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: ["servicios"] });
+            Swal.fire("¡Eliminado!", "Servicio borrado.", "success");
+        },
+        onError: (e) =>
+            Swal.fire("Error", e.message || "No se pudo eliminar", "error"),
+    });
+
+    const handleChange = (e) => {
         const { name, value } = e.target;
-        setForm(f => ({
-            ...f,
-            [name]: value
-        }));
+        setForm((f) => ({ ...f, [name]: value }));
     };
 
-    // Cambios en formulario editar
-    const handleEditChange = e => {
+    const handleEditChange = (e) => {
         const { name, value } = e.target;
-        setEditForm(f => ({
-            ...f,
-            [name]: value
-        }));
+        setEditForm((f) => ({ ...f, [name]: value }));
     };
 
-    // Limpiar y cerrar modal crear
     const clearForm = () => {
-        setForm({
-            nombre: "",
-            detalle: "",
-            precio: ""
-        });
+        setForm({ nombre: "", detalle: "", precio: "" });
         setShowForm(false);
     };
 
-    // Limpiar y cerrar modal editar
     const clearEditForm = () => {
-        setEditForm({
-            id: "",
-            nombre: "",
-            detalle: "",
-            precio: ""
-        });
+        setEditForm({ id: "", nombre: "", detalle: "", precio: "" });
         setShowEditForm(false);
     };
 
-    // Crear servicio
-    const handleSubmit = async e => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        try {
-            const res = await fetch(API_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form)
-            });
-            if (!res.ok) throw new Error(await res.text());
-            const nuevo = await res.json();
-            setServicios(p => [...p, nuevo]);
-            Swal.fire("¡Creado!", "Servicio agregado.", "success");
-            clearForm();
-        } catch (err) {
-            Swal.fire("Error", err.message, "error");
-        }
+        mCrear.mutate({
+            ...form,
+            precio: Number(form.precio),
+        });
     };
 
-    // Editar servicio
-    const handleEditSubmit = async e => {
+    const handleEditSubmit = (e) => {
         e.preventDefault();
-        try {
-            const res = await fetch(`${API_URL}/${editForm.id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(editForm)
-            });
-            if (!res.ok) throw new Error(await res.text());
-            const actualizado = await res.json();
-            setServicios(p =>
-                p.map(s => s.id === actualizado.id ? actualizado : s)
-            );
-            Swal.fire("¡Actualizado!", "Servicio modificado.", "success");
-            clearEditForm();
-        } catch (err) {
-            Swal.fire("Error", err.message, "error");
-        }
+        mEditar.mutate({
+            id: editForm.id,
+            payload: {
+                ...editForm,
+                precio: Number(editForm.precio),
+            },
+        });
     };
 
-    // Eliminar servicio
-    const handleDelete = async id => {
+    const handleDelete = async (id) => {
         const confirm = await Swal.fire({
             title: "¿Eliminar servicio?",
             text: "No podrás revertir esto.",
@@ -327,67 +393,68 @@ export default function AdminServicios() {
             confirmButtonColor: "#5A0D0D",
             cancelButtonColor: "#6c757d",
             confirmButtonText: "Eliminar",
-            cancelButtonText: "Cancelar"
+            cancelButtonText: "Cancelar",
         });
-        if (confirm.isConfirmed) {
-            try {
-                const res = await fetch(`${API_URL}/${id}`, {
-                    method: "DELETE"
-                });
-                if (!res.ok) throw new Error(await res.text());
-                setServicios(p => p.filter(s => s.id !== id));
-                Swal.fire("¡Eliminado!", "Servicio borrado.", "success");
-            } catch (err) {
-                Swal.fire("Error", err.message, "error");
-            }
-        }
+        if (confirm.isConfirmed) mEliminar.mutate(id);
     };
 
-    // Preparar datos cuando se va a editar
-    const onEdit = servicio => {
-        setEditForm({ ...servicio });
+    const onEdit = (servicio) => {
+        setEditForm({ ...servicio, precio: servicio.precio ?? "" });
         setShowEditForm(true);
     };
 
-    // Filtrado y paginación
-    const serviciosFiltrados = servicios.filter(s =>
-        s.nombre?.toLowerCase().includes(busqueda.toLowerCase())
-        || s.detalle?.toLowerCase().includes(busqueda.toLowerCase())
+    const serviciosFiltrados = useMemo(() => {
+        const q = busqueda.trim().toLowerCase();
+        if (!q) return servicios;
+        return servicios.filter(
+            (s) =>
+                (s.nombre || "").toLowerCase().includes(q) ||
+                (s.detalle || "").toLowerCase().includes(q)
+        );
+    }, [busqueda, servicios]);
+
+    const totalPaginas =
+        Math.ceil(serviciosFiltrados.length / serviciosPorPagina) || 1;
+    const page = Math.min(paginaActual, totalPaginas);
+    const indexPrimero = (page - 1) * serviciosPorPagina;
+    const serviciosPagina = serviciosFiltrados.slice(
+        indexPrimero,
+        indexPrimero + serviciosPorPagina
     );
-    const indexUltimo = paginaActual * serviciosPorPagina;
-    const indexPrimero = indexUltimo - serviciosPorPagina;
-    const serviciosPagina = serviciosFiltrados.slice(indexPrimero, indexUltimo);
-    const totalPaginas = Math.ceil(serviciosFiltrados.length / serviciosPorPagina);
 
     return (
         <div className="home-crud">
             {/* HEADER de acciones */}
-            <div style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: 14,
-                gap: 18,
-                width: "100%"
-            }}>
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginBottom: 14,
+                    gap: 18,
+                    width: "100%",
+                }}
+            >
                 {/* Search */}
                 <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
                     <input
                         type="text"
                         placeholder="Buscar servicio"
                         value={busqueda}
-                        onChange={e => setBusqueda(e.target.value)}
+                        onChange={(e) => {
+                            setBusqueda(e.target.value);
+                            setPaginaActual(1);
+                        }}
                         style={{
                             padding: "10px 14px",
                             borderRadius: 8,
                             border: "1px solid #ccc",
                             fontSize: 16,
                             width: "100%",
-                            maxWidth: 260
+                            maxWidth: 260,
                         }}
                     />
                 </div>
-                {/* Botones */}
                 <div style={{ display: "flex", gap: 10, flexShrink: 0 }}>
                     <button
                         onClick={() => setShowForm(true)}
@@ -399,7 +466,7 @@ export default function AdminServicios() {
                             borderRadius: 8,
                             padding: "10px 20px",
                             fontSize: 16,
-                            cursor: "pointer"
+                            cursor: "pointer",
                         }}
                     >
                         + Agregar servicio
@@ -426,24 +493,61 @@ export default function AdminServicios() {
             )}
 
             {/* DATATABLE */}
-            <table style={{ width: "100%", background: "#23272f", borderCollapse: "collapse", color: "#fff" }}>
+            <table
+                style={{
+                    width: "100%",
+                    background: "#23272f",
+                    borderCollapse: "collapse",
+                    color: "#fff",
+                }}
+            >
                 <thead>
                     <tr style={{ background: "#20232b" }}>
-                        <th style={{ padding: 12, width: 110, textAlign: "left" }}>Nombre</th>
-                        <th style={{ padding: 12, width: 110, textAlign: "left" }}>Detalle</th>
-                        <th style={{ padding: 12, width: 110, textAlign: "center" }}>Precio</th>
-                        <th style={{ padding: 12, width: 110, textAlign: "center" }}>Acciones</th>
+                        <th style={{ padding: 12, width: 110, textAlign: "left" }}>
+                            Nombre
+                        </th>
+                        <th style={{ padding: 12, width: 110, textAlign: "left" }}>
+                            Detalle
+                        </th>
+                        <th style={{ padding: 12, width: 110, textAlign: "center" }}>
+                            Precio
+                        </th>
+                        <th style={{ padding: 12, width: 110, textAlign: "center" }}>
+                            Acciones
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     {serviciosPagina.length === 0 ? (
                         <tr>
-                            <td colSpan={4} style={{ textAlign: "center", padding: 20 }}>No hay servicios</td>
+                            <td colSpan={4} style={{ textAlign: "center", padding: 20 }}>
+                                {showSpinner ? (
+                                    <span
+                                        style={{
+                                            display: "inline-flex",
+                                            alignItems: "center",
+                                            gap: 8,
+                                        }}
+                                    >
+                                        <ClipLoader size={18} color="#bbb" speedMultiplier={0.9} />
+                                    </span>
+                                ) : (
+                                    "No hay servicios"
+                                )}
+                            </td>
                         </tr>
                     ) : (
-                        serviciosPagina.map(s => (
+                        serviciosPagina.map((s) => (
                             <tr key={s.id} style={{ borderBottom: "1px solid #222" }}>
-                                <td style={{ padding: 10, textAlign: "left", verticalAlign: "middle" }}>{s.nombre}</td>
+                                <td
+                                    style={{
+                                        padding: 10,
+                                        textAlign: "left",
+                                        verticalAlign: "middle",
+                                    }}
+                                >
+                                    {s.nombre}
+                                </td>
                                 <td
                                     style={{
                                         padding: 10,
@@ -452,7 +556,7 @@ export default function AdminServicios() {
                                         maxWidth: 200,
                                         overflow: "hidden",
                                         textOverflow: "ellipsis",
-                                        whiteSpace: "nowrap"
+                                        whiteSpace: "nowrap",
                                     }}
                                     title={s.detalle}
                                 >
@@ -460,10 +564,26 @@ export default function AdminServicios() {
                                         ? s.detalle.slice(0, 90) + "..."
                                         : s.detalle}
                                 </td>
-                                <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>
-                                    {Number(s.precio).toLocaleString("es-CR", { style: "currency", currency: "CRC", minimumFractionDigits: 2 })}
+                                <td
+                                    style={{
+                                        padding: 10,
+                                        textAlign: "center",
+                                        verticalAlign: "middle",
+                                    }}
+                                >
+                                    {Number(s.precio).toLocaleString("es-CR", {
+                                        style: "currency",
+                                        currency: "CRC",
+                                        minimumFractionDigits: 2,
+                                    })}
                                 </td>
-                                <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>
+                                <td
+                                    style={{
+                                        padding: 10,
+                                        textAlign: "center",
+                                        verticalAlign: "middle",
+                                    }}
+                                >
                                     <button
                                         onClick={() => onEdit(s)}
                                         style={{
@@ -474,7 +594,7 @@ export default function AdminServicios() {
                                             borderRadius: 5,
                                             padding: "5px 8px",
                                             fontSize: 16,
-                                            cursor: "pointer"
+                                            cursor: "pointer",
                                         }}
                                         title="Editar servicio"
                                     >
@@ -489,7 +609,7 @@ export default function AdminServicios() {
                                             borderRadius: 5,
                                             padding: "5px 8px",
                                             fontSize: 16,
-                                            cursor: "pointer"
+                                            cursor: "pointer",
                                         }}
                                         title="Eliminar servicio"
                                     >
@@ -504,7 +624,14 @@ export default function AdminServicios() {
 
             {/* FOOTER + PAGINACIÓN */}
             <div style={{ width: "100%", marginTop: 20 }}>
-                <span style={{ color: "#ccc", display: "block", marginBottom: 8, textAlign: "center" }}>
+                <span
+                    style={{
+                        color: "#ccc",
+                        display: "block",
+                        marginBottom: 8,
+                        textAlign: "center",
+                    }}
+                >
                     Mostrando {serviciosPagina.length} de {serviciosFiltrados.length}
                 </span>
                 <div style={{ display: "flex", justifyContent: "center", gap: 4 }}>
@@ -519,7 +646,7 @@ export default function AdminServicios() {
                                 background: paginaActual === i + 1 ? "#5EA743" : "#444",
                                 color: "#fff",
                                 border: "none",
-                                cursor: "pointer"
+                                cursor: "pointer",
                             }}
                         >
                             {i + 1}

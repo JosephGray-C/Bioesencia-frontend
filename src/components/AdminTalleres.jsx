@@ -1,10 +1,26 @@
-import React, { useEffect, useState } from "react";
+// src/components/AdminTalleres.jsx
+import React, { useMemo, useState } from "react";
 import Swal from "sweetalert2";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const API_URL = "http://localhost:8080/api/talleres";
 const INS_API = "http://localhost:8080/api/inscripciones";
 
-// --- Modal Crear ---
+async function fetchTalleres({ signal }) {
+    const res = await fetch(API_URL, { signal });
+    if (!res.ok) throw new Error(await res.text());
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+}
+
+async function fetchInscripciones({ signal }) {
+    const res = await fetch(INS_API, { signal });
+    if (!res.ok) throw new Error(await res.text());
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+}
+
 function CrearTallerModal({ form, onChange, onSubmit, onCancel }) {
     return (
         <div
@@ -112,7 +128,12 @@ function CrearTallerModal({ form, onChange, onSubmit, onCancel }) {
                                         />
                                     </div>
                                     <div className="input-box" style={{ marginBottom: 0 }}>
-                                        <label style={{ display: "flex", alignItems: "center", fontWeight: 500, color: "#333" }}>
+                                        <label style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            fontWeight: 500,
+                                            color: "#333"
+                                        }}>
                                             <input
                                                 type="checkbox"
                                                 name="activo"
@@ -124,10 +145,7 @@ function CrearTallerModal({ form, onChange, onSubmit, onCancel }) {
                                         </label>
                                     </div>
                                     <div className="button input-box" style={{ marginTop: 26 }}>
-                                        <input
-                                            type="submit"
-                                            value="Guardar taller"
-                                        />
+                                        <input type="submit" value="Guardar taller" />
                                     </div>
                                     <div style={{ marginTop: 8, textAlign: "right" }}>
                                         <button
@@ -143,7 +161,8 @@ function CrearTallerModal({ form, onChange, onSubmit, onCancel }) {
                                                 fontSize: "1rem",
                                                 cursor: "pointer"
                                             }}
-                                        >Cancelar</button>
+                                        >Cancelar
+                                        </button>
                                     </div>
                                 </div>
                             </form>
@@ -157,13 +176,13 @@ function CrearTallerModal({ form, onChange, onSubmit, onCancel }) {
                         background: "none", border: "none", cursor: "pointer", color: "#888"
                     }}
                     title="Cerrar"
-                >×</button>
+                >×
+                </button>
             </div>
         </div>
     );
 }
 
-// --- Modal Editar ---
 function EditarTallerModal({ editForm, onChange, onSubmit, onCancel }) {
     return (
         <div
@@ -184,7 +203,8 @@ function EditarTallerModal({ editForm, onChange, onSubmit, onCancel }) {
                 <div className="forms" style={{ background: "#fff" }}>
                     <div className="form-content">
                         <div className="signup-form" style={{ width: "100%" }}>
-                            <div className="title" style={{ fontWeight: 600, fontSize: 26, marginBottom: 12, color: "#5EA743" }}>
+                            <div className="title"
+                                style={{ fontWeight: 600, fontSize: 26, marginBottom: 12, color: "#5EA743" }}>
                                 Editar taller
                             </div>
                             <form onSubmit={onSubmit}>
@@ -272,7 +292,12 @@ function EditarTallerModal({ editForm, onChange, onSubmit, onCancel }) {
                                         />
                                     </div>
                                     <div className="input-box" style={{ marginBottom: 0 }}>
-                                        <label style={{ display: "flex", alignItems: "center", fontWeight: 500, color: "#333" }}>
+                                        <label style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            fontWeight: 500,
+                                            color: "#333"
+                                        }}>
                                             <input
                                                 type="checkbox"
                                                 name="activo"
@@ -303,7 +328,8 @@ function EditarTallerModal({ editForm, onChange, onSubmit, onCancel }) {
                                                 fontSize: "1rem",
                                                 cursor: "pointer"
                                             }}
-                                        >Cancelar</button>
+                                        >Cancelar
+                                        </button>
                                     </div>
                                 </div>
                             </form>
@@ -317,25 +343,23 @@ function EditarTallerModal({ editForm, onChange, onSubmit, onCancel }) {
                         background: "none", border: "none", cursor: "pointer", color: "#888"
                     }}
                     title="Cerrar"
-                >×</button>
+                >×
+                </button>
             </div>
         </div>
     );
 }
 
-// --- Componente principal ---
 export default function AdminTalleres() {
-    const [talleres, setTalleres] = useState([]);
-    const [inscripciones, setInscripciones] = useState([]); // <-- nuevo estado
+    const qc = useQueryClient();
+
     const [paginaActual, setPaginaActual] = useState(1);
     const [busqueda, setBusqueda] = useState("");
     const talleresPorPagina = 6;
 
-    // Modals y forms independientes
     const [showForm, setShowForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
 
-    // Formulario para crear taller
     const [form, setForm] = useState({
         titulo: "",
         descripcion: "",
@@ -347,7 +371,6 @@ export default function AdminTalleres() {
         activo: true
     });
 
-    // Formulario para editar taller
     const [editForm, setEditForm] = useState({
         id: "",
         titulo: "",
@@ -360,43 +383,43 @@ export default function AdminTalleres() {
         activo: true
     });
 
-    // Cargar talleres y todas las inscripciones
-    useEffect(() => {
-        fetch(API_URL)
-            .then(res => res.json())
-            .then(setTalleres);
-        fetch(INS_API)
-            .then(res => res.json())
-            .then(data => setInscripciones(Array.isArray(data) ? data : []));
-    }, []);
-
-    // Contar inscripciones por tallerId
-    const inscripcionesPorTaller = {};
-    inscripciones.forEach(i => {
-        if (i.tallerId) {
-            inscripcionesPorTaller[i.tallerId] = (inscripcionesPorTaller[i.tallerId] || 0) + 1;
-        }
+    const {
+        data: talleres = [],
+        isFetching: isFetchingTalleres,
+        refetch: refetchTalleres,
+    } = useQuery({
+        queryKey: ["talleres"],
+        queryFn: fetchTalleres,
+        initialData: () => qc.getQueryData(["talleres"]) || [],
     });
 
-    // Cambios en formulario crear
+    const { data: inscripciones = [] } = useQuery({
+        queryKey: ["inscripciones"],
+        queryFn: fetchInscripciones,
+        initialData: () => qc.getQueryData(["inscripciones"]) || [],
+    });
+
+    const showSpinner = isFetchingTalleres && talleres.length === 0;
+
+    const inscripcionesPorTaller = useMemo(() => {
+        const mapa = {};
+        for (const i of inscripciones) {
+            if (i?.tallerId) {
+                mapa[i.tallerId] = (mapa[i.tallerId] || 0) + 1;
+            }
+        }
+        return mapa;
+    }, [inscripciones]);
+
     const handleChange = e => {
         const { name, value, type, checked } = e.target;
-        setForm(f => ({
-            ...f,
-            [name]: type === "checkbox" ? checked : value
-        }));
+        setForm(f => ({ ...f, [name]: type === "checkbox" ? checked : value }));
     };
-
-    // Cambios en formulario editar
     const handleEditChange = e => {
         const { name, value, type, checked } = e.target;
-        setEditForm(f => ({
-            ...f,
-            [name]: type === "checkbox" ? checked : value
-        }));
+        setEditForm(f => ({ ...f, [name]: type === "checkbox" ? checked : value }));
     };
 
-    // Limpiar y cerrar modal crear
     const clearForm = () => {
         setForm({
             titulo: "",
@@ -410,8 +433,6 @@ export default function AdminTalleres() {
         });
         setShowForm(false);
     };
-
-    // Limpiar y cerrar modal editar
     const clearEditForm = () => {
         setEditForm({
             id: "",
@@ -427,25 +448,19 @@ export default function AdminTalleres() {
         setShowEditForm(false);
     };
 
-    // Crear taller
     const handleSubmit = async e => {
         e.preventDefault();
 
-        // Validar que ambos campos tengan valor
         if (!form.fechaInicio || !form.fechaFin) {
             Swal.fire("Error", "Debes ingresar la fecha y hora de inicio y fin.", "error");
             return;
         }
-
-        // Convertir a objeto Date y validar que no sean "Invalid Date"
         const inicio = new Date(form.fechaInicio);
         const fin = new Date(form.fechaFin);
         if (isNaN(inicio.getTime()) || isNaN(fin.getTime())) {
             Swal.fire("Error", "Fechas inválidas. Por favor selecciona correctamente las fechas y horas.", "error");
             return;
         }
-
-        // Validar lógica de fechas
         if (fin <= inicio) {
             Swal.fire("Error", "La fecha/hora de fin debe ser posterior a la de inicio.", "error");
             return;
@@ -459,33 +474,32 @@ export default function AdminTalleres() {
             });
             if (!res.ok) throw new Error(await res.text());
             const nuevo = await res.json();
-            setTalleres(p => [...p, nuevo]);
+
+            qc.setQueryData(["talleres"], (prev) =>
+                Array.isArray(prev) ? [...prev, nuevo] : [nuevo]
+            );
+
             Swal.fire("¡Creado!", "Taller agregado.", "success");
             clearForm();
+            refetchTalleres();
         } catch (err) {
             Swal.fire("Error", err.message, "error");
         }
     };
 
-    // Editar taller
     const handleEditSubmit = async e => {
         e.preventDefault();
 
-        // Validar que ambos campos tengan valor
         if (!editForm.fechaInicio || !editForm.fechaFin) {
             Swal.fire("Error", "Debes ingresar la fecha y hora de inicio y fin.", "error");
             return;
         }
-
-        // Convertir a objeto Date y validar que no sean "Invalid Date"
         const inicio = new Date(editForm.fechaInicio);
         const fin = new Date(editForm.fechaFin);
         if (isNaN(inicio.getTime()) || isNaN(fin.getTime())) {
             Swal.fire("Error", "Fechas inválidas. Por favor selecciona correctamente las fechas y horas.", "error");
             return;
         }
-
-        // Validar lógica de fechas
         if (fin <= inicio) {
             Swal.fire("Error", "La fecha/hora de fin debe ser posterior a la de inicio.", "error");
             return;
@@ -499,17 +513,19 @@ export default function AdminTalleres() {
             });
             if (!res.ok) throw new Error(await res.text());
             const actualizado = await res.json();
-            setTalleres(p =>
-                p.map(t => t.id === actualizado.id ? actualizado : t)
+
+            qc.setQueryData(["talleres"], (prev) =>
+                Array.isArray(prev) ? prev.map(t => t.id === actualizado.id ? actualizado : t) : prev
             );
+
             Swal.fire("¡Actualizado!", "Taller modificado.", "success");
             clearEditForm();
+            refetchTalleres();
         } catch (err) {
             Swal.fire("Error", err.message, "error");
         }
     };
 
-    // Eliminar taller
     const handleDelete = async id => {
         const confirm = await Swal.fire({
             title: "¿Eliminar taller?",
@@ -521,23 +537,24 @@ export default function AdminTalleres() {
             confirmButtonText: "Eliminar",
             cancelButtonText: "Cancelar"
         });
-        if (confirm.isConfirmed) {
-            try {
-                const res = await fetch(`${API_URL}/${id}`, {
-                    method: "DELETE"
-                });
-                if (!res.ok) throw new Error(await res.text());
-                setTalleres(p => p.filter(t => t.id !== id));
-                Swal.fire("¡Eliminado!", "Taller borrado.", "success");
-            } catch (err) {
-                Swal.fire("Error", err.message, "error");
-            }
+        if (!confirm.isConfirmed) return;
+
+        try {
+            const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+            if (!res.ok) throw new Error(await res.text());
+
+            qc.setQueryData(["talleres"], (prev) =>
+                Array.isArray(prev) ? prev.filter(t => t.id !== id) : prev
+            );
+
+            Swal.fire("¡Eliminado!", "Taller borrado.", "success");
+            refetchTalleres();
+        } catch (err) {
+            Swal.fire("Error", err.message, "error");
         }
     };
 
-    // NUEVO: Ver inscritos de un taller (filtra localmente)
     const handleVerInscritos = (taller) => {
-        // Filtra inscripciones locales por el id del taller
         const lista = inscripciones.filter(i => i.tallerId === taller.id);
 
         if (!Array.isArray(lista) || lista.length === 0) {
@@ -551,39 +568,38 @@ export default function AdminTalleres() {
         }
 
         const filas = lista.map((i, idx) => `
-            <tr>
-              <td style="padding:6px;white-space:nowrap;">${idx + 1}</td>
-              <td style="padding:6px;white-space:nowrap;">${i.usuarioNombre ?? "—"}</td>
-              <td style="padding:6px;white-space:nowrap;">${i.usuarioApellido ?? "—"}</td>
-              <td style="padding:6px;white-space:nowrap;">${i.usuarioEmail ?? "—"}</td>
-              <td style="padding:6px;white-space:nowrap;">${i.fechaInscripcion ? new Date(i.fechaInscripcion).toLocaleString() : "—"}</td>
-              <td style="padding:6px;white-space:nowrap;">${i.estado ?? "—"}</td>
-            </tr>
-        `).join("");
+      <tr>
+        <td style="padding:6px;white-space:nowrap;">${idx + 1}</td>
+        <td style="padding:6px;white-space:nowrap;">${i.usuarioNombre ?? "—"}</td>
+        <td style="padding:6px;white-space:nowrap;">${i.usuarioApellido ?? "—"}</td>
+        <td style="padding:6px;white-space:nowrap;">${i.usuarioEmail ?? "—"}</td>
+        <td style="padding:6px;white-space:nowrap;">${i.fechaInscripcion ? new Date(i.fechaInscripcion).toLocaleString() : "—"}</td>
+        <td style="padding:6px;white-space:nowrap;">${i.estado ?? "—"}</td>
+      </tr>
+    `).join("");
 
         const tabla = `
-          <div style="max-height:60vh;overflow:auto;text-align:left">
-            <p><b>Taller:</b> ${taller.titulo}</p>
-            <p style="margin-top:4px"><b>Total inscritos:</b> ${lista.length}</p>
-            <div style="overflow-x:auto;">
-              <table style="width:100%;border-collapse:collapse;table-layout:auto;">
-                <thead>
-                  <tr>
-                    <th style="text-align:left;padding:6px;white-space:nowrap;">#</th>
-                    <th style="text-align:left;padding:6px;white-space:nowrap;">Nombre</th>
-                    <th style="text-align:left;padding:6px;white-space:nowrap;">Apellido</th>
-                    <th style="text-align:left;padding:6px;white-space:nowrap;">Email</th>
-                    <th style="text-align:left;padding:6px;white-space:nowrap;">Fecha inscrip.</th>
-                    <th style="text-align:left;padding:6px;white-space:nowrap;">Estado</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${filas}
-                </tbody>
-              </table>
-            </div>
-          </div>`;
-
+      <div style="max-height:60vh;overflow:auto;text-align:left">
+        <p><b>Taller:</b> ${taller.titulo}</p>
+        <p style="margin-top:4px"><b>Total inscritos:</b> ${lista.length}</p>
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;table-layout:auto;">
+            <thead>
+              <tr>
+                <th style="text-align:left;padding:6px;white-space:nowrap;">#</th>
+                <th style="text-align:left;padding:6px;white-space:nowrap;">Nombre</th>
+                <th style="text-align:left;padding:6px;white-space:nowrap;">Apellido</th>
+                <th style="text-align:left;padding:6px;white-space:nowrap;">Email</th>
+                <th style="text-align:left;padding:6px;white-space:nowrap;">Fecha inscrip.</th>
+                <th style="text-align:left;padding:6px;white-space:nowrap;">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filas}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
         Swal.fire({
             title: "Inscritos",
             html: tabla,
@@ -609,13 +625,17 @@ export default function AdminTalleres() {
     };
 
     // Filtrado y paginación
-    const talleresFiltrados = talleres.filter(t =>
-        t.titulo?.toLowerCase().includes(busqueda.toLowerCase())
+    const talleresFiltrados = useMemo(
+        () => (talleres || []).filter(t =>
+            t.titulo?.toLowerCase().includes(busqueda.toLowerCase())
+        ),
+        [talleres, busqueda]
     );
+
     const indexUltimo = paginaActual * talleresPorPagina;
     const indexPrimero = indexUltimo - talleresPorPagina;
     const talleresPagina = talleresFiltrados.slice(indexPrimero, indexUltimo);
-    const totalPaginas = Math.ceil(talleresFiltrados.length / talleresPorPagina);
+    const totalPaginas = Math.ceil(talleresFiltrados.length / talleresPorPagina) || 1;
 
     return (
         <div className="home-crud">
@@ -634,7 +654,10 @@ export default function AdminTalleres() {
                         type="text"
                         placeholder="Buscar por título"
                         value={busqueda}
-                        onChange={e => setBusqueda(e.target.value)}
+                        onChange={e => {
+                            setBusqueda(e.target.value);
+                            setPaginaActual(1);
+                        }}
                         style={{
                             padding: "10px 14px",
                             borderRadius: 8,
@@ -696,14 +719,22 @@ export default function AdminTalleres() {
                         <th style={{ padding: 12, width: 90, textAlign: "center" }}>Precio</th>
                         <th style={{ padding: 12, width: 70, textAlign: "center" }}>Activo</th>
                         <th style={{ padding: 12, width: 90, textAlign: "center" }}>Inscritos</th>
-                        <th style={{ padding: 12, width: 90, textAlign: "center" }}>Disponibles</th> {/* NUEVO */}
+                        <th style={{ padding: 12, width: 90, textAlign: "center" }}>Disponibles</th>
                         <th style={{ padding: 12, width: 90, textAlign: "center" }}>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {talleresPagina.length === 0 ? (
                         <tr>
-                            <td colSpan={11} style={{ textAlign: "center", padding: 20 }}>No hay talleres</td>
+                            <td colSpan={11} style={{ textAlign: "center", padding: 20 }}>
+                                {showSpinner ? (
+                                    <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                                        <ClipLoader size={18} color="#bbb" speedMultiplier={0.9} />
+                                    </span>
+                                ) : (
+                                    "No hay talleres"
+                                )}
+                            </td>
                         </tr>
                     ) : (
                         talleresPagina.map(t => (
@@ -723,18 +754,36 @@ export default function AdminTalleres() {
                                 >
                                     {t.descripcion}
                                 </td>
-                                <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle", whiteSpace: "nowrap" }}>
+                                <td style={{
+                                    padding: 10,
+                                    textAlign: "center",
+                                    verticalAlign: "middle",
+                                    whiteSpace: "nowrap"
+                                }}>
                                     {t.fechaInicio && new Date(t.fechaInicio).toLocaleString()}
                                 </td>
-                                <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle", whiteSpace: "nowrap" }}>
+                                <td style={{
+                                    padding: 10,
+                                    textAlign: "center",
+                                    verticalAlign: "middle",
+                                    whiteSpace: "nowrap"
+                                }}>
                                     {t.fechaFin && new Date(t.fechaFin).toLocaleString()}
                                 </td>
                                 <td style={{ padding: 10, textAlign: "left", verticalAlign: "middle" }}>{t.lugar}</td>
                                 <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>{t.cupoMaximo}</td>
                                 <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>
-                                    {Number(t.precio).toLocaleString("es-CR", { style: "currency", currency: "CRC", minimumFractionDigits: 2 })}
+                                    {Number(t.precio).toLocaleString("es-CR", {
+                                        style: "currency",
+                                        currency: "CRC",
+                                        minimumFractionDigits: 2
+                                    })}
                                 </td>
-                                <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>{t.activo ? "Sí" : "No"}</td>
+                                <td style={{
+                                    padding: 10,
+                                    textAlign: "center",
+                                    verticalAlign: "middle"
+                                }}>{t.activo ? "Sí" : "No"}</td>
                                 <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>
                                     {inscripcionesPorTaller[t.id] || 0}
                                 </td>
