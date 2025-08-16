@@ -1,4 +1,3 @@
-// src/components/Blog.jsx (admin)
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -8,26 +7,12 @@ const API_URL = "http://localhost:8080/api/posts";
 export default function Blog() {
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  const fetchPosts = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`${API_URL}/listar`);
-      const data = await res.json();
-      const arr =
-        Array.isArray(data) ? data :
-        Array.isArray(data?.data) ? data.data :
-        Array.isArray(data?.content) ? data.content :
-        Array.isArray(data?.items) ? data.items :
-        [];
-      setPosts(arr);
-    } catch (err) {
-      console.error("Error al obtener posts:", err);
-      setPosts([]);
-    } finally {
-      setLoading(false);
-    }
+  const fetchPosts = () => {
+    fetch(`${API_URL}/listar`)
+      .then(res => res.json())
+      .then(data => setPosts(data))
+      .catch(err => console.error("Error al obtener posts:", err));
   };
 
   useEffect(() => {
@@ -43,15 +28,17 @@ export default function Blog() {
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#5A0D0D",
-      cancelButtonColor: "#6c757d",
+      cancelButtonColor: "#6c757d"
     });
 
     if (confirm.isConfirmed) {
       try {
-        const res = await fetch(`${API_URL}/eliminar/${idPost}`, { method: "DELETE" });
+        const res = await fetch(`${API_URL}/eliminar/${idPost}`, {
+          method: "DELETE"
+        });
         if (!res.ok) throw new Error("Error al eliminar el post");
-        await Swal.fire("Eliminado", "El post fue eliminado.", "success");
-        fetchPosts(); 
+        Swal.fire("Eliminado", "El post fue eliminado.", "success");
+        fetchPosts(); // Recargar lista
       } catch (error) {
         console.error(error);
         Swal.fire("Error", "No se pudo eliminar el post.", "error");
@@ -61,7 +48,11 @@ export default function Blog() {
 
   return (
     <div style={{ padding: "2rem", color: "#fff" }}>
-      <h2 style={{ textAlign: "center", fontSize: "2rem", marginBottom: "1rem" }}>
+      <h2 style={{
+        textAlign: "center",
+        fontSize: "2rem",
+        marginBottom: "1rem"
+      }}>
         Gestión de Blog
       </h2>
 
@@ -76,28 +67,25 @@ export default function Blog() {
             borderRadius: 10,
             cursor: "pointer",
             fontWeight: "bold",
-            fontSize: "1.1rem",
+            fontSize: "1.1rem"
           }}
         >
           Crear nuevo post
         </button>
       </div>
 
-      {loading ? (
-        <p style={{ textAlign: "center" }}>Cargando…</p>
-      ) : !Array.isArray(posts) || posts.length === 0 ? (
+      {posts.length === 0 ? (
         <p style={{ textAlign: "center" }}>No hay posts aún.</p>
       ) : (
-        posts.map((post) => (
+        posts.map(post => (
           <div
-            key={post.idPost ?? post.id ?? crypto.randomUUID()}
+            key={post.idPost}
             style={{
-              background: "#fff",
+              background: "#2f343f",
               padding: "1.5rem",
               borderRadius: "12px",
               marginBottom: "1.5rem",
-              boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-              color: "#222",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
             }}
           >
             <h3 style={{ marginBottom: "0.5rem", color: "#5EA743" }}>{post.titulo}</h3>
@@ -111,18 +99,20 @@ export default function Blog() {
                   width: "100%",
                   maxWidth: "500px",
                   marginTop: "1rem",
-                  borderRadius: "8px",
+                  borderRadius: "8px"
                 }}
               />
             )}
 
-            {post.fechaCreacion && (
-              <p style={{ fontSize: "0.9rem", marginTop: "1rem", color: "#888" }}>
-                Publicado el {new Date(post.fechaCreacion).toLocaleString("es-CR")}
-              </p>
-            )}
+            <p style={{ fontSize: "0.9rem", marginTop: "1rem", color: "#aaa" }}>
+              Publicado el {new Date(post.fechaCreacion).toLocaleString("es-CR")}
+            </p>
 
-            <div style={{ display: "flex", gap: "1rem", marginTop: "1.5rem" }}>
+            <div style={{
+              display: "flex",
+              gap: "1rem",
+              marginTop: "1.5rem"
+            }}>
               <button
                 onClick={() => navigate(`/admin/blog/editar/${post.idPost}`)}
                 style={{
@@ -134,7 +124,7 @@ export default function Blog() {
                   borderRadius: "8px",
                   cursor: "pointer",
                   fontWeight: "bold",
-                  textAlign: "center",
+                  textAlign: "center"
                 }}
               >
                 Editar
@@ -151,7 +141,7 @@ export default function Blog() {
                   borderRadius: "8px",
                   cursor: "pointer",
                   fontWeight: "bold",
-                  textAlign: "center",
+                  textAlign: "center"
                 }}
               >
                 Eliminar

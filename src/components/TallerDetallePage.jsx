@@ -12,9 +12,8 @@ export default function TallerDetallePage() {
   const [loading, setLoading] = useState(true);
   const [inscrito, setInscrito] = useState(false);
   const [cupoLleno, setCupoLleno] = useState(false);
-  const [inscritos, setInscritos] = useState(0);
+  const [inscritosCount, setInscritosCount] = useState(0);
 
-  // Último segmento de la URL: /talleres/1 -> "1"
   const tallerId = window.location.pathname.replace(/\/+$/, "").split("/").pop();
   const usuarioId = user?.id ? Number(user.id) : null;
 
@@ -24,7 +23,7 @@ export default function TallerDetallePage() {
 
     Promise.all([
       fetch(`http://localhost:8080/api/talleres/${tallerId}`),
-      fetch(`http://localhost:8080/api/inscripciones/resumen/taller/${tallerId}`)
+      fetch(`http://localhost:8080/api/inscripciones/taller/${tallerId}`)
     ])
       .then(async ([resTaller, resInscripciones]) => {
         if (resTaller.status === 404) {
@@ -40,18 +39,15 @@ export default function TallerDetallePage() {
 
         const dataTaller = await resTaller.json();
         let listaIns = resInscripciones.ok ? await resInscripciones.json() : [];
-        // Asegura que sea array
         if (!Array.isArray(listaIns)) {
           listaIns = listaIns ? [listaIns] : [];
         }
 
         setTaller(dataTaller);
-        setInscritos(listaIns.length);
+        setInscritosCount(listaIns.length);
 
-        // Cupo lleno
         setCupoLleno(Number(listaIns.length) >= Number(dataTaller.cupoMaximo ?? Infinity));
 
-        // Usuario ya inscrito
         const yaInscrito = usuarioId
           ? listaIns.some((i) => Number(i?.usuarioId) === usuarioId)
           : false;
@@ -69,7 +65,6 @@ export default function TallerDetallePage() {
   }, [tallerId, usuarioId, navigate]);
 
   const handleInscripcion = async () => {
-    // Requisitos previos
     if (!usuarioId) {
       Swal.fire({
         icon: "info",
@@ -81,7 +76,6 @@ export default function TallerDetallePage() {
     }
     if (!taller?.id) return;
 
-    // Confirmación
     const confirm = await Swal.fire({
       title: "Confirmar inscripción",
       text: `¿Deseas inscribirte en "${taller.titulo}"?`,
@@ -95,11 +89,13 @@ export default function TallerDetallePage() {
     if (!confirm.isConfirmed) return;
 
     try {
-      // Revalidar cupo y duplicados inmediatamente antes de enviar
       const resCheck = await fetch(`http://localhost:8080/api/inscripciones/taller/${taller.id}`);
-      const listaIns = resCheck.ok ? await resCheck.json() : [];
+      let listaIns = resCheck.ok ? await resCheck.json() : [];
+      if (!Array.isArray(listaIns)) {
+        listaIns = listaIns ? [listaIns] : [];
+      }
 
-      if (listaIns.some((i) => Number(i?.usuario?.id) === usuarioId)) {
+      if (listaIns.some((i) => Number(i?.usuarioId) === usuarioId)) {
         setInscrito(true);
         Swal.fire({
           icon: "info",
@@ -152,8 +148,13 @@ export default function TallerDetallePage() {
     }
   };
 
-  if (loading) return <p style={{ padding: 20 }}>Cargando taller...</p>;
+  if (loading) return <p style={{ padding: 20, color: "green" }}>Cargando taller...</p>;
   if (!taller) return <p style={{ padding: 20 }}>No se encontró el taller.</p>;
+
+  // Calcula la cantidad de cupos disponibles
+  const disponibles = taller?.cupoMaximo
+    ? Math.max(0, Number(taller.cupoMaximo) - Number(inscritosCount))
+    : 0;
 
   return (
     <div
@@ -177,7 +178,8 @@ export default function TallerDetallePage() {
       </p>
       <p><strong>Lugar:</strong> {taller.lugar}</p>
       <p><strong>Cupo máximo:</strong> {taller.cupoMaximo}</p>
-      <p><strong>Inscritos:</strong> {inscritos}</p>
+      <p><strong>Inscritos:</strong> {inscritosCount}</p>
+      <p><strong>Cupos disponibles:</strong> {disponibles}</p>
       {cupoLleno && (
         <div style={{ color: "red", fontWeight: "bold", margin: "1rem 0" }}>
           ❌ Este taller ya no tiene cupo disponible.
