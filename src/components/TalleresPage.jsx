@@ -11,6 +11,27 @@ async function fetchTalleres({ signal }) {
   return Array.isArray(data) ? data : [];
 }
 
+function formatoFechaHoraAmPm(fechaStr) {
+  if (!fechaStr) return "—";
+  const fecha = new Date(fechaStr);
+  const fechaLocal = fecha.toLocaleDateString();
+  let horas = fecha.getHours();
+  const minutos = fecha.getMinutes().toString().padStart(2, "0");
+  const ampm = horas >= 12 ? "PM" : "AM";
+  horas = horas % 12 || 12;
+  return `${fechaLocal} ${horas}:${minutos} ${ampm}`;
+}
+
+function formatoHoraAmPm(fechaStr) {
+  if (!fechaStr) return "—";
+  const fecha = new Date(fechaStr);
+  let horas = fecha.getHours();
+  const minutos = fecha.getMinutes().toString().padStart(2, "0");
+  const ampm = horas >= 12 ? "PM" : "AM";
+  horas = horas % 12 || 12;
+  return `${horas}:${minutos} ${ampm}`;
+}
+
 export default function TalleresPage() {
   const qc = useQueryClient();
 
@@ -110,9 +131,13 @@ export default function TalleresPage() {
               <h3>{taller.titulo}</h3>
               {taller.descripcion && <p>{taller.descripcion}</p>}
               <p>
-                <strong style={{ color: "var(--wine)" }}>Fecha: </strong>
-                {taller.fechaInicio ? new Date(taller.fechaInicio).toLocaleString() : "—"} –{" "}
-                {taller.fechaFin ? new Date(taller.fechaFin).toLocaleString() : "—"}
+                <strong style={{ color: "var(--wine)" }}>Fecha y hora: </strong>
+                {taller.fechaInicio
+                  ? `${formatoFechaHoraAmPm(taller.fechaInicio)}`
+                  : "—"}
+                {taller.fechaFin
+                  ? ` - ${formatoHoraAmPm(taller.fechaFin)}`
+                  : ""}
               </p>
               <p>
                 <strong style={{ color: "var(--wine)" }}>Lugar: </strong>
