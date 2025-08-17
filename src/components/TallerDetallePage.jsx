@@ -173,6 +173,17 @@ export default function TallerDetallePage() {
     }
   };
 
+  // Formato solo hora AM/PM
+  function formatoHoraAmPm(fechaStr) {
+    if (!fechaStr) return "—";
+    const fecha = new Date(fechaStr);
+    let horas = fecha.getHours();
+    const minutos = fecha.getMinutes().toString().padStart(2, "0");
+    const ampm = horas >= 12 ? "PM" : "AM";
+    horas = horas % 12 || 12;
+    return `${horas}:${minutos} ${ampm}`;
+  }
+
   if (showSpinner) {
     return (
       <div
@@ -208,6 +219,24 @@ export default function TallerDetallePage() {
         .btn { transition: transform .15s ease, filter .15s ease, box-shadow .15s ease; }
         .btn:hover { filter: brightness(.96); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,.10); }
         .badge { border-radius: 999px; padding: 6px 10px; font-weight: 700; font-size: .875rem; }
+        .volver-btn {
+          display: inline-block;
+          margin-top: 18px;
+          padding: 10px 24px;
+          background: #A9C499;
+          color: #5A0D0D;
+          border: none;
+          border-radius: 12px;
+          font-weight: 700;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: transform .15s, box-shadow .15s, filter .15s;
+        }
+        .volver-btn:hover {
+          filter: brightness(.96);
+          transform: translateY(-1px);
+          box-shadow: 0 6px 18px rgba(0,0,0,.10);
+        }
       `}</style>
 
       <div
@@ -257,9 +286,13 @@ export default function TallerDetallePage() {
         {/* Detalles */}
         <div style={{ display: "grid", gap: 8, marginBottom: 12 }}>
           <p style={{ margin: 0 }}>
-            <strong style={{ color: WINE }}>Fecha: </strong>
-            {taller.fechaInicio ? new Date(taller.fechaInicio).toLocaleString() : "—"} –{" "}
-            {taller.fechaFin ? new Date(taller.fechaFin).toLocaleString() : "—"}
+            <strong style={{ color: WINE }}>Fecha y hora: </strong>
+            {taller.fechaInicio
+              ? `${new Date(taller.fechaInicio).toLocaleDateString()} ${formatoHoraAmPm(taller.fechaInicio)}`
+              : "—"}
+            {taller.fechaFin
+              ? ` - ${formatoHoraAmPm(taller.fechaFin)}`
+              : ""}
           </p>
           <p style={{ margin: 0 }}>
             <strong style={{ color: WINE }}>Lugar: </strong>
@@ -322,7 +355,7 @@ export default function TallerDetallePage() {
           </div>
         )}
 
-        {/* Botón */}
+        {/* Botón Inscripción */}
         {!cupoLleno && !inscrito && (
           <div style={{ textAlign: "center" }}>
             <button
@@ -347,6 +380,17 @@ export default function TallerDetallePage() {
             </button>
           </div>
         )}
+
+        {/* Botón Volver */}
+        <div style={{ textAlign: "center" }}>
+          <button
+            type="button"
+            className="volver-btn"
+            onClick={() => navigate(-1)}
+          >
+            Volver
+          </button>
+        </div>
       </div>
     </div>
   );
