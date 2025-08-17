@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useUser } from "../context/UserContext";
 import UserSidebar from "./UserSidebar";
-import AdminSidebar from "./AdminSidebar"; // ⬅️ agregado
+import AdminSidebar from "./AdminSidebar";
 
 export default function HeaderUser() {
   const [hidden, setHidden] = useState(false);
   const [lastScroll, setLastScroll] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user } = useUser();   // quitamos logout porque no se usa aquí
+  const { user } = useUser();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,7 +22,6 @@ export default function HeaderUser() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScroll]);
 
-  // Normaliza el rol para evitar problemas por capitalización o prefijos
   const rol = (user?.rol || "").toString().toUpperCase().replace(/^ROLE_/, "");
   const esAdmin = rol === "ADMIN";
 
@@ -44,14 +43,12 @@ export default function HeaderUser() {
 
         <header className={`hu ${hidden ? "hu--hidden" : ""}`}>
           <div className="hu__wrap">
-            {/* Izquierda: logo (imagen en lugar del título) */}
             <img
                 src="/imgs/BIOESENCIA_n-BG.png"
                 alt="Bioesencia"
                 style={{ height: 60, display: "block" }}
             />
 
-            {/* Centro: links (solo si NO es admin) */}
             {!esAdmin && (
                 <nav className="hu__nav">
                   <Link to="/" className="hu__link">Inicio</Link>
@@ -64,7 +61,6 @@ export default function HeaderUser() {
 
             {/* Derecha: perfil + hamburguesa */}
             <div className="hu__right">
-              {/* Si es ADMIN, se muestra como botón con estilo de link */}
               {esAdmin ? (
                   <button
                       type="button"
@@ -91,7 +87,6 @@ export default function HeaderUser() {
           </div>
         </header>
 
-        {/* Menú lateral controlado */}
         {esAdmin ? (
             <AdminSidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
         ) : (

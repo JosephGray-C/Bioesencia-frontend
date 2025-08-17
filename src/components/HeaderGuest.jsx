@@ -10,7 +10,6 @@ export default function HeaderGuest() {
     const [headerH, setHeaderH] = useState(0);
     const scrollLockRef = useRef(0);
 
-    // Medir altura del header
     const measureHeader = () => setHeaderH(headerRef.current?.offsetHeight ?? 0);
     useEffect(() => {
         measureHeader();
@@ -18,7 +17,6 @@ export default function HeaderGuest() {
         return () => window.removeEventListener("resize", measureHeader);
     }, []);
 
-    // Ocultar/mostrar header por scroll (desactivado si el menú está abierto)
     useEffect(() => {
         const onScroll = () => {
             if (menuOpen) return;
@@ -31,13 +29,10 @@ export default function HeaderGuest() {
         return () => window.removeEventListener("scroll", onScroll);
     }, [lastScroll, menuOpen]);
 
-    // Abrir/cerrar menú: bloquear scroll de fondo y forzar header visible
     useEffect(() => {
         if (menuOpen) {
-            setHidden(false);          // header siempre visible con menú abierto
-            measureHeader();           // re-medimos por si cambió altura
-
-            // BLOQUEO DE SCROLL
+            setHidden(false);
+            measureHeader();
             scrollLockRef.current = window.scrollY;
             const y = scrollLockRef.current;
             document.body.style.position = "fixed";
@@ -47,7 +42,6 @@ export default function HeaderGuest() {
             document.body.style.width = "100%";
             document.documentElement.style.overscrollBehavior = "none";
         } else {
-            // Restaurar scroll
             document.body.style.position = "";
             document.body.style.top = "";
             document.body.style.left = "";
@@ -57,7 +51,6 @@ export default function HeaderGuest() {
             window.scrollTo(0, scrollLockRef.current || 0);
         }
         return () => {
-            // Limpieza por si se desmonta
             document.body.style.position = "";
             document.body.style.top = "";
             document.body.style.left = "";

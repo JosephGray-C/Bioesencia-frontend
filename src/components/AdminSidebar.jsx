@@ -5,7 +5,6 @@ import { useUser } from "../context/UserContext";
 import { useLogout } from "../hooks/useAuth";
 import Swal from "sweetalert2";
 
-// Opciones de navegación del panel admin (NO cambiar rutas/labels)
 const adminOptions = [
     { path: "/admin/productos", label: "Productos", icon: "🛒" },
     { path: "/admin/talleres", label: "Talleres", icon: "📚" },
@@ -22,7 +21,6 @@ export default function AdminSidebar({ open, onClose }) {
     const { setUser } = useUser();
     const logoutMutation = useLogout();
 
-    // === Copiamos el mismo patrón de cálculo de altura del header ===
     const headerRef = useRef(null);
     const headerHeightRef = useRef(0);
 
@@ -38,7 +36,6 @@ export default function AdminSidebar({ open, onClose }) {
         return () => window.removeEventListener("resize", onResize);
     }, []);
 
-    // === Bloqueo de scroll del body cuando el sidebar está abierto ===
     useEffect(() => {
         document.body.style.overflow = open ? "hidden" : "";
         return () => {
@@ -46,7 +43,6 @@ export default function AdminSidebar({ open, onClose }) {
         };
     }, [open]);
 
-    // === Cerrar con tecla Escape ===
     useEffect(() => {
         const onKey = (e) => {
             if (e.key === "Escape") onClose?.();
@@ -55,7 +51,6 @@ export default function AdminSidebar({ open, onClose }) {
         return () => window.removeEventListener("keydown", onKey);
     }, [onClose]);
 
-    // === Cerrar al navegar a otra ruta ===
     useEffect(() => {
         if (open) onClose?.();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -104,7 +99,6 @@ export default function AdminSidebar({ open, onClose }) {
         .header__nav__element-link { text-decoration: none; color: inherit; }
         .header__nav__element:hover { background-color: #0000000A; }
       `}</style>
-
             {open && (
                 <div
                     onClick={onClose}
@@ -116,7 +110,6 @@ export default function AdminSidebar({ open, onClose }) {
                     }}
                 />
             )}
-
             <nav
                 className={`header__nav ${open ? "nav-bar--open" : ""}`}
                 style={{
@@ -137,7 +130,6 @@ export default function AdminSidebar({ open, onClose }) {
                     pointerEvents: open ? "auto" : "none",
                 }}
             >
-                {/* Lista principal (misma estética que UserSidebar) */}
                 <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
                     {adminOptions.map((opt) => (
                         <li

@@ -15,7 +15,6 @@ export default function BlogUsuario() {
             .catch(err => console.error("Error al obtener posts:", err));
     }, []);
 
-    // Cuando NO hay sesión, acotamos el ancho y centramos
     const guestContainerStyle = !user
         ? { width: "100%", maxWidth: 900, margin: "0 auto" }
         : {};
@@ -26,7 +25,6 @@ export default function BlogUsuario() {
                 <h2 style={{ textAlign: "center", fontSize: "2rem", marginBottom: "2rem" }}>
                     Blog de Bioesencia
                 </h2>
-
                 {posts.length === 0 ? (
                     <p style={{ textAlign: "center" }}>No hay publicaciones disponibles.</p>
                 ) : (
@@ -44,9 +42,7 @@ export default function BlogUsuario() {
                             <h3 style={{ marginBottom: "0.5rem", color: "#5A0D0D" }}>
                                 {post.titulo}
                             </h3>
-
                             <p style={{ whiteSpace: "pre-wrap", color: "#000000" }}>{post.contenido}</p>
-
                             {post.imagen && (
                                 <img
                                     src={post.imagen}
@@ -62,7 +58,6 @@ export default function BlogUsuario() {
                                     }}
                                 />
                             )}
-
                             <p style={{ fontSize: "0.9rem", marginTop: "1rem", color: "#000000" }}>
                                 Publicado el {new Date(post.fechaCreacion).toLocaleString("es-CR")}
                             </p>

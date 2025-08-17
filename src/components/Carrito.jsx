@@ -14,7 +14,6 @@ async function fetchCarrito({ queryKey, signal }) {
     const res = await fetch(`${API_BASE}/${userId}`, { signal });
     if (!res.ok) return [];
     const data = await res.json();
-    // ✅ No filtramos para no descartar ítems persistidos sin 'producto' embebido
     return Array.isArray(data) ? data : [];
 }
 
@@ -45,7 +44,6 @@ export default function Carrito() {
         initialData: () => qc.getQueryData(["carrito", user?.id]) || [],
         staleTime: 30_000,
         refetchOnWindowFocus: false,
-        // ✅ Siempre refetchea al montar para traer ítems persistidos
         refetchOnMount: "always",
     });
 
@@ -152,7 +150,6 @@ export default function Carrito() {
                 }}
             >
                 <h2 style={{ marginBottom: "24px" }}>🛍️ Carrito de compras</h2>
-
                 {items.length === 0 ? (
                     <div
                         style={{
@@ -224,7 +221,6 @@ export default function Carrito() {
                             ))}
                             </tbody>
                         </table>
-
                         <div
                             style={{
                                 marginTop: "30px",
@@ -250,7 +246,6 @@ export default function Carrito() {
                             >
                                 🗑 {mLimpiar.isPending ? "Vaciando…" : "Vaciar carrito"}
                             </button>
-
                             <div style={{ textAlign: "right" }}>
                                 <p>
                                     <strong>Subtotal:</strong> ₡{subtotal.toFixed(2)}
