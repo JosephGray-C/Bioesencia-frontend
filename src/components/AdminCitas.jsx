@@ -619,13 +619,13 @@ export default function AdminCitas() {
             <table
                 style={{
                     width: "100%",
-                    background: "#23272f",
+                    background: "#fff",
                     borderCollapse: "collapse",
-                    color: "#fff",
+                    color: "#000000",
                 }}
             >
                 <thead>
-                    <tr style={{ background: "#20232b" }}>
+                    <tr style={{ background: "#A9C499", color: "#fff" }}>
                         <th style={{ padding: 12, textAlign: "left" }}>Fecha y hora</th>
                         <th style={{ padding: 12, textAlign: "left" }}>Servicio</th>
                         <th style={{ padding: 12, textAlign: "left" }}>Usuario</th>
@@ -767,7 +767,7 @@ export default function AdminCitas() {
             <div style={{ width: "100%", marginTop: 20 }}>
                 <span
                     style={{
-                        color: "#ccc",
+                        color: "#000000",
                         display: "block",
                         marginBottom: 8,
                         textAlign: "center",

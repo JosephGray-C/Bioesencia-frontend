@@ -34,18 +34,18 @@ export default function BlogUsuario() {
                         <div
                             key={post.idPost}
                             style={{
-                                background: "#2f343f",
+                                background: "#A9C499",
                                 padding: "1.5rem",
                                 borderRadius: "12px",
                                 marginBottom: "1.5rem",
                                 boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
                             }}
                         >
-                            <h3 style={{ marginBottom: "0.5rem", color: "#5EA743" }}>
+                            <h3 style={{ marginBottom: "0.5rem", color: "#5A0D0D" }}>
                                 {post.titulo}
                             </h3>
 
-                            <p style={{ whiteSpace: "pre-wrap" }}>{post.contenido}</p>
+                            <p style={{ whiteSpace: "pre-wrap", color: "#000000" }}>{post.contenido}</p>
 
                             {post.imagen && (
                                 <img
@@ -63,15 +63,8 @@ export default function BlogUsuario() {
                                 />
                             )}
 
-                            <p
-                                style={{
-                                    fontSize: "0.9rem",
-                                    marginTop: "1rem",
-                                    color: "#aaa"
-                                }}
-                            >
-                                Publicado el{" "}
-                                {new Date(post.fechaCreacion).toLocaleString("es-CR")}
+                            <p style={{ fontSize: "0.9rem", marginTop: "1rem", color: "#000000" }}>
+                                Publicado el {new Date(post.fechaCreacion).toLocaleString("es-CR")}
                             </p>
                         </div>
                     ))

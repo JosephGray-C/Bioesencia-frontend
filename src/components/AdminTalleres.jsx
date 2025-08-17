@@ -707,9 +707,9 @@ export default function AdminTalleres() {
             )}
 
             {/* DATATABLE */}
-            <table style={{ width: "100%", background: "#23272f", borderCollapse: "collapse", color: "#fff" }}>
+            <table style={{ width: "100%", background: "#fff", borderCollapse: "collapse", color: "#000000" }}>
                 <thead>
-                    <tr style={{ background: "#20232b" }}>
+                    <tr style={{ background: "#A9C499", color: "#fff" }}>
                         <th style={{ padding: 12, width: 120, textAlign: "left" }}>Título</th>
                         <th style={{ padding: 12, width: 200, textAlign: "left" }}>Descripción</th>
                         <th style={{ padding: 12, width: 145, textAlign: "center" }}>Fecha inicio</th>
@@ -855,7 +855,7 @@ export default function AdminTalleres() {
 
             {/* FOOTER + PAGINACIÓN */}
             <div style={{ width: "100%", marginTop: 20 }}>
-                <span style={{ color: "#ccc", display: "block", marginBottom: 8, textAlign: "center" }}>
+                <span style={{ color: "#000000", display: "block", marginBottom: 8, textAlign: "center" }}>
                     Mostrando {talleresPagina.length} de {talleresFiltrados.length}
                 </span>
                 <div style={{ display: "flex", justifyContent: "center", gap: 4 }}>

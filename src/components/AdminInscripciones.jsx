@@ -163,13 +163,13 @@ export default function AdminInscripciones() {
             <table
                 style={{
                     width: "100%",
-                    background: "#23272f",
+                    background: "#fff",
                     borderCollapse: "collapse",
-                    color: "#fff",
+                    color: "#000000",
                 }}
             >
                 <thead>
-                    <tr style={{ background: "#20232b" }}>
+                    <tr style={{ background: "#A9C499", color: "#fff" }}>
                         <th style={{ padding: 12, textAlign: "left" }}>Fecha inscrip.</th>
                         <th style={{ padding: 12, textAlign: "left" }}>Taller</th>
                         <th style={{ padding: 12, textAlign: "left" }}>Nombre</th>
@@ -287,7 +287,7 @@ export default function AdminInscripciones() {
             <div style={{ width: "100%", marginTop: 20 }}>
                 <span
                     style={{
-                        color: "#ccc",
+                        color: "#000000",
                         display: "block",
                         marginBottom: 8,
                         textAlign: "center",

@@ -14,9 +14,8 @@ async function fetchCarrito({ queryKey, signal }) {
     const res = await fetch(`${API_BASE}/${userId}`, { signal });
     if (!res.ok) return [];
     const data = await res.json();
-    return (data || []).filter(
-        (i) => i?.producto && typeof i.producto.precio !== "undefined"
-    );
+    // ✅ No filtramos para no descartar ítems persistidos sin 'producto' embebido
+    return Array.isArray(data) ? data : [];
 }
 
 async function apiEliminarItem(itemId) {
@@ -46,6 +45,8 @@ export default function Carrito() {
         initialData: () => qc.getQueryData(["carrito", user?.id]) || [],
         staleTime: 30_000,
         refetchOnWindowFocus: false,
+        // ✅ Siempre refetchea al montar para traer ítems persistidos
+        refetchOnMount: "always",
     });
 
     const showSpinner = isFetching && items.length === 0;
@@ -55,9 +56,7 @@ export default function Carrito() {
         onMutate: async (itemId) => {
             await qc.cancelQueries({ queryKey: ["carrito", user?.id] });
             const prev = qc.getQueryData(["carrito", user?.id]) || [];
-            qc.setQueryData(["carrito", user?.id], (old = []) =>
-                old.filter((it) => it.id !== itemId)
-            );
+            qc.setQueryData(["carrito", user?.id], (old = []) => old.filter((it) => it.id !== itemId));
             return { prev };
         },
         onError: (_err, _vars, ctx) => {
@@ -110,10 +109,11 @@ export default function Carrito() {
     };
 
     const { subtotal, impuesto, total } = useMemo(() => {
-        const sb = items.reduce(
-            (acc, item) => acc + (Number(item.producto?.precio || 0) * Number(item.cantidad || 0)),
-            0
-        );
+        const sb = items.reduce((acc, item) => {
+            const precio = Number(item?.producto?.precio ?? 0);
+            const cantidad = Number(item?.cantidad ?? 0);
+            return acc + precio * cantidad;
+        }, 0);
         const tax = sb * 0.13;
         return { subtotal: sb, impuesto: tax, total: sb + tax };
     }, [items]);
@@ -164,9 +164,9 @@ export default function Carrito() {
                     >
                         {showSpinner ? (
                             <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
-                                <ClipLoader size={22} color="#888" speedMultiplier={0.9} />
-                                <span style={{ color: "#777" }}>Cargando carrito…</span>
-                            </span>
+                <ClipLoader size={22} color="#888" speedMultiplier={0.9} />
+                <span style={{ color: "#777" }}>Cargando carrito…</span>
+              </span>
                         ) : (
                             <p>No hay productos en el carrito.</p>
                         )}
@@ -181,47 +181,47 @@ export default function Carrito() {
                             }}
                         >
                             <thead>
-                                <tr style={{ backgroundColor: "#f5f5f5" }}>
-                                    <th style={{ padding: "12px", textAlign: "left" }}>Producto</th>
-                                    <th style={{ textAlign: "center" }}>Cantidad</th>
-                                    <th style={{ textAlign: "right" }}>Precio unitario</th>
-                                    <th style={{ textAlign: "right" }}>Total</th>
-                                    <th></th>
-                                </tr>
+                            <tr style={{ backgroundColor: "#f5f5f5" }}>
+                                <th style={{ padding: "12px", textAlign: "left" }}>Producto</th>
+                                <th style={{ textAlign: "center" }}>Cantidad</th>
+                                <th style={{ textAlign: "right" }}>Precio unitario</th>
+                                <th style={{ textAlign: "right" }}>Total</th>
+                                <th></th>
+                            </tr>
                             </thead>
                             <tbody>
-                                {items.map((item) => (
-                                    <tr key={item.id} style={{ borderBottom: "1px solid #eee" }}>
-                                        <td style={{ padding: "12px" }}>{item.producto?.nombre}</td>
-                                        <td style={{ textAlign: "center" }}>{item.cantidad}</td>
-                                        <td style={{ textAlign: "right" }}>
-                                            ₡{Number(item.producto?.precio || 0).toFixed(2)}
-                                        </td>
-                                        <td style={{ textAlign: "right" }}>
-                                            ₡{Number(
-                                                (item.producto?.precio || 0) * (item.cantidad || 0)
-                                            ).toFixed(2)}
-                                        </td>
-                                        <td style={{ width: 120, textAlign: "right" }}>
-                                            <button
-                                                onClick={() => eliminarItem(item.id)}
-                                                disabled={mEliminar.isPending}
-                                                style={{
-                                                    background: "#c0392b",
-                                                    color: "#fff",
-                                                    border: "none",
-                                                    borderRadius: 6,
-                                                    padding: "6px 12px",
-                                                    cursor: mEliminar.isPending ? "not-allowed" : "pointer",
-                                                    opacity: mEliminar.isPending ? 0.8 : 1,
-                                                }}
-                                                title={mEliminar.isPending ? "Eliminando…" : "Eliminar"}
-                                            >
-                                                {mEliminar.isPending ? "Eliminando…" : "Eliminar"}
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
+                            {items.map((item) => (
+                                <tr key={item.id} style={{ borderBottom: "1px solid #eee" }}>
+                                    <td style={{ padding: "12px" }}>
+                                        {item.producto?.nombre ?? `(ID: ${item.productoId ?? "?"})`}
+                                    </td>
+                                    <td style={{ textAlign: "center" }}>{item.cantidad}</td>
+                                    <td style={{ textAlign: "right" }}>
+                                        ₡{Number(item.producto?.precio || 0).toFixed(2)}
+                                    </td>
+                                    <td style={{ textAlign: "right" }}>
+                                        ₡{Number((item.producto?.precio || 0) * (item.cantidad || 0)).toFixed(2)}
+                                    </td>
+                                    <td style={{ width: 120, textAlign: "right" }}>
+                                        <button
+                                            onClick={() => eliminarItem(item.id)}
+                                            disabled={mEliminar.isPending}
+                                            style={{
+                                                background: "#c0392b",
+                                                color: "#fff",
+                                                border: "none",
+                                                borderRadius: 6,
+                                                padding: "6px 12px",
+                                                cursor: mEliminar.isPending ? "not-allowed" : "pointer",
+                                                opacity: mEliminar.isPending ? 0.8 : 1,
+                                            }}
+                                            title={mEliminar.isPending ? "Eliminando…" : "Eliminar"}
+                                        >
+                                            {mEliminar.isPending ? "Eliminando…" : "Eliminar"}
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
                             </tbody>
                         </table>
 
