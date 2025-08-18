@@ -56,7 +56,7 @@ export default function HeaderUser() {
                     <Link to="/agendar" className="hu__link">Agendar</Link>
                     <Link to="/calendario" className="hu__link">Calendario</Link>
                     <Link to="/talleres" className="hu__link">Talleres</Link>
-                    <Link to="/productos" className="hu__link">Productos</Link>
+                    <Link to="/productos" className="hu__link">Comprar</Link>
                     <Link to="/carrito" className="hu__link">Carrito</Link>
                   </>
               )}

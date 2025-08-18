@@ -184,6 +184,12 @@ export default function TallerDetallePage() {
     return `${horas}:${minutos} ${ampm}`;
   }
 
+  function formatoFecha(fechaStr) {
+    if (!fechaStr) return "—";
+    const fecha = new Date(fechaStr);
+    return fecha.toLocaleDateString();
+  }
+
   if (showSpinner) {
     return (
       <div
@@ -214,7 +220,6 @@ export default function TallerDetallePage() {
     <div style={{ background: "#fff", padding: "32px 16px" }}>
       {/* estilos locales para hover/animaciones */}
       <style>{styles}</style>
-
       <div
         className="card"
         style={{
@@ -262,13 +267,16 @@ export default function TallerDetallePage() {
         {/* Detalles */}
         <div style={{ display: "grid", gap: 8, marginBottom: 12 }}>
           <p style={{ margin: 0 }}>
-            <strong style={{ color: WINE }}>Fecha y hora: </strong>
-            {taller.fechaInicio
-              ? `${new Date(taller.fechaInicio).toLocaleDateString()} ${formatoHoraAmPm(taller.fechaInicio)}`
-              : "—"}
-            {taller.fechaFin
-              ? ` - ${formatoHoraAmPm(taller.fechaFin)}`
-              : ""}
+            <strong style={{ color: WINE }}>Fecha: </strong>
+            {taller.fechaInicio ? formatoFecha(taller.fechaInicio) : "—"}
+          </p>
+          <p style={{ margin: 0 }}>
+            <strong style={{ color: WINE }}>Hora inicio: </strong>
+            {taller.fechaInicio ? formatoHoraAmPm(taller.fechaInicio) : "—"}
+          </p>
+          <p style={{ margin: 0 }}>
+            <strong style={{ color: WINE }}>Hora fin: </strong>
+            {taller.fechaFin ? formatoHoraAmPm(taller.fechaFin) : "—"}
           </p>
           <p style={{ margin: 0 }}>
             <strong style={{ color: WINE }}>Lugar: </strong>
@@ -361,7 +369,22 @@ export default function TallerDetallePage() {
         <div style={{ textAlign: "center" }}>
           <button
             type="button"
-            className="volver-btn"
+            className="volver-btn tp-btn"
+            style={{
+              display: "inline-block",
+              width: "100%",
+              marginTop: 18,
+              padding: "10px 16px",
+              background: "#A9C499",
+              color: "#5A0D0D",
+              border: "none",
+              borderRadius: 8,
+              fontWeight: 800,
+              fontSize: "1rem",
+              cursor: "pointer",
+              textAlign: "center",
+              transition: "transform .15s, box-shadow .15s, filter .15s",
+            }}
             onClick={() => navigate(-1)}
           >
             Volver
@@ -378,22 +401,24 @@ const styles = `
   .btn { transition: transform .15s ease, filter .15s ease, box-shadow .15s ease; }
   .btn:hover { filter: brightness(.96); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,.10); }
   .badge { border-radius: 999px; padding: 6px 10px; font-weight: 700; font-size: .875rem; }
-  .volver-btn {
+  .tp-btn {
     display: inline-block;
-    margin-top: 18px;
-    padding: 10px 24px;
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px 16px;
     background: #A9C499;
     color: #5A0D0D;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 800;
+    text-align: center;
     border: none;
-    border-radius: 12px;
-    font-weight: 700;
+    transition: transform .15s, filter .15s;
     font-size: 1rem;
     cursor: pointer;
-    transition: transform .15s, box-shadow .15s, filter .15s;
   }
-  .volver-btn:hover {
+  .tp-btn:hover {
     filter: brightness(.96);
     transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(0,0,0,.10);
   }
 `;

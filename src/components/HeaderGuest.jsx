@@ -101,8 +101,8 @@ export default function HeaderGuest() {
 
                 <nav className="hg-nav">
                     <Link to="/" className="hg-link">Inicio</Link>
-                    <Link to="/about" className="hg-link">Sobre Nosotros</Link>
-                    <Link to="/blogusuario" className="hg-link">Blog Bioesencia</Link>
+                    <Link to="/about" className="hg-link">Nosotros</Link>
+                    <Link to="/blogusuario" className="hg-link">Blog</Link>
                 </nav>
 
                 <div className="hg-actions">
