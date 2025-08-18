@@ -1,147 +1,77 @@
-<<<<<<< HEAD
-// src/components/BlogUsuario.jsx
-import React, { useEffect, useState } from "react";
-=======
 import React, { useEffect, useState, useMemo } from "react";
->>>>>>> 075d139 (FrontEnd completo responsive)
 import { useUser } from "../context/UserContext";
 
 const API_URL = "http://localhost:8080/api/posts";
 
 export default function BlogUsuario() {
-<<<<<<< HEAD
     const { user } = useUser();
     const [posts, setPosts] = useState([]);
 
     useEffect(() => {
         fetch(`${API_URL}/listar`)
-            .then(res => res.json())
-            .then(data => setPosts(Array.isArray(data) ? data : []))
-            .catch(err => console.error("Error al obtener posts:", err));
+            .then((res) => res.json())
+            .then((data) => setPosts(Array.isArray(data) ? data : []))
+            .catch((err) => console.error("Error al obtener posts:", err));
     }, []);
 
-    const guestContainerStyle = !user
-        ? { width: "100%", maxWidth: 900, margin: "0 auto" }
-        : {};
+    // Contenedor centrado (desktop) — ligeramente más angosto
+    const containerStyle = useMemo(
+        () => ({ width: "100%", maxWidth: 980, margin: "0 auto" }),
+        []
+    );
 
     return (
-        <div style={{ padding: "2rem", color: "#fff" }}>
-            <div style={guestContainerStyle}>
-                <h2 style={{ textAlign: "center", fontSize: "2rem", marginBottom: "2rem" }}>
-                    Blog de Bioesencia
-                </h2>
+        <div className="bu-page">
+            <style>{styles}</style>
+
+            {/* Título simple (sin fondo) */}
+            <header className="bu-hero">
+                <div className="bu-hero-inner" style={containerStyle}>
+                    <h1 className="bu-hero-title">Blog</h1>
+                    <p className="bu-hero-subtitle">
+                        Novedades, consejos y contenido de bienestar de <strong>Bioesencia</strong>.
+                    </p>
+                </div>
+            </header>
+
+            {/* Contenido */}
+            <main className="bu-main" style={containerStyle}>
                 {posts.length === 0 ? (
-                    <p style={{ textAlign: "center" }}>No hay publicaciones disponibles.</p>
+                    <div className="bu-empty">No hay publicaciones disponibles.</div>
                 ) : (
-                    posts.map(post => (
-                        <div
-                            key={post.idPost}
-                            style={{
-                                background: "#A9C499",
-                                padding: "1.5rem",
-                                borderRadius: "12px",
-                                marginBottom: "1.5rem",
-                                boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
-                            }}
-                        >
-                            <h3 style={{ marginBottom: "0.5rem", color: "#5A0D0D" }}>
-                                {post.titulo}
-                            </h3>
-                            <p style={{ whiteSpace: "pre-wrap", color: "#000000" }}>{post.contenido}</p>
-                            {post.imagen && (
-                                <img
-                                    src={post.imagen}
-                                    alt="imagen del post"
-                                    style={{
-                                        display: "block",
-                                        width: "100%",
-                                        maxWidth: 600,
-                                        marginTop: "1rem",
-                                        marginLeft: "auto",
-                                        marginRight: "auto",
-                                        borderRadius: "8px"
-                                    }}
-                                />
-                            )}
-                            <p style={{ fontSize: "0.9rem", marginTop: "1rem", color: "#000000" }}>
-                                Publicado el {new Date(post.fechaCreacion).toLocaleString("es-CR")}
-                            </p>
-                        </div>
-                    ))
+                    <section className="bu-grid">
+                        {posts.map((post) => (
+                            <article key={post.idPost} className="bu-card">
+                                {/* Imagen */}
+                                {post.imagen ? (
+                                    <div className="bu-card-media">
+                                        <img src={post.imagen} alt={post.titulo || "Imagen del post"} loading="lazy" />
+                                    </div>
+                                ) : (
+                                    <div className="bu-card-media bu-card-media--placeholder">
+                                        <span>Bioesencia</span>
+                                    </div>
+                                )}
+
+                                {/* Contenido */}
+                                <div className="bu-card-body">
+                                    <h3 className="bu-card-title">{post.titulo}</h3>
+                                    <p className="bu-card-excerpt">{post.contenido}</p>
+                                </div>
+
+                                {/* Footer */}
+                                <div className="bu-card-footer">
+                                    <time className="bu-card-date">
+                                        {new Date(post.fechaCreacion).toLocaleString("es-CR")}
+                                    </time>
+                                </div>
+                            </article>
+                        ))}
+                    </section>
                 )}
-            </div>
+            </main>
         </div>
     );
-}
-=======
-  const { user } = useUser();
-  const [posts, setPosts] = useState([]);
-
-  useEffect(() => {
-    fetch(`${API_URL}/listar`)
-      .then((res) => res.json())
-      .then((data) => setPosts(Array.isArray(data) ? data : []))
-      .catch((err) => console.error("Error al obtener posts:", err));
-  }, []);
-
-  // Contenedor centrado (desktop) — ligeramente más angosto
-  const containerStyle = useMemo(
-    () => ({ width: "100%", maxWidth: 980, margin: "0 auto" }),
-    []
-  );
-
-  return (
-    <div className="bu-page">
-      <style>{styles}</style>
-
-      {/* Título simple (sin fondo) */}
-      <header className="bu-hero">
-        <div className="bu-hero-inner" style={containerStyle}>
-          <h1 className="bu-hero-title">Blog</h1>
-          <p className="bu-hero-subtitle">
-            Novedades, consejos y contenido de bienestar de <strong>Bioesencia</strong>.
-          </p>
-        </div>
-      </header>
-
-      {/* Contenido */}
-      <main className="bu-main" style={containerStyle}>
-        {posts.length === 0 ? (
-          <div className="bu-empty">No hay publicaciones disponibles.</div>
-        ) : (
-          <section className="bu-grid">
-            {posts.map((post) => (
-              <article key={post.idPost} className="bu-card">
-                {/* Imagen */}
-                {post.imagen ? (
-                  <div className="bu-card-media">
-                    <img src={post.imagen} alt={post.titulo || "Imagen del post"} loading="lazy" />
-                  </div>
-                ) : (
-                  <div className="bu-card-media bu-card-media--placeholder">
-                    <span>Bioesencia</span>
-                  </div>
-                )}
-
-                {/* Contenido */}
-                <div className="bu-card-body">
-                  <h3 className="bu-card-title">{post.titulo}</h3>
-                  <p className="bu-card-excerpt">{post.contenido}</p>
-                </div>
-
-                {/* Footer */}
-                <div className="bu-card-footer">
-                  <time className="bu-card-date">
-                    {new Date(post.fechaCreacion).toLocaleString("es-CR")}
-                  </time>
-                </div>
-              </article>
-            ))}
-          </section>
-        )}
-      </main>
-    </div>
-  );
 }
 
 /* ====== ESTILOS ====== */
@@ -163,7 +93,7 @@ const styles = `
 
 /* HERO sin fondo, compacto */
 .bu-hero{
-margin-top:3dvh;
+  margin-top:3dvh;
   background: transparent;       /* <- sin color de fondo */
   padding: 18px 16px 10px;       /* menos alto */
 }
@@ -285,4 +215,3 @@ margin-top:3dvh;
   .bu-card-footer{ padding: 8px 14px 12px; }
 }
 `;
->>>>>>> 075d139 (FrontEnd completo responsive)

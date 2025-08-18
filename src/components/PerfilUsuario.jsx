@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 // src/components/PerfilUsuario.jsx
-=======
->>>>>>> 075d139 (FrontEnd completo responsive)
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";

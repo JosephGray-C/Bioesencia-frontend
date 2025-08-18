@@ -1,28 +1,19 @@
-<<<<<<< HEAD
-/* src/components/styles/productos.css */
-body {
-    background: #ffffff; /* Fondo global blanco */
-}
-
-
-html, body {
-    height: 100%;
-    width: 100%;
-}
-
+body { background: #ffffff; }
+html, body { height: 100%; width: 100%; }
 
 .productos-view {
     width: 100%;
     display: grid;
     min-height: 100vh;
-    grid-template-rows: auto 1fr auto ;
+    grid-template-rows: auto 1fr auto;
     padding: 40px;
-    background: #ffffff; /* Fondo blanco */
+    background: #ffffff;
 }
 
+/* GRID base: usa tarjetas fluidas, pero no limite a 220px en móvil */
 .productos-grid {
     display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
     gap: 24px;
     width: 96%;
     padding: 40px;
@@ -39,11 +30,10 @@ html, body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    border: none;
 }
 
-.producto-card:hover {
-    transform: translateY(-4px);
-}
+.producto-card:hover { transform: translateY(-4px); }
 
 .producto-card img {
     width: 100%;
@@ -70,85 +60,15 @@ html, body {
     grid-column: 1/-1;
     text-align: center;
     padding: 38px;
-=======
-body { background: #ffffff; }
-html, body { height: 100%; width: 100%; }
-
-.productos-view {
-  width: 100%;
-  display: grid;
-  min-height: 100vh;
-  grid-template-rows: auto 1fr auto;
-  padding: 40px;
-  background: #ffffff;
-}
-
-/* GRID base: usa tarjetas fluidas, pero no limite a 220px en móvil */
-.productos-grid {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
-  gap: 24px;
-  width: 96%;
-  padding: 40px;
-}
-
-.producto-card {
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
-  padding: 16px;
-  text-align: center;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border: none;
-}
-
-.producto-card:hover { transform: translateY(-4px); }
-
-.producto-card img {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 10px;
-}
-
-.producto-nombre {
-  font-weight: 600;
-  font-size: 1.05rem;
-  margin-bottom: 6px;
-}
-
-.producto-precio {
-  color: #5EA743;
-  font-weight: 700;
-  font-size: 1rem;
-}
-
-.mensaje-vacio {
-  color: #888;
-  grid-column: 1/-1;
-  text-align: center;
-  padding: 38px;
->>>>>>> 075d139 (FrontEnd completo responsive)
 }
 
 /* Modal */
 .modal-overlay {
-<<<<<<< HEAD
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    position: fixed; inset: 0;
+    width: 100vw; height: 100vh;
     background: rgba(0,0,0,0.25);
     z-index: 2000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
 }
 
 .modal-content {
@@ -163,105 +83,16 @@ html, body { height: 100%; width: 100%; }
 }
 
 .modal-close {
-    position: absolute;
-    top: 18px;
-    right: 18px;
-    font-size: 22px;
-    background: none;
-    border: none;
-    color: #888;
-    cursor: pointer;
+    position: absolute; top: 18px; right: 18px;
+    font-size: 22px; background: none; border: none; color: #888; cursor: pointer;
 }
 
 .modal-content img {
-    width: 140px;
-    height: 140px;
+    width: 140px; height: 140px;
     object-fit: contain;
     border-radius: 12px;
     background: #f8f8f8;
     margin-bottom: 18px;
-}
-
-.modal-title {
-    font-weight: 700;
-    font-size: 22px;
-    color: #5EA743;
-    margin-bottom: 8px;
-}
-
-.modal-description {
-    font-size: 15.5px;
-    color: #555;
-    margin-bottom: 10px;
-}
-
-.modal-price {
-    font-size: 17px;
-    font-weight: 700;
-    color: #5EA743;
-}
-
-.modal-stock {
-    color: #888;
-    margin-bottom: 14px;
-}
-
-.modal-cantidad {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    justify-content: center;
-    margin: 16px 0 20px;
-}
-
-.modal-cantidad input {
-    width: 60px;
-    padding: 7px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    text-align: center;
-    font-weight: 600;
-}
-
-.modal-agregar {
-    background: #5EA743;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 24px;
-    font-weight: 700;
-    font-size: 17px;
-    cursor: pointer;
-=======
-  position: fixed; inset: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.25);
-  z-index: 2000;
-  display: flex; align-items: center; justify-content: center;
-}
-
-.modal-content {
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 6px 32px #0003;
-  min-width: 340px;
-  max-width: 420px;
-  padding: 32px;
-  position: relative;
-  text-align: center;
-}
-
-.modal-close {
-  position: absolute; top: 18px; right: 18px;
-  font-size: 22px; background: none; border: none; color: #888; cursor: pointer;
-}
-
-.modal-content img {
-  width: 140px; height: 140px;
-  object-fit: contain;
-  border-radius: 12px;
-  background: #f8f8f8;
-  margin-bottom: 18px;
 }
 
 .modal-title { font-weight: 700; font-size: 22px; color: #5EA743; margin-bottom: 8px; }
@@ -270,57 +101,56 @@ html, body { height: 100%; width: 100%; }
 .modal-stock { color: #888; margin-bottom: 14px; }
 
 .modal-cantidad {
-  display: flex; align-items: center; gap: 12px; justify-content: center;
-  margin: 16px 0 20px;
+    display: flex; align-items: center; gap: 12px; justify-content: center;
+    margin: 16px 0 20px;
 }
 .modal-cantidad input {
-  width: 60px; padding: 7px; border-radius: 6px; border: 1px solid #ccc;
-  text-align: center; font-weight: 600;
+    width: 60px; padding: 7px; border-radius: 6px; border: 1px solid #ccc;
+    text-align: center; font-weight: 600;
 }
 .modal-agregar {
-  background: #5EA743; color: #fff; border: none; border-radius: 8px;
-  padding: 12px 24px; font-weight: 700; font-size: 17px; cursor: pointer;
+    background: #5EA743; color: #fff; border: none; border-radius: 8px;
+    padding: 12px 24px; font-weight: 700; font-size: 17px; cursor: pointer;
 }
 
 /* ===================== Responsive ===================== */
 
 /* Tablets (~ ≥600px): 3 columnas */
 @media (min-width: 600px) and (max-width: 1024px) {
-  .productos-view { padding: 24px; }
-  .productos-grid {
-    width: 100%;
-    padding: 16px;
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    gap: 20px;
-  }
-  .producto-card img { height: 160px; }
+    .productos-view { padding: 24px; }
+    .productos-grid {
+        width: 100%;
+        padding: 16px;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 20px;
+    }
+    .producto-card img { height: 160px; }
 }
 
 /* Móvil grande (≤600px): 2 columnas fijas */
 @media (max-width: 600px) {
-  .productos-view { padding: 16px; }
-  .productos-grid {
-    width: 100%;
-    padding: 8px 8px 16px;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 12px !important;
-  }
-  .producto-card { padding: 12px; border-radius: 12px; }
-  .producto-card img { height: 120px; }
-  .producto-nombre { font-size: .98rem; }
-  .producto-precio { font-size: .96rem; }
-  .mensaje-vacio { padding: 24px; }
-  /* Modal más flexible en móvil */
-  .modal-content {
-    min-width: auto; max-width: 92vw; width: 92vw; padding: 24px;
-  }
+    .productos-view { padding: 16px; }
+    .productos-grid {
+        width: 100%;
+        padding: 8px 8px 16px;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 12px !important;
+    }
+    .producto-card { padding: 12px; border-radius: 12px; }
+    .producto-card img { height: 120px; }
+    .producto-nombre { font-size: .98rem; }
+    .producto-precio { font-size: .96rem; }
+    .mensaje-vacio { padding: 24px; }
+    /* Modal más flexible en móvil */
+    .modal-content {
+        min-width: auto; max-width: 92vw; width: 92vw; padding: 24px;
+    }
 }
 
 /* Móvil muy chico (≤360px): ajusta imagen y textos */
 @media (max-width: 360px) {
-  .productos-grid { gap: 10px !important; }
-  .producto-card img { height: 105px; }
-  .producto-nombre { font-size: .92rem; }
-  .producto-precio { font-size: .9rem; }
->>>>>>> 075d139 (FrontEnd completo responsive)
+    .productos-grid { gap: 10px !important; }
+    .producto-card img { height: 105px; }
+    .producto-nombre { font-size: .92rem; }
+    .producto-precio { font-size: .9rem; }
 }

@@ -3,12 +3,7 @@
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 15px 40px rgba(0,0,0,0.12);
-<<<<<<< HEAD
-  /*  */
-  /* ← esto centra horizontalmente y da espacio superior */
-=======
->>>>>>> 075d139 (FrontEnd completo responsive)
-  margin: 0px auto; 
+  margin: 0px auto;
 }
 .wrapper header{
   display: flex;
@@ -47,14 +42,12 @@ header .current-date {
 }
 .calendar{
   padding: 10px;
-
 }
 .calendar ul{
   display: flex;
   flex-wrap: wrap;
   list-style: none;
   text-align: center;
-  /*  */
   padding: 10px;
   margin: 0;
 }
@@ -101,8 +94,6 @@ header .current-date {
 }
 .days li.selected::before {
   background: #3498db; /* color diferente al día actual */
-<<<<<<< HEAD
-=======
 }
 
 /* En pantallas pequeñas (ej. <= 600px), que use todo el ancho */
@@ -111,5 +102,4 @@ header .current-date {
     width: 100%;
     max-width: 100%;
   }
->>>>>>> 075d139 (FrontEnd completo responsive)
 }
