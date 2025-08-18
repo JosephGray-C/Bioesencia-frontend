@@ -1,18 +1,23 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { useUser } from "../context/UserContext";
+import { useMemo } from "react";
+import ClipLoader from "react-spinners/ClipLoader";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const API_URL = "http://localhost:8080/api/posts";
 
 export default function BlogUsuario() {
-    const { user } = useUser();
-    const [posts, setPosts] = useState([]);
+    const qc = useQueryClient();
 
-    useEffect(() => {
-        fetch(`${API_URL}/listar`)
-            .then((res) => res.json())
-            .then((data) => setPosts(Array.isArray(data) ? data : []))
-            .catch((err) => console.error("Error al obtener posts:", err));
-    }, []);
+    const { data: posts = [], isFetching } = useQuery({
+        queryKey: ["blogPosts"],
+        queryFn: async () => {
+            const res = await fetch(`${API_URL}/listar`);
+            const data = await res.json();
+            return Array.isArray(data) ? data : [];
+        },
+        initialData: () => qc.getQueryData(["blogPosts"]) || [],
+    });
+
+    const showSpinner = isFetching && posts.length === 0;
 
     // Contenedor centrado (desktop) — ligeramente más angosto
     const containerStyle = useMemo(
@@ -37,7 +42,16 @@ export default function BlogUsuario() {
             {/* Contenido */}
             <main className="bu-main" style={containerStyle}>
                 {posts.length === 0 ? (
-                    <div className="bu-empty">No hay publicaciones disponibles.</div>
+                    <div className="bu-empty">
+                        {showSpinner ? (
+                            <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                                <ClipLoader size={22} color="#A9C499" speedMultiplier={0.9} />
+                                <span style={{ color: "#5A0D0D" }}>Cargando publicaciones…</span>
+                            </span>
+                        ) : (
+                            "No hay publicaciones disponibles."
+                        )}
+                    </div>
                 ) : (
                     <section className="bu-grid">
                         {posts.map((post) => (
@@ -125,6 +139,13 @@ const styles = `
   display:grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: clamp(14px, 2vw, 22px);
+}
+
+/* Solo 2 columnas en pantallas grandes */
+@media (min-width: 900px){
+  .bu-grid{
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* Tarjeta */

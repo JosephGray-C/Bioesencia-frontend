@@ -92,14 +92,7 @@ export default function UserSidebar({ open, onClose }) {
 
   return (
     <>
-      <style>{`
-        .header__nav { width: 100vw; }
-        @media only screen and (min-width: 720px) {
-          .nav-bar--open { width: 25vw !important; }
-        }
-        .header__nav__element-link { text-decoration: none; color: inherit; }
-        .header__nav__element:hover { background-color: #0000000A; }
-      `}</style>
+      <style>{Styles}</style>
 
       {open && (
         <div
@@ -232,3 +225,12 @@ export default function UserSidebar({ open, onClose }) {
     </>
   );
 }
+
+const Styles = `
+  .header__nav { width: 100vw; }
+  @media only screen and (min-width: 720px) {
+    .nav-bar--open { width: 25vw !important; }
+  }
+  .header__nav__element-link { text-decoration: none; color: inherit; }
+  .header__nav__element:hover { background-color: #0000000A; }
+`;

@@ -96,6 +96,24 @@ header .current-date {
   background: #3498db; /* color diferente al día actual */
 }
 
+/* Día seleccionado: fondo verde, número café */
+.days li.selected::before {
+  background: #A9C499 !important; /* verde */
+}
+.days li.selected {
+  color: #5A0D0D !important;      /* número café */
+  font-weight: 800;
+}
+
+/* Día actual: fondo café, número verde */
+.days li.active::before {
+  background: #5A0D0D !important; /* café */
+}
+.days li.active {
+  color: #A9C499 !important;      /* número verde */
+  font-weight: 800;
+}
+
 /* En pantallas pequeñas (ej. <= 600px), que use todo el ancho */
 @media (max-width: 600px){
   .wrapper{

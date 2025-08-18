@@ -21,10 +21,6 @@ export default function About() {
           objectFit: "cover",
         }}
       />
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste voluptate minima laborum aspernatur deserunt, placeat itaque doloremque voluptates dolorem doloribus, corporis optio ad modi aperiam incidunt eligendi illo provident tempora! Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed qui quia ab incidunt, inventore porro dolores mollitia minus exercitationem, vitae aliquam numquam adipisci ullam assumenda explicabo magni neque officiis distinctio. Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro alias, harum soluta nulla sint maxime inventore suscipit numquam reprehenderit nihil adipisci quae at voluptates, quisquam aut nemo eligendi rerum. Ipsam. Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta perspiciatis quisquam nihil beatae necessitatibus, quae architecto sit laudantium, delectus rem autem expedita illum minima animi dolores voluptates labore nobis optio.
-      </p>
 
       <section class="main__FAQ-container">
             <div class="main__FAQ-title-container"> <h2 class="main__FAQ-title">Preguntas frecuentes</h2></div>

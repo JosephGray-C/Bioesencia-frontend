@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { useUser } from "../context/UserContext";
 
+function formatoHoraAmPm(hora24) {
+    if (!hora24) return "";
+    const [h, m] = hora24.split(":").map(Number);
+    const ampm = h >= 12 ? "PM" : "AM";
+    const hora12 = h % 12 === 0 ? 12 : h % 12;
+    return `${hora12}:${m.toString().padStart(2, "0")} ${ampm}`;
+}
+
 export function useAgendar() {
     const { user } = useUser();
     const [mensaje, setMensaje] = useState("");
@@ -27,7 +35,7 @@ export function useAgendar() {
             });
             
             if (response.ok) {
-                setMensaje(`Cita solicitada para el ${selectedDate.toLocaleDateString()} a las ${selectedHora}`);
+                setMensaje(`Cita solicitada para el ${selectedDate.toLocaleDateString()} a las ${formatoHoraAmPm(selectedHora)}`);
                 // Fetch horarios actualizados desde el backend
                 const resHorarios = await fetch(`http://localhost:8080/api/horarios?fecha=${fechaStr}`);
                 if (resHorarios.ok) {

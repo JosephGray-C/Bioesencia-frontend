@@ -213,31 +213,7 @@ export default function TallerDetallePage() {
   return (
     <div style={{ background: "#fff", padding: "32px 16px" }}>
       {/* estilos locales para hover/animaciones */}
-      <style>{`
-        .card { transition: box-shadow .2s ease, transform .2s ease; }
-        .card:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,.08); }
-        .btn { transition: transform .15s ease, filter .15s ease, box-shadow .15s ease; }
-        .btn:hover { filter: brightness(.96); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,.10); }
-        .badge { border-radius: 999px; padding: 6px 10px; font-weight: 700; font-size: .875rem; }
-        .volver-btn {
-          display: inline-block;
-          margin-top: 18px;
-          padding: 10px 24px;
-          background: #A9C499;
-          color: #5A0D0D;
-          border: none;
-          border-radius: 12px;
-          font-weight: 700;
-          font-size: 1rem;
-          cursor: pointer;
-          transition: transform .15s, box-shadow .15s, filter .15s;
-        }
-        .volver-btn:hover {
-          filter: brightness(.96);
-          transform: translateY(-1px);
-          box-shadow: 0 6px 18px rgba(0,0,0,.10);
-        }
-      `}</style>
+      <style>{styles}</style>
 
       <div
         className="card"
@@ -395,3 +371,29 @@ export default function TallerDetallePage() {
     </div>
   );
 }
+
+const styles = `
+  .card { transition: box-shadow .2s ease, transform .2s ease; }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,.08); }
+  .btn { transition: transform .15s ease, filter .15s ease, box-shadow .15s ease; }
+  .btn:hover { filter: brightness(.96); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,.10); }
+  .badge { border-radius: 999px; padding: 6px 10px; font-weight: 700; font-size: .875rem; }
+  .volver-btn {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 10px 24px;
+    background: #A9C499;
+    color: #5A0D0D;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s, filter .15s;
+  }
+  .volver-btn:hover {
+    filter: brightness(.96);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0,0,0,.10);
+  }
+`;

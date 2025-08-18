@@ -527,11 +527,13 @@ export default function AdminCitas() {
     // Filtrado y paginación
     const citasFiltradas = useMemo(() => {
         const q = busqueda.toLowerCase();
-        return citas.filter(
-            (c) =>
-                c.servicio?.toLowerCase().includes(q) ||
-                c.estado?.toLowerCase().includes(q) ||
-                c.notas?.toLowerCase().includes(q)
+        return citas.filter((c) =>
+            (c.fechaHora?.toLowerCase().includes(q) ||
+            c.servicio?.toLowerCase().includes(q) ||
+            c.usuarioNombre?.toLowerCase().includes(q) ||
+            c.usuarioCorreo?.toLowerCase().includes(q) ||
+            c.estado?.toLowerCase().includes(q) ||
+            c.notas?.toLowerCase().includes(q))
         );
     }, [citas, busqueda]);
 
