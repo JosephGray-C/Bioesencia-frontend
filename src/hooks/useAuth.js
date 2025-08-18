@@ -1,4 +1,7 @@
+// src/hooks/useAuth.js
 import { useMutation } from "@tanstack/react-query";
+
+const STORAGE_KEY = "bio_user";
 
 // Login
 export function useLogin() {
@@ -55,6 +58,8 @@ export function useLogout() {
         credentials: "include"
       });
       if (!response.ok) throw new Error(await response.text());
+      // Limpia la sesión en sessionStorage cuando el backend ya invalida cookie
+      sessionStorage.removeItem(STORAGE_KEY);
       return true;
     }
   });
