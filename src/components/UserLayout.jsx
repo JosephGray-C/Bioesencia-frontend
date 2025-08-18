@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 // src/components/UserLayout.jsx
+=======
+>>>>>>> 075d139 (FrontEnd completo responsive)
 import UserSidebar from "./UserSidebar";
 import { Outlet } from "react-router-dom";
 import { useUser } from "../context/UserContext";
