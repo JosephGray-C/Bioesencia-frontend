@@ -401,7 +401,7 @@ export default function AdminProductos() {
                 <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
                     <input
                         type="text"
-                        placeholder="Buscar"
+                        placeholder="Buscar producto"
                         value={busqueda}
                         onChange={(e) => {
                             setBusqueda(e.target.value);

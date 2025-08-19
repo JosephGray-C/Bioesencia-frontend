@@ -626,9 +626,20 @@ export default function AdminTalleres() {
 
     // Filtrado y paginación
     const talleresFiltrados = useMemo(
-        () => (talleres || []).filter(t =>
-            t.titulo?.toLowerCase().includes(busqueda.toLowerCase())
-        ),
+        () => (talleres || []).filter(t => {
+            const q = busqueda.trim().toLowerCase();
+            if (!q) return true;
+            return (
+                (t.titulo || "").toLowerCase().includes(q) ||
+                (t.descripcion || "").toLowerCase().includes(q) ||
+                (t.lugar || "").toLowerCase().includes(q) ||
+                (t.fechaInicio || "").toLowerCase().includes(q) ||
+                (t.fechaFin || "").toLowerCase().includes(q) ||
+                (t.cupoMaximo?.toString() || "").toLowerCase().includes(q) ||
+                (t.precio?.toString() || "").toLowerCase().includes(q) ||
+                (t.activo ? "sí" : "no").includes(q)
+            );
+        }),
         [talleres, busqueda]
     );
 
@@ -652,7 +663,7 @@ export default function AdminTalleres() {
                 <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
                     <input
                         type="text"
-                        placeholder="Buscar por título"
+                        placeholder="Buscar taller"
                         value={busqueda}
                         onChange={e => {
                             setBusqueda(e.target.value);

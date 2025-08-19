@@ -141,7 +141,7 @@ export default function AdminInscripciones() {
                 <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
                     <input
                         type="text"
-                        placeholder="Buscar por taller, usuario, email, estado…"
+                        placeholder="Buscar inscripción"
                         value={busqueda}
                         onChange={(e) => {
                             setBusqueda(e.target.value);

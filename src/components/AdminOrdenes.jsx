@@ -1,5 +1,5 @@
 // src/components/AdminOrdenes.jsx
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -12,18 +12,6 @@ async function fetchOrdenes({ signal }) {
     if (!res.ok) throw new Error(await res.text());
     const data = await res.json();
     return Array.isArray(data) ? data : [];
-}
-
-async function fetchOrdenPorCodigo(codigo, { signal } = {}) {
-    const res = await fetch(
-        `${API_ORDENES}/codigo/${encodeURIComponent(codigo)}`,
-        { signal }
-    );
-    if (!res.ok) {
-        const msg = await res.text();
-        throw new Error(msg || "Orden no encontrada");
-    }
-    return res.json();
 }
 
 async function actualizarEstadoOrden({ id, estado }) {
@@ -177,84 +165,59 @@ export default function AdminOrdenes() {
         estado: "PENDIENTE",
     });
 
-    const [resultadoBusqueda, setResultadoBusqueda] = useState(null);
-
-    const [isSearching, setIsSearching] = useState(false);
-    const searchAbortRef = useRef(null);
-
-    useEffect(() => {
-        return () => {
-            if (searchAbortRef.current) searchAbortRef.current.abort();
-        };
-    }, []);
-
+    // Usa React Query con caché y spinner
     const { data: ordenes = [], isFetching, refetch } = useQuery({
         queryKey: ["ordenes"],
         queryFn: fetchOrdenes,
         initialData: () => qc.getQueryData(["ordenes"]) || [],
     });
 
-    const showSpinner = isFetching && ordenes.length === 0;
-
+    // MUTATION para actualizar estado
     const mEstado = useMutation({
         mutationFn: actualizarEstadoOrden,
-        onSuccess: (actualizada) => {
-            qc.setQueryData(["ordenes"], (prev) => {
-                if (!Array.isArray(prev)) return prev;
-                return prev.map((o) => (o.id === actualizada.id ? actualizada : o));
-            });
-
-            setResultadoBusqueda((prev) =>
-                prev && prev.id === actualizada.id ? actualizada : prev
-            );
-
+        onSuccess: () => {
+            Swal.fire("¡Guardado!", "El estado de la orden fue actualizado.", "success");
             setShowEdit(false);
-            Swal.fire("¡Actualizada!", "Estado de la orden actualizado.", "success");
+            refetch();
         },
-        onError: (e) => {
-            Swal.fire(
-                "Error",
-                e.message || "No se pudo actualizar el estado",
-                "error"
-            );
-        },
-        onSettled: () => {
-            qc.invalidateQueries({ queryKey: ["ordenes"] });
+        onError: (err) => {
+            Swal.fire("Error", err.message || "No se pudo actualizar el estado.", "error");
         },
     });
 
-    const handleBuscar = async () => {
-        const codigo = busqueda.trim();
-        if (!codigo) {
-            setResultadoBusqueda(null);
-            await refetch();
-            setPaginaActual(1);
-            return;
-        }
-        try {
-            if (searchAbortRef.current) searchAbortRef.current.abort();
-            const controller = new AbortController();
-            searchAbortRef.current = controller;
-            setIsSearching(true);
+    // Filtrado en tiempo real por todos los campos relevantes
+    const ordenesFiltradas = useMemo(() => {
+        const q = busqueda.trim().toLowerCase();
+        if (!q) return ordenes;
+        return ordenes.filter((ord) =>
+            (ord.codigoOrden || "").toLowerCase().includes(q) ||
+            (ord.usuarioNombre || "").toLowerCase().includes(q) ||
+            (ord.usuarioApellido || "").toLowerCase().includes(q) ||
+            (ord.usuarioEmail || ord.usuarioCorreo || "").toLowerCase().includes(q) ||
+            (ord.estado || "").toLowerCase().includes(q) ||
+            (ord.total?.toString() || "").toLowerCase().includes(q) ||
+            (ord.fechaOrden || "").toLowerCase().includes(q)
+        );
+    }, [ordenes, busqueda]);
 
-            const unica = await fetchOrdenPorCodigo(codigo, {
-                signal: controller.signal,
-            });
-            setResultadoBusqueda(unica);
-            setPaginaActual(1);
-        } catch (e) {
-            if (e.name === "AbortError") return;
-            setResultadoBusqueda(null);
-            Swal.fire("Sin resultados", "No existe una orden con ese código", "info");
-        } finally {
-            setIsSearching(false);
-        }
-    };
+    const totalPaginas = Math.ceil(ordenesFiltradas.length / porPagina) || 1;
+    const pag = Math.min(paginaActual, totalPaginas);
+    const start = (pag - 1) * porPagina;
+    const pagina = ordenesFiltradas.slice(start, start + porPagina);
 
-    const verTodas = async () => {
-        setResultadoBusqueda(null);
-        await refetch();
-        setPaginaActual(1);
+    const fmtCRC = (n) =>
+        Number(n || 0).toLocaleString("es-CR", {
+            style: "currency",
+            currency: "CRC",
+            minimumFractionDigits: 2,
+        });
+
+    const fmtFecha = (f) => {
+        if (!f) return "";
+        const d = new Date(f);
+        return isNaN(d.getTime())
+            ? f
+            : d.toLocaleString("es-CR", { hour12: false });
     };
 
     const onEdit = (ord) => {
@@ -276,30 +239,8 @@ export default function AdminOrdenes() {
         mEstado.mutate({ id: editForm.id, estado: editForm.estado });
     };
 
-    const data = useMemo(() => {
-        if (resultadoBusqueda) return [resultadoBusqueda];
-        return ordenes;
-    }, [resultadoBusqueda, ordenes]);
-
-    const totalPaginas = Math.ceil(data.length / porPagina) || 1;
-    const pag = Math.min(paginaActual, totalPaginas);
-    const start = (pag - 1) * porPagina;
-    const pagina = data.slice(start, start + porPagina);
-
-    const fmtCRC = (n) =>
-        Number(n || 0).toLocaleString("es-CR", {
-            style: "currency",
-            currency: "CRC",
-            minimumFractionDigits: 2,
-        });
-
-    const fmtFecha = (f) => {
-        if (!f) return "";
-        const d = new Date(f);
-        return isNaN(d.getTime())
-            ? f
-            : d.toLocaleString("es-CR", { hour12: false });
-    };
+    // Spinner visible solo si está cargando y no hay datos
+    const showSpinner = isFetching && ordenes.length === 0;
 
     return (
         <div className="home-crud">
@@ -317,10 +258,12 @@ export default function AdminOrdenes() {
                 <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 8 }}>
                     <input
                         type="text"
-                        placeholder="Buscar código de orden (BO-XXXXXXX)"
+                        placeholder="Buscar por órden"
                         value={busqueda}
-                        onChange={(e) => setBusqueda(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && handleBuscar()}
+                        onChange={e => {
+                            setBusqueda(e.target.value);
+                            setPaginaActual(1);
+                        }}
                         style={{
                             padding: "10px 14px",
                             borderRadius: 8,
@@ -330,37 +273,6 @@ export default function AdminOrdenes() {
                             maxWidth: 360,
                         }}
                     />
-                    <button
-                        onClick={handleBuscar}
-                        style={{
-                            background: "#5EA743",
-                            color: "#fff",
-                            fontWeight: 700,
-                            border: "none",
-                            borderRadius: 8,
-                            padding: "10px 18px",
-                            fontSize: 16,
-                            cursor: "pointer",
-                        }}
-                    >
-                        Buscar
-                    </button>
-                    <button
-                        onClick={verTodas}
-                        style={{
-                            background: "#6c757d",
-                            color: "#fff",
-                            fontWeight: 600,
-                            border: "none",
-                            borderRadius: 8,
-                            padding: "10px 14px",
-                            fontSize: 16,
-                            cursor: "pointer",
-                        }}
-                        title="Recargar todas"
-                    >
-                        Ver todas
-                    </button>
                 </div>
             </div>
 
@@ -386,14 +298,11 @@ export default function AdminOrdenes() {
                 <tbody>
                     {pagina.length === 0 ? (
                         <tr>
-                            <td colSpan={6} style={{ textAlign: "center", padding: 20 }}>
-                                {isSearching ? (
+                            <td colSpan={6} style={{ textAlign: "center", padding: 32 }}>
+                                {showSpinner ? (
                                     <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                                        <ClipLoader size={18} color="#bbb" speedMultiplier={0.9} />
-                                    </span>
-                                ) : showSpinner ? (
-                                    <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                                        <ClipLoader size={18} color="#bbb" speedMultiplier={0.9} />
+                                        <ClipLoader size={22} color="#A9C499" speedMultiplier={0.9} />
+                                        <span style={{ color: "#5A0D0D" }}>Cargando órdenes…</span>
                                     </span>
                                 ) : (
                                     "Sin órdenes"
@@ -406,11 +315,9 @@ export default function AdminOrdenes() {
                                 <td style={{ padding: 10 }}>{ord.codigoOrden}</td>
                                 <td style={{ padding: 10 }}>
                                     {ord.usuarioNombre || ord.usuarioApellido
-                                        ? `${ord.usuarioNombre ?? ""} ${ord.usuarioApellido ?? ""
-                                            }`.trim()
+                                        ? `${ord.usuarioNombre ?? ""} ${ord.usuarioApellido ?? ""}`.trim()
                                         : ord.usuario?.nombre
-                                            ? `${ord.usuario?.nombre ?? ""} ${ord.usuario?.apellido ?? ""
-                                                }`.trim()
+                                            ? `${ord.usuario?.nombre ?? ""} ${ord.usuario?.apellido ?? ""}`.trim()
                                             : ord.usuarioEmail || "—"}
                                 </td>
                                 <td style={{ padding: 10 }}>{fmtFecha(ord.fechaOrden)}</td>
@@ -454,7 +361,7 @@ export default function AdminOrdenes() {
                         textAlign: "center",
                     }}
                 >
-                    Mostrando {pagina.length} de {data.length}
+                    Mostrando {pagina.length} de {ordenesFiltradas.length}
                 </span>
                 <div style={{ display: "flex", justifyContent: "center", gap: 4 }}>
                     {Array.from({ length: totalPaginas }, (_, i) => (
