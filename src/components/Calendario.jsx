@@ -6,8 +6,8 @@ import { useUser } from "../context/UserContext";
 export default function Calendario() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [activeTab, setActiveTab] = useState("citas");
-  const [citas, setCitas] = useState([]); // Cambia null por []
-  const [talleres, setTalleres] = useState([]); // Cambia null por []
+  const [citas, setCitas] = useState([]); 
+  const [talleres, setTalleres] = useState([]);
   const { user } = useUser();
 
   useEffect(() => {

@@ -1,4 +1,3 @@
-// src/App.js
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import HeaderSwitcher from './components/HeaderSwitcher';
 import Footer from './components/Footer';
@@ -27,8 +26,9 @@ import TallerDetallePage from "./components/TallerDetallePage";
 import AdminInscripciones from "./components/AdminInscripciones";
 import Calendario from "./components/Calendario";
 import Agendar from './components/Agendar';
-import {useUser} from "./context/UserContext";
 import PerfilUsuario from "./components/PerfilUsuario";
+
+import {useUser} from "./context/UserContext";
 
 function App() {
     const {user} = useUser();

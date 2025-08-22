@@ -14,8 +14,8 @@ import './assets/css/styles.css';
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            staleTime: 0,            // Data is always considered stale (fetches every time)
-            gcTime: 4 * 60 * 1000,       // 4 min: cache stays in memory for less time
+            staleTime: 0,
+            gcTime: 4 * 60 * 1000,
             refetchOnWindowFocus: true,
             retry: 1,
         },

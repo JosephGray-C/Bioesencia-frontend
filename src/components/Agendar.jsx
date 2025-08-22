@@ -13,7 +13,9 @@ function useHorarios(selectedDate) {
       String(selectedDate.getMonth() + 1).padStart(2, "0") +
       "-" +
       String(selectedDate.getDate()).padStart(2, "0");
-    fetch(`http://localhost:8080/api/citas/horariosDisponibles?fecha=${fechaStr}`)
+    fetch(
+      `http://localhost:8080/api/citas/horariosDisponibles?fecha=${fechaStr}`
+    )
       .then((res) => res.json())
       .then(setHorarios)
       .catch(() => setHorarios([]));
@@ -25,7 +27,8 @@ function ServicioSelector({ servicio, setServicio, serviciosDisponibles }) {
   useEffect(() => {
     if (
       serviciosDisponibles.length > 0 &&
-      (servicio === "" || !serviciosDisponibles.some((s) => (s.nombre || s) === servicio))
+      (servicio === "" ||
+        !serviciosDisponibles.some((s) => (s.nombre || s) === servicio))
     ) {
       setServicio(serviciosDisponibles[0].nombre || serviciosDisponibles[0]);
     }
@@ -33,7 +36,9 @@ function ServicioSelector({ servicio, setServicio, serviciosDisponibles }) {
 
   return (
     <div className="field">
-      <label htmlFor="servicio" className="label">Servicio</label>
+      <label htmlFor="servicio" className="label">
+        Servicio
+      </label>
       <div style={{ position: "relative" }}>
         <select
           id="servicio"
@@ -57,7 +62,7 @@ function ServicioSelector({ servicio, setServicio, serviciosDisponibles }) {
             transform: "translateY(-50%)",
             pointerEvents: "none",
             fontSize: "1.3em",
-            color: "#5A0D0D" // café
+            color: "#5A0D0D", // café
           }}
         >
           ▼
@@ -96,7 +101,9 @@ function HorariosSelector({
           {visibles.map((hora) => (
             <button
               key={hora}
-              className={"horario-btn" + (selectedHora === hora ? " selected" : "")}
+              className={
+                "horario-btn" + (selectedHora === hora ? " selected" : "")
+              }
               onClick={() => setSelectedHora(hora)}
               type="button"
             >
@@ -159,10 +166,16 @@ export default function AgendarPage() {
             <h2 className="title">Agendar cita</h2>
             <div className="agendar-form-content">
               {!selectedDate ? (
-                <p className="empty">Selecciona un día en el calendario para continuar.</p>
+                <p className="empty">
+                  Selecciona un día en el calendario para continuar.
+                </p>
               ) : esDomingo ? (
-                <p className="empty" style={{ color: "#B71C1C", fontWeight: 700 }}>
-                  No se puede reservar los domingos. Selecciona otro día en el calendario.
+                <p
+                  className="empty"
+                  style={{ color: "#B71C1C", fontWeight: 700 }}
+                >
+                  No se puede reservar los domingos. Selecciona otro día en el
+                  calendario.
                 </p>
               ) : (
                 <>
@@ -212,7 +225,9 @@ export default function AgendarPage() {
                       {procesando ? "Procesando..." : "Solicitar cita"}
                     </button>
                     {mensaje && (
-                      <span style={{ color: "green", fontWeight: 700 }}>{mensaje}</span>
+                      <span style={{ color: "green", fontWeight: 700 }}>
+                        {mensaje}
+                      </span>
                     )}
                   </div>
                 </>
