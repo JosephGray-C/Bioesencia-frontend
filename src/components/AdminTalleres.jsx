@@ -3,23 +3,10 @@ import React, { useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ClipLoader from "react-spinners/ClipLoader";
+import { fetchInscripciones } from "../services/inscripciones";
+import { fetchTalleres } from "../services/talleres";
 
 const API_URL = "http://localhost:8080/api/talleres";
-const INS_API = "http://localhost:8080/api/inscripciones";
-
-async function fetchTalleres({ signal }) {
-    const res = await fetch(API_URL, { signal });
-    if (!res.ok) throw new Error(await res.text());
-    const data = await res.json();
-    return Array.isArray(data) ? data : [];
-}
-
-async function fetchInscripciones({ signal }) {
-    const res = await fetch(INS_API, { signal });
-    if (!res.ok) throw new Error(await res.text());
-    const data = await res.json();
-    return Array.isArray(data) ? data : [];
-}
 
 function CrearTallerModal({ form, onChange, onSubmit, onCancel }) {
     return (

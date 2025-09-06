@@ -4,30 +4,8 @@ import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-const API_CARRITO = "http://localhost:8080/api/carrito";
-const API_ORDENES = "http://localhost:8080/api/ordenes";
-
-async function fetchCarrito({ queryKey, signal }) {
-    const [, userId] = queryKey;
-    if (!userId) return [];
-    const res = await fetch(`${API_CARRITO}/${userId}`, { signal });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return (data || []).filter(
-        (item) => item?.producto && typeof item.producto.precio !== "undefined"
-    );
-}
-
-async function postCrearOrden(payload) {
-    const res = await fetch(API_ORDENES, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw new Error(await res.text());
-    return res.json();
-}
+import { postCrearOrden } from "../services/ordenes";
+import { fetchCarrito } from "../services/carrito";
 
 export default function ResumenCompra() {
     const { user } = useUser();
@@ -47,7 +25,8 @@ export default function ResumenCompra() {
     const { subtotal, impuesto, total } = useMemo(() => {
         const sb = carrito.reduce(
             (acc, item) =>
-                acc + Number(item.producto?.precio || 0) * Number(item.cantidad || 0),
+                acc +
+                Number(item.producto?.precio || 0) * Number(item.cantidad || 0),
             0
         );
         const tax = sb * 0.13;
@@ -69,13 +48,18 @@ export default function ResumenCompra() {
             });
         },
         onError: (err) => {
-            Swal.fire("Error", err.message || "No se pudo registrar la orden", "error");
+            Swal.fire(
+                "Error",
+                err.message || "No se pudo registrar la orden",
+                "error"
+            );
         },
     });
 
     const confirmarOrden = () => {
         if (!user) return Swal.fire("Error", "Usuario no autenticado", "error");
-        if (carrito.length === 0) return Swal.fire("Atención", "Tu carrito está vacío.", "info");
+        if (carrito.length === 0)
+            return Swal.fire("Atención", "Tu carrito está vacío.", "info");
 
         const payload = {
             usuario: { id: user.id },
@@ -104,18 +88,32 @@ export default function ResumenCompra() {
                             <div className="rc-brand-name">BIOESENCIA</div>
                         </div>
                         <div className="rc-company-info">
-                            <div><strong>Cédula:</strong> 1-1058-0435</div>
-                            <div><strong>Teléfono:</strong> +506 8362-1394</div>
-                            <div><strong>Correo:</strong> bioesenciacostarica@gmail.com</div>
-                            <div><strong>Código Postal:</strong> 10601</div>
+                            <div>
+                                <strong>Cédula:</strong> 1-1058-0435
+                            </div>
+                            <div>
+                                <strong>Teléfono:</strong> +506 8362-1394
+                            </div>
+                            <div>
+                                <strong>Correo:</strong>{" "}
+                                bioesenciacostarica@gmail.com
+                            </div>
+                            <div>
+                                <strong>Código Postal:</strong> 10601
+                            </div>
                         </div>
                     </div>
 
                     {/* Cliente */}
                     <div className="rc-section-title">Datos del Cliente</div>
                     <div className="rc-two-col">
-                        <div><strong>Nombre:</strong> {user?.nombre} {user?.apellido}</div>
-                        <div><strong>Email:</strong> {user?.email}</div>
+                        <div>
+                            <strong>Nombre:</strong> {user?.nombre}{" "}
+                            {user?.apellido}
+                        </div>
+                        <div>
+                            <strong>Email:</strong> {user?.email}
+                        </div>
                     </div>
 
                     {/* Productos */}
@@ -125,31 +123,55 @@ export default function ResumenCompra() {
                     <div className="rc-table-wrap">
                         <table className="rc-table">
                             <thead>
-                            <tr>
-                                <th>Producto</th>
-                                <th>Cantidad</th>
-                                <th>Precio unitario</th>
-                                <th>Subtotal</th>
-                            </tr>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio unitario</th>
+                                    <th>Subtotal</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            {carrito.map((item) => {
-                                const pu = Number(item.producto.precio || 0).toFixed(2);
-                                const st = Number((item.producto.precio || 0) * (item.cantidad || 0)).toFixed(2);
-                                return (
-                                    <tr key={item.id}>
-                                        <td data-label="Producto">{item.producto.nombre}</td>
-                                        <td data-label="Cantidad" className="txt-center">{item.cantidad}</td>
-                                        <td data-label="Precio unitario" className="txt-right">₡{pu}</td>
-                                        <td data-label="Subtotal" className="txt-right">₡{st}</td>
+                                {carrito.map((item) => {
+                                    const pu = Number(
+                                        item.producto.precio || 0
+                                    ).toFixed(2);
+                                    const st = Number(
+                                        (item.producto.precio || 0) *
+                                            (item.cantidad || 0)
+                                    ).toFixed(2);
+                                    return (
+                                        <tr key={item.id}>
+                                            <td data-label="Producto">
+                                                {item.producto.nombre}
+                                            </td>
+                                            <td
+                                                data-label="Cantidad"
+                                                className="txt-center"
+                                            >
+                                                {item.cantidad}
+                                            </td>
+                                            <td
+                                                data-label="Precio unitario"
+                                                className="txt-right"
+                                            >
+                                                ₡{pu}
+                                            </td>
+                                            <td
+                                                data-label="Subtotal"
+                                                className="txt-right"
+                                            >
+                                                ₡{st}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                                {carrito.length === 0 && (
+                                    <tr>
+                                        <td colSpan={4} className="rc-empty">
+                                            No hay productos en el carrito.
+                                        </td>
                                     </tr>
-                                );
-                            })}
-                            {carrito.length === 0 && (
-                                <tr>
-                                    <td colSpan={4} className="rc-empty">No hay productos en el carrito.</td>
-                                </tr>
-                            )}
+                                )}
                             </tbody>
                         </table>
                     </div>
@@ -172,16 +194,25 @@ export default function ResumenCompra() {
 
                     {/* Botones */}
                     <div className="rc-actions">
-                        <button className="rc-btn rc-btn-gray" onClick={() => navigate("/carrito")}>
+                        <button
+                            className="rc-btn rc-btn-gray"
+                            onClick={() => navigate("/carrito")}
+                        >
                             Volver al carrito
                         </button>
                         <button
                             className="rc-btn rc-btn-green"
                             onClick={confirmarOrden}
                             disabled={carrito.length === 0 || mOrden.isPending}
-                            title={mOrden.isPending ? "Confirmando…" : "Confirmar Orden"}
+                            title={
+                                mOrden.isPending
+                                    ? "Confirmando…"
+                                    : "Confirmar Orden"
+                            }
                         >
-                            {mOrden.isPending ? "Confirmando…" : "Confirmar Orden"}
+                            {mOrden.isPending
+                                ? "Confirmando…"
+                                : "Confirmar Orden"}
                         </button>
                     </div>
                 </div>

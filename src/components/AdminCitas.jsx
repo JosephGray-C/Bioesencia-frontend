@@ -1,44 +1,10 @@
 // src/components/AdminCitas.jsx
 import { useMemo, useState } from "react";
-import { useServicios } from "../hooks/useServicios";
+import { fetchServicios } from "../services/servicios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ClipLoader from "react-spinners/ClipLoader";
 import Swal from "sweetalert2";
-
-const API_URL = "http://localhost:8080/api/citas";
-
-async function fetchCitas({ signal }) {
-    const res = await fetch(API_URL, { signal });
-    if (!res.ok) throw new Error(await res.text());
-    const data = await res.json();
-    return Array.isArray(data) ? data : [];
-}
-
-async function crearCita(payload) {
-    const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw new Error(await res.text());
-    return res.json();
-}
-
-async function actualizarCita({ id, payload }) {
-    const res = await fetch(`${API_URL}/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw new Error(await res.text());
-    return res.json();
-}
-
-async function eliminarCita(id) {
-    const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-    if (!res.ok) throw new Error(await res.text());
-    return true;
-}
+import { fetchCitas, crearCita, actualizarCita, eliminarCita } from "../services/citas";
 
 function CrearCitaModal({
     form,
@@ -363,12 +329,16 @@ function EditarCitaModal({
 }
 
 export default function AdminCitas() {
-    const qc = useQueryClient();
-
     const [paginaActual, setPaginaActual] = useState(1);
     const [busqueda, setBusqueda] = useState("");
     const citasPorPagina = 8; // <-- ahora SÍ se usa en toda la paginación
-    const serviciosDisponibles = useServicios();
+    
+    const qc = useQueryClient();
+    const { data: serviciosDisponibles = [] } = useQuery({
+        queryKey: ["servicios"],
+        queryFn: fetchServicios,
+        initialData: () => qc.getQueryData(["servicios"]) || [],
+    });
 
     const [showForm, setShowForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
@@ -436,8 +406,11 @@ export default function AdminCitas() {
             qc.invalidateQueries({ queryKey: ["citas"] });
             Swal.fire("¡Eliminada!", "Cita borrada.", "success");
         },
-        onError: (e) =>
-            Swal.fire("Error", e.message || "No se pudo eliminar", "error"),
+        onError: (e) =>{
+                console.log(e);
+                Swal.fire("Error", e.message || "No se pudo eliminar", "error");
+        }
+            
     });
 
     // Handlers formularios

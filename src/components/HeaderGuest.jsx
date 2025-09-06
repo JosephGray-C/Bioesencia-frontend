@@ -62,17 +62,7 @@ export default function HeaderGuest() {
 
     return (
         <>
-            <style>{`
-        .hg-nav { display:flex; gap:32px; align-items:center; }
-        .hg-link { font-weight:600; text-decoration:none; font-size:1.1rem; color:#5A0D0D; }
-        .hg-actions { display:flex; align-items:center; gap:16px; }
-        .hg-burger { display:none; background:transparent; border:none; font-size:1.6rem; line-height:1; color:#5A0D0D; cursor:pointer; }
-        @media (max-width: 768px) {
-          .hg-nav { display:none; }
-          .hg-burger { display:inline-flex; }
-          .hg-login { display:none; }
-        }
-      `}</style>
+            <style>{styles}</style>
 
             <header
                 ref={headerRef}
@@ -89,14 +79,14 @@ export default function HeaderGuest() {
                     color: "#5A0D0D",
                     boxShadow: "0 2px 8px #0001",
                 }}
-            >
+                >
                 {/* Logo en lugar del texto */}
                 <div className="hg-brand">
                     <img
                         src="/imgs/BIOESENCIA_n-BG.png"
                         alt="Bioesencia"
                         style={{height: 60, display: "block"}}
-                    />
+                        />
                 </div>
 
                 <nav className="hg-nav">
@@ -122,13 +112,13 @@ export default function HeaderGuest() {
             {/* Overlay */}
             {menuOpen && (
                 <div
-                    onClick={() => setMenuOpen(false)}
-                    style={{
-                        position: "fixed",
-                        inset: 0,
-                        background: "rgba(0,0,0,.35)",
-                        zIndex: 999,
-                    }}
+                onClick={() => setMenuOpen(false)}
+                style={{
+                    position: "fixed",
+                    inset: 0,
+                    background: "rgba(0,0,0,.35)",
+                    zIndex: 999,
+                }}
                 />
             )}
 
@@ -153,7 +143,7 @@ export default function HeaderGuest() {
                     flexDirection: "column",
                     padding: "12px 0",
                 }}
-            >
+                >
                 <Link to="/" onClick={() => setMenuOpen(false)} style={mobileItemStyle}>Inicio</Link>
                 <Link to="/about" onClick={() => setMenuOpen(false)} style={mobileItemStyle}>Sobre Nosotros</Link>
                 <Link to="/blogusuario" onClick={() => setMenuOpen(false)} style={mobileItemStyle}>Blog
@@ -177,3 +167,14 @@ const mobileItemStyle = {
     textDecoration: "none",
     borderRadius: 8,
 };
+const styles = `
+.hg-nav { display:flex; gap:32px; align-items:center; }
+.hg-link { font-weight:600; text-decoration:none; font-size:1.1rem; color:#5A0D0D; }
+.hg-actions { display:flex; align-items:center; gap:16px; }
+.hg-burger { display:none; background:transparent; border:none; font-size:1.6rem; line-height:1; color:#5A0D0D; cursor:pointer; }
+@media (max-width: 768px) {
+.hg-nav { display:none; }
+.hg-burger { display:inline-flex; }
+.hg-login { display:none; }
+}
+`;

@@ -1,12 +1,7 @@
-import React from "react";
 import "../assets/css/homepage.css";
 import "../App.css";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-
-
-
-
 
 export default function Home() {
    const location = useLocation();
@@ -48,7 +43,7 @@ export default function Home() {
               className="main__contact-section__link"
               target="_blank"
               rel="noopener noreferrer"
-              href=""
+              href="https://www.instagram.com/bioesenciacr"
             >
               <i className="fa-brands fa-instagram"></i>
             </a>
@@ -56,7 +51,7 @@ export default function Home() {
               className="main__contact-section__link"
               target="_blank"
               rel="noopener noreferrer"
-              href=""
+              href="https://www.facebook.com/bioesenciacr"
             >
               <i className="fa-brands fa-facebook"></i>
             </a>
@@ -64,7 +59,7 @@ export default function Home() {
               className="main__contact-section__link"
               target="_blank"
               rel="noopener noreferrer"
-              href=""
+              href="https://www.tiktok.com/@bioesenciacr"
             >
               <i className="fa-brands fa-tiktok"></i>
             </a>
@@ -72,15 +67,16 @@ export default function Home() {
               className="main__contact-section__link"
               target="_blank"
               rel="noopener noreferrer"
-              href=""
+              href="https://wa.me/506XXXXXXXX"
             >
               <i className="fa-brands fa-whatsapp"></i>
             </a>
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a
               className="main__contact-section__link"
               target="_blank"
               rel="noopener noreferrer"
-              href=""
+              href="mailto:info@bioesenciacr.com"
             >
               <i className="fa-solid fa-envelope"></i>
             </a>

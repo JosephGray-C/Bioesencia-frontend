@@ -1,4 +1,3 @@
-// src/hooks/useAuth.js
 import { useMutation } from "@tanstack/react-query";
 
 const STORAGE_KEY = "bio_user";

@@ -1,107 +1,111 @@
 import { Link } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-
-const API_URL = "http://localhost:8080/api/talleres";
-
-async function fetchTalleres({ signal }) {
-  const res = await fetch(API_URL, { signal });
-  if (!res.ok) throw new Error("Error al cargar los talleres");
-  const data = await res.json();
-  return Array.isArray(data) ? data : [];
-}
-
-function formatoFechaHoraAmPm(fechaStr) {
-  if (!fechaStr) return "—";
-  const fecha = new Date(fechaStr);
-  const fechaLocal = fecha.toLocaleDateString();
-  let horas = fecha.getHours();
-  const minutos = fecha.getMinutes().toString().padStart(2, "0");
-  const ampm = horas >= 12 ? "PM" : "AM";
-  horas = horas % 12 || 12;
-  return `${fechaLocal} ${horas}:${minutos} ${ampm}`;
-}
-
-function formatoHoraAmPm(fechaStr) {
-  if (!fechaStr) return "—";
-  const fecha = new Date(fechaStr);
-  let horas = fecha.getHours();
-  const minutos = fecha.getMinutes().toString().padStart(2, "0");
-  const ampm = horas >= 12 ? "PM" : "AM";
-  horas = horas % 12 || 12;
-  return `${horas}:${minutos} ${ampm}`;
-}
+import { fetchTalleres } from "../services/talleres";
+import { formatoFechaHoraAmPm, formatoHoraAmPm } from "../utils/formatDateTime";
 
 export default function TalleresPage() {
-  const qc = useQueryClient();
+    const qc = useQueryClient();
 
-  const { data: talleres = [], isFetching, error } = useQuery({
-    queryKey: ["talleres"],
-    queryFn: fetchTalleres,
-    initialData: () => qc.getQueryData(["talleres"]) || [],
-  });
+    const {
+        data: talleres = [],
+        isFetching,
+        error,
+    } = useQuery({
+        queryKey: ["talleres"],
+        queryFn: fetchTalleres,
+        initialData: () => qc.getQueryData(["talleres"]) || [],
+    });
 
-  const showSpinner = isFetching && talleres.length === 0;
+    const showSpinner = isFetching && talleres.length === 0;
 
-  if (error) {
+    if (error) {
+        return (
+            <div className="tp-error">
+                ⚠️ No se pudieron cargar los talleres.
+            </div>
+        );
+    }
+
     return (
-      <div className="tp-error">
-        ⚠️ No se pudieron cargar los talleres.
-      </div>
-    );
-  }
-
-  return (
-    <div className="tp">
-      <style>{styles}</style>
-      {talleres.length === 0 ? (
-        <div className="tp-empty">
-          {showSpinner ? (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
-              <ClipLoader size={22} color="var(--green)" speedMultiplier={0.9} />
-              <span>Cargando talleres…</span>
-            </span>
-          ) : (
-            <p>No hay talleres disponibles en este momento.</p>
-          )}
+        <div className="tp">
+            <style>{styles}</style>
+            {talleres.length === 0 ? (
+                <div className="tp-empty">
+                    {showSpinner ? (
+                        <span
+                            style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 10,
+                            }}
+                        >
+                            <ClipLoader
+                                size={22}
+                                color="var(--green)"
+                                speedMultiplier={0.9}
+                            />
+                            <span>Cargando talleres…</span>
+                        </span>
+                    ) : (
+                        <p>No hay talleres disponibles en este momento.</p>
+                    )}
+                </div>
+            ) : (
+                <ul className="tp-grid">
+                    {talleres.map((taller) => (
+                        <li key={taller.id} className="tp-card">
+                            <div className="tp-card-inner">
+                                <h3>{taller.titulo}</h3>
+                                {taller.descripcion && (
+                                    <p>{taller.descripcion}</p>
+                                )}
+                                <p>
+                                    <strong style={{ color: "#5A0D0D" }}>
+                                        Fecha y hora:{" "}
+                                    </strong>
+                                    {taller.fechaInicio
+                                        ? `${formatoFechaHoraAmPm(
+                                              taller.fechaInicio
+                                          )}`
+                                        : "—"}
+                                    {taller.fechaFin
+                                        ? ` - ${formatoHoraAmPm(
+                                              taller.fechaFin
+                                          )}`
+                                        : ""}
+                                </p>
+                                <p>
+                                    <strong style={{ color: "#5A0D0D" }}>
+                                        Lugar:{" "}
+                                    </strong>
+                                    {taller.lugar}
+                                </p>
+                                <p>
+                                    <strong style={{ color: "#5A0D0D" }}>
+                                        Precio:{" "}
+                                    </strong>
+                                    {Number(taller.precio || 0).toLocaleString(
+                                        "es-CR",
+                                        {
+                                            style: "currency",
+                                            currency: "CRC",
+                                        }
+                                    )}
+                                </p>
+                                <Link
+                                    to={`/talleres/${taller.id}`}
+                                    className="tp-btn"
+                                >
+                                    Ver más
+                                </Link>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
-      ) : (
-        <ul className="tp-grid">
-          {talleres.map((taller) => (
-            <li key={taller.id} className="tp-card">
-              <div className="tp-card-inner">
-                <h3>{taller.titulo}</h3>
-                {taller.descripcion && <p>{taller.descripcion}</p>}
-                <p>
-                  <strong style={{ color: "#5A0D0D" }}>Fecha y hora: </strong>
-                  {taller.fechaInicio
-                    ? `${formatoFechaHoraAmPm(taller.fechaInicio)}`
-                    : "—"}
-                  {taller.fechaFin
-                    ? ` - ${formatoHoraAmPm(taller.fechaFin)}`
-                    : ""}
-                </p>
-                <p>
-                  <strong style={{ color: "#5A0D0D" }}>Lugar: </strong>
-                  {taller.lugar}
-                </p>
-                <p>
-                  <strong style={{ color: "#5A0D0D" }}>Precio: </strong>
-                  {Number(taller.precio || 0).toLocaleString("es-CR", {
-                    style: "currency",
-                    currency: "CRC",
-                  })}
-                </p>
-                <Link to={`/talleres/${taller.id}`} className="tp-btn">
-                  Ver más
-                </Link>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
+    );
 }
 
 const styles = `

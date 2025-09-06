@@ -1,5 +1,4 @@
 // src/components/OrdenConfirmada.jsx
-import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 export default function OrdenConfirmada() {

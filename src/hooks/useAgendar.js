@@ -1,55 +1,57 @@
-import { useState } from "react";
 import { useUser } from "../context/UserContext";
-
-function formatoHoraAmPm(hora24) {
-    if (!hora24) return "";
-    const [h, m] = hora24.split(":").map(Number);
-    const ampm = h >= 12 ? "PM" : "AM";
-    const hora12 = h % 12 === 0 ? 12 : h % 12;
-    return `${hora12}:${m.toString().padStart(2, "0")} ${ampm}`;
-}
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { formatTimeAmPm, formatDateTimeLocal } from "../utils/formatDateTime.js";
+import { crearCita } from "../services/citas.js";
+import Swal from "sweetalert2";
 
 export function useAgendar() {
     const { user } = useUser();
-    const [mensaje, setMensaje] = useState("");
+    const qc = useQueryClient();
 
-    const solicitarCita = async ({ selectedHora, selectedDate, notas, servicio, setHorariosDisponibles, setProcesando, onSuccess }) => {
+    const mCrearCita = useMutation({
+        mutationFn: crearCita,
+        onSuccess: () => {
+            qc.invalidateQueries(["citas", user?.id]);
+            
+        },
+        onError: (error) => {
+            Swal.fire("Error", error.message || "No se pudo crear la cita", "error");
+        }
+    });
+
+    const agendarCita = async ({ selectedHora, selectedDate, notas, servicio, setProcesando, setHorariosDisponibles }) => {
         setProcesando && setProcesando(true);
-
-        const fechaStr = selectedDate.toISOString().split("T")[0];
-        const fechaHora = `${fechaStr}T${selectedHora}`;
-
         const cita = {
-            fechaHora,
+            fechaHora: formatDateTimeLocal(selectedDate, selectedHora),
             duracion: 60,
             servicio,
             estado: "AGENDADA",
             notas: notas || "",
             usuario: user,
         };
+        try {
+            const response = await mCrearCita.mutateAsync(cita);
 
-        const response = await fetch("http://localhost:8080/api/citas", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(cita),
-        });
-
-        if (response.ok) {
-            setMensaje(`Cita solicitada para el ${selectedDate.toLocaleDateString()} a las ${formatoHoraAmPm(selectedHora)}`);
-            // Fetch horarios actualizados desde el backend
-            const resHorarios = await fetch(`http://localhost:8080/api/horarios?fecha=${fechaStr}`);
-            if (resHorarios.ok) {
-                const nuevosHorarios = await resHorarios.json();
-                setHorariosDisponibles(nuevosHorarios);
-            }
-            if (typeof onSuccess === "function") onSuccess();
-            setProcesando && setProcesando(false);
-        } else {
-            setMensaje("Error al solicitar la cita.");
+            setHorariosDisponibles &&
+                setHorariosDisponibles((horarios) =>
+                    horarios.filter((hora) => hora !== selectedHora)
+                );
+            Swal.fire(
+                "¡Creado!",
+                `Cita reservada para el ${selectedDate.toLocaleDateString()} a las ${formatTimeAmPm(selectedHora)}`,
+                "success"
+            );
+        } catch (error) {
+            console.error("Error al crear cita:", error);
         }
+        setProcesando && setProcesando(false);
+
+        
+        
+        // return response;
     };
+
     return {
-        solicitarCita,
-        mensaje,
+        agendarCita
     };
 }

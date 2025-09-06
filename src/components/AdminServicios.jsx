@@ -1,44 +1,10 @@
 // src/components/AdminServicios.jsx
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ClipLoader from "react-spinners/ClipLoader";
+import { fetchServicios, crearServicio, actualizarServicio, eliminarServicio } from "../services/servicios";
 
-const API_URL = "http://localhost:8080/api/servicios";
-const serviciosPorPagina = 8;
-
-async function fetchServicios({ signal }) {
-    const res = await fetch(API_URL, { signal });
-    if (!res.ok) throw new Error(await res.text());
-    const data = await res.json();
-    return Array.isArray(data) ? data : [];
-}
-
-async function crearServicio(payload) {
-    const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw new Error(await res.text());
-    return res.json();
-}
-
-async function actualizarServicio({ id, payload }) {
-    const res = await fetch(`${API_URL}/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw new Error(await res.text());
-    return res.json();
-}
-
-async function eliminarServicio(id) {
-    const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-    if (!res.ok) throw new Error(await res.text());
-    return true;
-}
 
 function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
     return (
@@ -55,7 +21,7 @@ function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
                 alignItems: "center",
                 justifyContent: "center",
             }}
-        >
+            >
             <div
                 className="container"
                 style={{
@@ -64,14 +30,14 @@ function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
                     position: "relative",
                     boxShadow: "0 8px 32px #0004",
                 }}
-            >
+                >
                 <div className="forms" style={{ background: "#fff" }}>
                     <div className="form-content">
                         <div className="signup-form" style={{ width: "100%" }}>
                             <div
                                 className="title"
                                 style={{ fontWeight: 600, fontSize: 26, marginBottom: 12 }}
-                            >
+                                >
                                 Agregar servicio
                             </div>
                             <form onSubmit={onSubmit}>
@@ -85,7 +51,7 @@ function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
                                             value={form.nombre}
                                             onChange={onChange}
                                             required
-                                        />
+                                            />
                                     </div>
                                     <div className="input-box">
                                         <textarea
@@ -96,7 +62,7 @@ function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
                                             required
                                             rows={3}
                                             style={{ resize: "vertical", width: "100%" }}
-                                        />
+                                            />
                                     </div>
                                     <div className="input-box">
                                         <i className="fas fa-dollar-sign"></i>
@@ -109,7 +75,7 @@ function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
                                             required
                                             min={0}
                                             step="0.01"
-                                        />
+                                            />
                                     </div>
                                     <div className="button input-box" style={{ marginTop: 26 }}>
                                         <input type="submit" value="Guardar servicio" />
@@ -150,7 +116,7 @@ function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
                         color: "#888",
                     }}
                     title="Cerrar"
-                >
+                    >
                     ×
                 </button>
             </div>
@@ -161,18 +127,18 @@ function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
 function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
     return (
         <div
-            style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100vw",
-                height: "100vh",
-                background: "rgba(0,0,0,0.25)",
-                zIndex: 1050,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-            }}
+        style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(0,0,0,0.25)",
+            zIndex: 1050,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+        }}
         >
             <div
                 className="container"
@@ -182,7 +148,7 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
                     position: "relative",
                     boxShadow: "0 8px 32px #0004",
                 }}
-            >
+                >
                 <div className="forms" style={{ background: "#fff" }}>
                     <div className="form-content">
                         <div className="signup-form" style={{ width: "100%" }}>
@@ -194,7 +160,7 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
                                     marginBottom: 12,
                                     color: "#5EA743",
                                 }}
-                            >
+                                >
                                 Editar servicio
                             </div>
                             <form onSubmit={onSubmit}>
@@ -208,7 +174,7 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
                                             value={editForm.nombre}
                                             onChange={onChange}
                                             required
-                                        />
+                                            />
                                     </div>
                                     <div className="input-box">
                                         <textarea
@@ -219,7 +185,7 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
                                             required
                                             rows={3}
                                             style={{ resize: "vertical", width: "100%" }}
-                                        />
+                                            />
                                     </div>
                                     <div className="input-box">
                                         <i className="fas fa-dollar-sign"></i>
@@ -232,7 +198,7 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
                                             required
                                             min={0}
                                             step="0.01"
-                                        />
+                                            />
                                     </div>
                                     <div className="button input-box" style={{ marginTop: 26 }}>
                                         <input type="submit" value="Guardar cambios" />
@@ -251,7 +217,7 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
                                                 fontSize: "1rem",
                                                 cursor: "pointer",
                                             }}
-                                        >
+                                            >
                                             Cancelar
                                         </button>
                                     </div>
@@ -273,7 +239,7 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
                         color: "#888",
                     }}
                     title="Cerrar"
-                >
+                    >
                     ×
                 </button>
             </div>
@@ -282,27 +248,28 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
 }
 
 export default function AdminServicios() {
+    const serviciosPorPagina = 8;
     const qc = useQueryClient();
-
+    
     const [paginaActual, setPaginaActual] = useState(1);
     const [busqueda, setBusqueda] = useState("");
-
+    
     const [showForm, setShowForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
-
+    
     const [form, setForm] = useState({
         nombre: "",
         detalle: "",
         precio: "",
     });
-
+    
     const [editForm, setEditForm] = useState({
         id: "",
         nombre: "",
         detalle: "",
         precio: "",
     });
-
+    
     const { data: servicios = [], isFetching } = useQuery({
         queryKey: ["servicios"],
         queryFn: fetchServicios,
@@ -342,6 +309,7 @@ export default function AdminServicios() {
             Swal.fire("¡Eliminado!", "Servicio borrado.", "success");
         },
         onError: (e) =>
+            
             Swal.fire("Error", e.message || "No se pudo eliminar", "error"),
     });
 

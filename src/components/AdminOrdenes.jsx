@@ -3,28 +3,11 @@ import React, { useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ClipLoader from "react-spinners/ClipLoader";
-
-const API_ORDENES = "http://localhost:8080/api/ordenes";
-const ESTADOS_POSIBLES = ["PENDIENTE", "PAGADO", "ANULADO"];
-
-async function fetchOrdenes({ signal }) {
-    const res = await fetch(API_ORDENES, { signal });
-    if (!res.ok) throw new Error(await res.text());
-    const data = await res.json();
-    return Array.isArray(data) ? data : [];
-}
-
-async function actualizarEstadoOrden({ id, estado }) {
-    const url = `${API_ORDENES}/${id}/estado?estado=${encodeURIComponent(
-        estado
-    )}`;
-    const res = await fetch(url, { method: "PUT" });
-    if (!res.ok) throw new Error(await res.text());
-    return res.json();
-}
+import  { fetchOrdenes, actualizarEstadoOrden } from "../services/ordenes";
 
 /* Modal editar */
 function EditarOrdenModal({ editForm, onChange, onSubmit, onCancel }) {
+    const ESTADOS_POSIBLES = ["PENDIENTE", "PAGADO", "ANULADO"];
     return (
         <div
             style={{

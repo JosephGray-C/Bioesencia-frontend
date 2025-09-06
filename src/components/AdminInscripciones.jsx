@@ -3,24 +3,10 @@ import { useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ClipLoader from "react-spinners/ClipLoader";
-
-const API_URL = "http://localhost:8080/api/inscripciones";
-const porPagina = 10;
-
-async function fetchInscripciones({ signal }) {
-    const res = await fetch(API_URL, { signal });
-    if (!res.ok) throw new Error("No se pudo cargar la lista de inscripciones.");
-    const data = await res.json();
-    return Array.isArray(data) ? data : [];
-}
-
-async function eliminarInscripcion(id) {
-    const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-    if (!res.ok) throw new Error(await res.text());
-    return true;
-}
+import { fetchInscripciones, eliminarInscripcion } from "../services/inscripciones";
 
 export default function AdminInscripciones() {
+    const porPagina = 10;
     const qc = useQueryClient();
 
     const [busqueda, setBusqueda] = useState("");
