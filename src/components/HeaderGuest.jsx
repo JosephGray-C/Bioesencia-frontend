@@ -145,9 +145,8 @@ export default function HeaderGuest() {
                 }}
                 >
                 <Link to="/" onClick={() => setMenuOpen(false)} style={mobileItemStyle}>Inicio</Link>
-                <Link to="/about" onClick={() => setMenuOpen(false)} style={mobileItemStyle}>Sobre Nosotros</Link>
-                <Link to="/blogusuario" onClick={() => setMenuOpen(false)} style={mobileItemStyle}>Blog
-                    Bioesencia</Link>
+                <Link to="/about" onClick={() => setMenuOpen(false)} style={mobileItemStyle}>Nosotros</Link>
+                <Link to="/blogusuario" onClick={() => setMenuOpen(false)} style={mobileItemStyle}>Blog</Link>
                 <Link to="/login" onClick={() => setMenuOpen(false)} style={{...mobileItemStyle, marginTop: 8}}>
                     Iniciar sesión
                 </Link>

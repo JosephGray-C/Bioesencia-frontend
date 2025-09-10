@@ -2,11 +2,14 @@ import React from "react";
 import { fetchServicios } from "../services/servicios";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-export default function ServiciosList({cita, setCita}) {
-    const [servicioSeleccionado, setServicioSeleccionado] = React.useState("");
+export default function ServiciosList({ cita, setCita }) {
     const qc = useQueryClient();
 
-    const { data: servicios = [], isFetching, error } = useQuery({
+    const {
+        data: servicios = [],
+        isFetching,
+        error,
+    } = useQuery({
         queryKey: ["servicios"],
         queryFn: fetchServicios,
         initialData: () => qc.getQueryData(["servicios"]) || [],
@@ -16,6 +19,9 @@ export default function ServiciosList({cita, setCita}) {
     if (error) return <p>Error al cargar los servicios: {error.message}</p>;
     if (showSpinner) return <p>Cargando servicios...</p>;
     if (servicios.length === 0) return <p>No hay servicios disponibles.</p>;
+
+    const servicioSeleccionado =
+        servicios.find((s) => s.nombre === cita.servicio)?.id || "";
 
     return (
         <div>
@@ -30,12 +36,17 @@ export default function ServiciosList({cita, setCita}) {
                     {servicios.map((servicio) => (
                         <div
                             className={`servicio-card${
-                                servicio.id === servicioSeleccionado || (servicio === cita.servicio)
+                                servicio.id === servicioSeleccionado
                                     ? " selected"
                                     : ""
                             }`}
                             key={servicio.id}
-                            onClick={() => setServicioSeleccionado(servicio.id) || setCita((prev) => ({...prev, servicio: servicio})) }
+                            onClick={() =>
+                                setCita((prev) => ({
+                                    ...prev,
+                                    servicio: servicio.nombre,
+                                }))
+                            }
                         >
                             {servicio.nombre}
                         </div>

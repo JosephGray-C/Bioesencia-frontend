@@ -1,10 +1,8 @@
-import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { dateFormat, formatTimeAmPm } from "../utils/formatDateTime.js";
 import { horariosDisponibles } from "../services/citas.js";
 
 export default function HorariosList({ selectedDate, cita, setCita }) {
-    const [horarioSeleccionado, setHorarioSeleccionado] = useState();
     const qc = useQueryClient();
 
     const {
@@ -24,6 +22,11 @@ export default function HorariosList({ selectedDate, cita, setCita }) {
     if (horarios.length === 0)
         return <p>No hay horarios disponibles para esta fecha.</p>;
 
+    // Derive selected horario from cita.fechaHora
+    const horarioSeleccionado = cita.fechaHora
+        ? cita.fechaHora.split("T")[1]
+        : "";
+
     return (
         <div>
             <style>{styles}</style>
@@ -32,10 +35,16 @@ export default function HorariosList({ selectedDate, cita, setCita }) {
                 {horarios.map((hora) => (
                     <div
                         className={`horario-card${
-                            horarioSeleccionado === hora || (hora === cita.hora) ? " selected" : ""
+                            horarioSeleccionado === hora ? " selected" : ""
                         }`}
                         key={hora}
-                        onClick={() => setHorarioSeleccionado(hora) || setCita((prev) => ({...prev, hora: hora, fechaHora: dateFormat(selectedDate) + "T" + hora}))}
+                        onClick={() =>
+                            setCita((prev) => ({
+                                ...prev,
+                                fechaHora:
+                                    dateFormat(selectedDate) + "T" + hora,
+                            }))
+                        }
                     >
                         {formatTimeAmPm(hora)}
                     </div>

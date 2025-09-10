@@ -8,7 +8,7 @@ export default function About() {
     <div className="home-main">
       <h1>Sobre nosotros</h1>
       <img
-        src="/imgs/bioesencia-logo.jpg"
+        src="/imgs/BIOESENCIA_n-BG.png"
         alt="About Us"
         style={{
           display: "block",
@@ -55,7 +55,7 @@ export default function About() {
                         </path></svg>
                     </summary>
                     <div class="main__content-details-container">
-                        <p class="main__content-details"> Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem ullam est hic commodi nostrum nihil quisquam distinctio voluptates reprehenderit debitis? Repudiandae esse unde ab voluptate porro quam molestias, facere harum?</p>
+                        <p class="main__content-details">Para agendar una cita en Bioesencia, inicia sesión con tu cuenta (si no tienes, regístrate en “Registrarse ahora”) y ve a la sección “Agendar” en la barra superior. En el calendario del panel izquierdo elige la fecha y, en el formulario del panel derecho, selecciona el servicio, una hora disponible y, de forma opcional, agrega una nota. Finalmente, haz clic en “Agendar cita”; recibirás un correo de confirmación (si no llega, revisa tu carpeta de spam o correo no deseado). Podrás consultar tus próximas citas en “Calendario”.</p>
                     </div>
                 </details>
            

@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Swal from "sweetalert2";
 import { useUser } from "../context/UserContext";
 import ServiciosList from "./ServiciosCita";
 import HorariosList from "./HorariosCita";
 import NotasCita from "./NotasCita";
 import ConfirmarCita from "./ConfirmarCita";
+import { crearCita } from "../services/citas";
 
 export default function FormCita({ selectedDate }) {
     const [step, setStep] = useState(0);
     const { user } = useUser();
+    const qc = useQueryClient();
 
     const [cita, setCita] = useState({
-        user: user || null,
+        usuario: user || null,
         duracion: 60,
         estado: "AGENDADA",
         servicio: null,
@@ -24,7 +28,7 @@ export default function FormCita({ selectedDate }) {
 
     const limpiarCita = () => {
         setCita({
-            user: user || null,
+            usuario: user || null,
             duracion: 60,
             estado: "AGENDADA",
             servicio: null,
@@ -34,14 +38,45 @@ export default function FormCita({ selectedDate }) {
         setStep(0);
     };
 
+    const mCrear = useMutation({
+        mutationFn: crearCita,
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: ["citas"] });
+            limpiarCita();
+            Swal.fire(
+                "Cita agendada",
+                "Tu cita ha sido agendada con éxito.",
+                "success"
+            );
+        },
+        onError: (error) => {
+            Swal.fire(
+                "Error",
+                `No se pudo agendar la cita: ${error.message}`,
+                "error"
+            );
+        },
+    });
+
     const handleAgendar = () => {
-
-        
-
-        console.log(`Appointment scheduled: 
-                      ${JSON.stringify(cita)}
-                    `);
-        limpiarCita();
+        if (!cita.servicio) {
+            Swal.fire(
+                "Servicio no seleccionado",
+                "Por favor selecciona un servicio.",
+                "warning"
+            );
+            setStep(0);
+            return;
+        } else if (!cita.fechaHora) {
+            Swal.fire(
+                "Hora no seleccionada",
+                "Por favor selecciona una hora.",
+                "warning"
+            );
+            setStep(1);
+            return;
+        }
+        mCrear.mutate(cita);
     };
 
     const renderContent = () => {
@@ -68,13 +103,16 @@ export default function FormCita({ selectedDate }) {
     const renderFooter = () => (
         <div className="agendar-form-footer-fixed">
             {step === 3 && (
-                <button
-                    type="button"
-                    className="agendar-btn"
-                    onClick={() => handleAgendar()}
-                >
-                    Agendar
-                </button>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <button
+                        type="button"
+                        className="agendar-btn"
+                        onClick={() => handleAgendar()}
+                    >
+                        Agendar
+                    </button>
+                    {mCrear.isPending && <p>Procesando...</p>}
+                </div>
             )}
             <div style={{ flex: 1 }}></div>
             {step > 0 && (

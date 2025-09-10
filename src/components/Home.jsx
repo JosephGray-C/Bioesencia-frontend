@@ -27,7 +27,7 @@ export default function Home() {
       <div className="main__contact-section" id="contactsection">
         <img
           className="main__contact-section__img img"
-          src="/imgs/bioesencia-logo.jpg"
+          src="/imgs/BIOESENCIA_n-BG.png"
           alt="Imagen de contacto"
         />
         <div className="main__contact-section__contact-information-container">

@@ -11,7 +11,7 @@ export default function AgendarPage() {
                 <Calendar
                     selectedDate={selectedDate}
                     setSelectedDate={setSelectedDate}
-                    comp={"agendar"}
+                    component={"agendar"}
                 />
             </div>
             <div className="agendar-right">

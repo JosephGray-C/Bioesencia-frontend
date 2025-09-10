@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function Calendar({ selectedDate ,setSelectedDate, comp }) {
+export default function Calendar({ selectedDate ,setSelectedDate, component }) {
     const [date, setDate] = useState(new Date());
 
     useEffect(() => {
@@ -46,7 +46,7 @@ export default function Calendar({ selectedDate ,setSelectedDate, comp }) {
             let isPast = false;
             let isAfterMax = false;
 
-            if (comp === 'agendar') {
+            if (component === 'agendar') {
                 const now = new Date();
                 now.setHours(0, 0, 0, 0);
                 isPast = currentDate < now;

@@ -37,6 +37,5 @@ export async function horariosDisponibles(fecha) {
     const res = await fetch(`${API_URL}/horariosDisponibles?fecha=${fecha}`);
     if (!res.ok) throw new Error(await res.text());
     const data = await res.json();
-    console.log(data)
     return Array.isArray(data) ? data : [];
 } 
