@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Calendar from "./Calendar";
 import { useUser } from "../context/UserContext";
-import { convertDateToTimeAmPm } from "../utils/formatDateTime.js"
+import { convertDateToTimeAmPm } from "../utils/formatDateTime.js";
 
 export default function Calendario() {
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -23,7 +23,6 @@ export default function Calendario() {
             String(selectedDate.getDate()).padStart(2, "0");
 
         if (activeTab === "citas") {
-            // Elimina setCitas(null);
             fetch(
                 `http://localhost:8080/api/citas/agendadas/${fechaStr}/${uid}`
             )
@@ -31,7 +30,6 @@ export default function Calendario() {
                 .then(setCitas)
                 .catch(() => setCitas([]));
         } else {
-            // Elimina setTalleres(null);
             fetch(
                 `http://localhost:8080/api/inscripciones/agendadas/${fechaStr}/${uid}`
             )
@@ -44,6 +42,17 @@ export default function Calendario() {
     return (
         <section className="calpage">
             <style>{styles}</style>
+            <header className="bu-hero">
+                <div
+                    className="bu-hero-inner"
+                    style={{ maxWidth: 900, margin: "0 auto", width: "100%" }}
+                >
+                    <p className="bu-hero-subtitle bu-hero-subtitle--spaced">
+                        Consulta tus citas y talleres agendados en{" "}
+                        <strong>Bioesencia</strong>.
+                    </p>
+                </div>
+            </header>
             <div className="calgrid">
                 <div className="left">
                     <Calendar
@@ -109,7 +118,6 @@ function TablaCitas({ citas }) {
                         </td>
                     </tr>
                 ) : (
-                    
                     citas.map((c) => {
                         let fecha = "";
                         let hora = "";
@@ -253,26 +261,53 @@ const styles = `
     --shadow:0 12px 28px rgba(0,0,0,.06);
   }
 
-  .calpage{ background:var(--bg); min-height:100vh; padding:32px 16px; }
+  .calpage{ background:var(--bg); min-height:100vh; padding:16px 16px; display: flex; flex-direction: column; }
+  .bu-hero {
+    margin-top: 0;
+    padding: 18px 16px 10px;
+  }
+  .bu-hero-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+    width: 100%;
+  }
+  .bu-hero-title {
+    margin: 0 0 8px 0;
+    color: #5A0D0D;
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 800;
+    letter-spacing: .2px;
+  }
+  .bu-hero-subtitle {
+    margin: 0;
+    color: #41503a;
+    font-size: clamp(14px, 2vw, 17px);
+    line-height: 1.7;
+  }
+  .bu-hero-subtitle--spaced {
+    margin-top: 10px;
+    margin-bottom: 18px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    display: block;
+  }
   @media (min-width:768px){ .calpage{ padding:40px 28px; } }
 
-  .calgrid{
-    max-width:1150px;
-    margin:0 auto;
-    display:grid;
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "calendar"
-      "content";
-    gap:32px;
-    justify-items:center;
-    align-items:start;
+  .calgrid {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    justify-items: center;
+    align-items: stretch;
   }
   @media (min-width:980px){
-    .calgrid{
-      grid-template-columns: minmax(340px, 420px) minmax(420px, 680px);
-      grid-template-areas: "calendar content";
-      gap:40px;
+    .calgrid {
+      max-width: 680px;
+      gap: 40px;
     }
   }
 
@@ -290,7 +325,7 @@ const styles = `
     flex-direction:column;
     min-height: 320px;
     width: 100%;
-    max-width: 680px; /* Puedes ajustar este valor */
+    max-width: 680px;
     margin: 0 auto;
   }
 
@@ -300,7 +335,7 @@ const styles = `
     margin: 24px 0 14px 0;
     flex-wrap: wrap;
     justify-content: flex-start;
-    padding-left: 24px; /* buen padding izquierdo */
+    padding-left: 24px;
   }
   @media (max-width:700px){
     .tabs{
@@ -345,24 +380,37 @@ const styles = `
 
   .bu-table {
     width: 100%;
-    min-width: 900px; /* Fuerza el scroll horizontal si hay muchas columnas */
+    min-width: 600px;
     border-radius: 0 0 14px 14px;
     box-shadow: none;
     margin: 0;
-    table-layout: fixed;
+    table-layout: auto;
+    background: #fff;
+    overflow: hidden;
+    font-size: 1rem;
   }
   .bu-table th {
     background: #f6f7f9;
     color: #5A0D0D;
     font-weight: 800;
-    padding: 16px 10px;
+    padding: 14px 8px;
     border-bottom: 2px solid #e5e7eb;
     text-align: left;
+    white-space: nowrap;
   }
   .bu-table td {
-    padding: 14px 10px;
+    padding: 12px 8px;
     border-bottom: 1px solid #f3f4f6;
     vertical-align: middle;
+    word-break: break-word;
+    background: #fff;
+    transition: background .12s;
+  }
+  .bu-table tr:nth-child(even) td {
+    background: #f8fafb;
+  }
+  .bu-table tr:hover td {
+    background: #eef6ee;
   }
   .bu-table tr:last-child td {
     border-bottom: none;
@@ -378,9 +426,6 @@ const styles = `
     color: #23272f;
     font-size: 1rem;
   }
-  @media (max-width:700px){
-    .bu-table th, .bu-table td { padding: 10px 6px; font-size: .97rem; }
-  }
   .tablewrap {
     width: 100%;
     max-width: 100%;
@@ -391,5 +436,29 @@ const styles = `
     min-height: 180px;
     display: block;
     padding: 0;
+  }
+
+  /* Responsive styles */
+  @media (max-width: 900px) {
+    .bu-table {
+      min-width: 480px;
+      font-size: .97rem;
+    }
+    .bu-table th, .bu-table td {
+      padding: 10px 6px;
+    }
+  }
+  @media (max-width: 700px) {
+    .bu-table {
+      min-width: 340px;
+      font-size: .95rem;
+    }
+    .bu-table th, .bu-table td {
+      padding: 8px 4px;
+    }
+    .tablewrap {
+      border-radius: 0 0 10px 10px;
+      min-height: 120px;
+    }
   }
 `;

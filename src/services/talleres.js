@@ -16,5 +16,5 @@ export async function fetchTaller({ queryKey, signal }) {
     throw err;
   }
   if (!res.ok) throw new Error(res.text());
-  return res;
+  return res.json();
 }

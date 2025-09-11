@@ -50,16 +50,21 @@ export default function FormCita({ selectedDate }) {
             );
         },
         onError: (error) => {
-            Swal.fire(
-                "Error",
-                `No se pudo agendar la cita: ${error.message}`,
-                "error"
-            );
+            console.log(error);
+            Swal.fire("Error", `No se pudo agendar la cita`, "error");
         },
     });
 
     const handleAgendar = () => {
-        if (!cita.servicio) {
+        if (!cita.servicio && !cita.fechaHora) {
+            Swal.fire(
+                "Servicio y hora no seleccionados",
+                "Por favor selecciona un servicio y una hora.",
+                "warning"
+            );
+            setStep(0);
+            return;
+        } else if (!cita.servicio) {
             Swal.fire(
                 "Servicio no seleccionado",
                 "Por favor selecciona un servicio.",
@@ -103,7 +108,7 @@ export default function FormCita({ selectedDate }) {
     const renderFooter = () => (
         <div className="agendar-form-footer-fixed">
             {step === 3 && (
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                     <button
                         type="button"
                         className="agendar-btn"
@@ -115,26 +120,27 @@ export default function FormCita({ selectedDate }) {
                 </div>
             )}
             <div style={{ flex: 1 }}></div>
-            {step > 0 && (
-                <button
-                    type="button"
-                    className="agendar-btn"
-                    onClick={() => setStep(step - 1)}
-                    aria-label="Anterior"
-                >
-                    &#8592;
-                </button>
-            )}
-            {step < 3 && (
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                {step > 0 && (
+                    <button
+                        type="button"
+                        className="agendar-btn"
+                        onClick={() => setStep(step - 1)}
+                        aria-label="Anterior"
+                    >
+                        &#8592;
+                    </button>
+                )}
                 <button
                     type="button"
                     className="agendar-btn"
                     onClick={() => setStep(step + 1)}
                     aria-label="Siguiente"
+                    style={{ visibility: step < 3 ? "visible" : "hidden" }}
                 >
                     &#8594;
                 </button>
-            )}
+            </div>
         </div>
     );
 
@@ -216,17 +222,14 @@ const styles = `
 }
 @media (max-width: 900px) {
   .card-pad {
-    max-width: 100vw;
-    min-width: 160px;
-    width: 98vw;
-    height: auto;
-    min-height: 180px;
-    border-radius: 10px;
+    width: 100%;
+    min-height: 433px;
+    border-radius: 8px;
   }
   .agendar-form-content {
-    padding: 12px 10px 70px 10px;
-    gap: 12px;
-    max-height: 55vh;
+    max-height: 433px;
+    padding: 8px 4px 60px 4px;
+    gap: 10px;
   }
   .agendar-form-footer-fixed {
     padding: 10px 10px 14px 10px;
@@ -236,16 +239,14 @@ const styles = `
 }
 @media (max-width: 700px) {
   .card-pad {
-    max-width: 100vw;
-    min-width: 0;
-    width: 100vw;
+    width: 100%;
+    min-height: 420px;
     border-radius: 8px;
-    min-height: 140px;
   }
   .agendar-form-content {
+    max-height: 420px;
     padding: 8px 4px 60px 4px;
     gap: 10px;
-    max-height: 50vh;
   }
   .agendar-form-footer-fixed {
     padding: 8px 4px 12px 4px;

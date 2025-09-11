@@ -5,10 +5,7 @@ import Swal from "sweetalert2";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchTaller } from "../services/talleres";
-import {
-    crearInscripcion,
-    fetchInscripcionTaller,
-} from "../services/inscripciones";
+import { crearInscripcion, fetchInscripcionTaller } from "../services/inscripciones";
 import { formatoFecha, formatoHoraAmPm } from "../utils/formatDateTime";
 
 const WINE = "var(--biosencia-wine, #5A0D0D)";
@@ -16,7 +13,7 @@ const GREEN = "var(--biosencia-green, #A9C499)";
 const TEXT = "#1f2937";
 const BORDER = "#e5e7eb";
 
-export default function TallerDetallePage() {
+export default function TallerDetalle() {
     const { user } = useUser();
     const navigate = useNavigate();
     const { id: routeId } = useParams();

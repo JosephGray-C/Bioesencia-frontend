@@ -17,8 +17,8 @@ import Carrito from './components/Carrito';
 import ResumenCompra from './components/ResumenCompra';
 import OrdenConfirmada from './components/OrdenConfirmada';
 import Blog from "./components/Blog";
-import TalleresPage from "./components/TalleresPage";
-import TallerDetallePage from "./components/TallerDetallePage";
+import Talleres from "./components/Talleres";
+import TallerDetalle from "./components/TallerDetalle";
 import AdminInscripciones from "./components/AdminInscripciones";
 import Calendario from "./components/Calendario";
 import Agendar from './components/Agendar';
@@ -63,8 +63,8 @@ function App() {
                                         <Route path="/agendar" element={<Agendar/>}/>
                                         <Route path="/blog" element={<Blog/>}/>
                                         <Route path="/calendario" element={<Calendario/>}/>
-                                        <Route path="/talleres" element={<TalleresPage/>}/>
-                                        <Route path="/talleres/:id" element={<TallerDetallePage/>}/>
+                                        <Route path="/talleres" element={<Talleres/>}/>
+                                        <Route path="/talleres/:id" element={<TallerDetalle/>}/>
                                         <Route path="/perfilusuario" element={<PerfilUsuario/>}/>
                                     </Route>
 
