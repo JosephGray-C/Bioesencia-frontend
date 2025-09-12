@@ -1,6 +1,13 @@
 const API_URL = "http://localhost:8080/api/productos";
 
 export async function fetchProductos({ signal }) {
+    const res = await fetch(`${API_URL}`, { signal });
+    if (!res.ok) throw new Error("No se pudo cargar productos");
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+}
+
+export async function fetchProductosActivos({ signal }) {
     const res = await fetch(`${API_URL}/activos`, { signal });
     if (!res.ok) throw new Error("No se pudo cargar productos");
     const data = await res.json();

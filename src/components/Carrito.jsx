@@ -23,6 +23,8 @@ export default function Carrito() {
 
     const showSpinner = isFetching && items.length === 0;
 
+    console.log(items)
+
     const mEliminar = useMutation({
         mutationFn: apiEliminarItem,
         onMutate: async (itemId) => {
@@ -42,7 +44,10 @@ export default function Carrito() {
         },
     });
 
-    const eliminarItem = (itemId) => mEliminar.mutate(itemId);
+    const eliminarItem = (itemId) => {
+        mEliminar.mutate(itemId);
+        console.log(itemId);
+    };
 
     const { total } = useMemo(() => {
         const sb = items.reduce((acc, item) => {

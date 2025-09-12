@@ -18,7 +18,6 @@ import ResumenCompra from './components/ResumenCompra';
 import OrdenConfirmada from './components/OrdenConfirmada';
 import Blog from "./components/Blog";
 import Talleres from "./components/Talleres";
-import TallerDetalle from "./components/TallerDetalle";
 import AdminInscripciones from "./components/AdminInscripciones";
 import Calendario from "./components/Calendario";
 import Agendar from './components/Agendar';
@@ -64,7 +63,6 @@ function App() {
                                         <Route path="/blog" element={<Blog/>}/>
                                         <Route path="/calendario" element={<Calendario/>}/>
                                         <Route path="/talleres" element={<Talleres/>}/>
-                                        <Route path="/talleres/:id" element={<TallerDetalle/>}/>
                                         <Route path="/perfilusuario" element={<PerfilUsuario/>}/>
                                     </Route>
 

@@ -22,6 +22,7 @@ export async function postAgregarCarrito({ userId, productoId, cantidad }) {
 }
 
 export async function apiEliminarItem(itemId) {
+    console.log(itemId)
     const res = await fetch(`${API_CARRITO}/eliminar/${itemId}`, { method: "DELETE" });
     if (!res.ok) throw new Error(await res.text());
     return res;
