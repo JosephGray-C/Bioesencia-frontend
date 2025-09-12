@@ -30,7 +30,7 @@ export default function BlogForm({ preview, setPreview, originalPost }) {
             console.log(res);
         } else {
             Swal.fire("Éxito", "El post fue creado.", "success");
-            qc.invalidateQueries({ queryKey: ["blogPosts"] }); // <-- Refetch posts
+            qc.invalidateQueries({ queryKey: ["posts"] }); // <-- Refetch posts
             handleLimpiarForm();
         }
     };
@@ -46,13 +46,14 @@ export default function BlogForm({ preview, setPreview, originalPost }) {
         if (isUnchanged) {
             return Swal.fire("", "No se han realizado cambios.", "info");
         }
+        
         const res = await actualizarPost(post.idPost, post);
         if (!res.ok) {
             console.log(res);
             Swal.fire("", "No se pudo editar el post.", "error");
         } else {
+            qc.invalidateQueries({ queryKey: ["posts"] }); // <-- Refetch posts
             Swal.fire("Éxito", "El post fue editado.", "success");
-            qc.invalidateQueries({ queryKey: ["blogPosts"] }); // <-- Refetch posts
             handleLimpiarForm();
         }
     };
@@ -74,8 +75,8 @@ export default function BlogForm({ preview, setPreview, originalPost }) {
             if (!res.ok) {
                 Swal.fire("Error", "No se pudo eliminar el post.", "error");
             } else {
+                qc.invalidateQueries({ queryKey: ["posts"] }); // <-- Refetch posts
                 Swal.fire("Eliminado", "El post fue eliminado.", "success");
-                qc.invalidateQueries({ queryKey: ["blogPosts"] }); // <-- Refetch posts
                 handleLimpiarForm();
             }
         }
@@ -171,7 +172,7 @@ const styles = `
     border-radius: 14px;
     box-shadow: 0 4px 16px rgba(0,0,0,.07);
     padding: 0;
-    max-width: 400px;
+    min-width: 380px;
     min-height: 402px;
     width: 100%;
     justify-content: center;

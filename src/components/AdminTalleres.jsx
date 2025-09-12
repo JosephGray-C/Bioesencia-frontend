@@ -4,9 +4,7 @@ import Swal from "sweetalert2";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ClipLoader from "react-spinners/ClipLoader";
 import { fetchInscripciones } from "../services/inscripciones";
-import { fetchTalleres } from "../services/talleres";
-
-const API_URL = "http://localhost:8080/api/talleres";
+import { fetchTalleres, createTaller, updateTaller, deleteTaller } from "../services/talleres";
 
 function CrearTallerModal({ form, onChange, onSubmit, onCancel }) {
     return (
@@ -454,11 +452,7 @@ export default function AdminTalleres() {
         }
 
         try {
-            const res = await fetch(API_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form)
-            });
+            const res = await createTaller(form);
             if (!res.ok) throw new Error(await res.text());
             const nuevo = await res.json();
 
@@ -493,11 +487,7 @@ export default function AdminTalleres() {
         }
 
         try {
-            const res = await fetch(`${API_URL}/${editForm.id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(editForm)
-            });
+            const res = await updateTaller(editForm.id, editForm);
             if (!res.ok) throw new Error(await res.text());
             const actualizado = await res.json();
 
@@ -527,7 +517,7 @@ export default function AdminTalleres() {
         if (!confirm.isConfirmed) return;
 
         try {
-            const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+            const res = await deleteTaller(id);
             if (!res.ok) throw new Error(await res.text());
 
             qc.setQueryData(["talleres"], (prev) =>

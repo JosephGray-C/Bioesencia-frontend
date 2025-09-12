@@ -18,3 +18,35 @@ export async function fetchTaller({ queryKey, signal }) {
   if (!res.ok) throw new Error(res.text());
   return res.json();
 }
+
+export async function createTaller(data) {
+    const res = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res;
+}
+
+export async function deleteTaller(id) {
+    const res = await fetch(`${API_URL}/${id}`, {
+        method: "DELETE",
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res;
+}
+
+export async function updateTaller(id, data) {
+    const res = await fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res;
+}

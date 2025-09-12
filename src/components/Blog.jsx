@@ -53,6 +53,7 @@ export default function Blog() {
 
             {esAdmin && (
                 <section className="blog-admin-preview">
+                  
                     <BlogForm preview={preview} setPreview={setPreview} originalPost={originalPost} />
                     <BlogPost post={preview} isPreview={true} />
                 </section>
@@ -78,6 +79,7 @@ const styles = `
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  
 }
 
 .blog-admin-preview {
@@ -87,7 +89,7 @@ const styles = `
   margin-bottom: 2rem;
   width: 100%;
   max-width: 900px;
-  min-height: 320px; /* <-- Always reserve space for form + preview */
+  min-height: 300px; /* <-- Always reserve space for form + preview */
   margin-left: auto;
   margin-right: auto;
   flex-wrap: wrap;
@@ -161,6 +163,7 @@ const styles = `
   flex-direction: column;
   transition: transform .16s, box-shadow .16s;
   height: 100%;
+  min-width: 380px;
 }
 .bu-card:hover {
   transform: translateY(-2px);

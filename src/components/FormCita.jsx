@@ -173,7 +173,7 @@ const styles = `
 }
 .agendar-form-content {
   flex: 1 1 auto;
-  padding: 18px 20px 80px 20px;
+  padding: 18px 24px 80px 24px;
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -188,7 +188,7 @@ const styles = `
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 10px 20px 16px 20px;
+  padding: 10px 24px 16px 24px;
   border-top: 1px solid #f3f4f6;
   display: flex;
   justify-content: flex-end;
@@ -224,15 +224,15 @@ const styles = `
   .card-pad {
     width: 100%;
     min-height: 433px;
-    border-radius: 8px;
+    border-radius: 10px;
   }
   .agendar-form-content {
     max-height: 433px;
-    padding: 8px 4px 60px 4px;
-    gap: 10px;
+    padding: 14px 12px 70px 12px;
+    gap: 14px;
   }
   .agendar-form-footer-fixed {
-    padding: 10px 10px 14px 10px;
+    padding: 10px 12px 14px 12px;
     min-height: 40px;
     border-radius: 0 0 10px 10px;
   }
@@ -245,13 +245,22 @@ const styles = `
   }
   .agendar-form-content {
     max-height: 420px;
-    padding: 8px 4px 60px 4px;
+    padding: 10px 6vw 60px 6vw;
     gap: 10px;
   }
   .agendar-form-footer-fixed {
-    padding: 8px 4px 12px 4px;
+    padding: 8px 6vw 12px 6vw;
     min-height: 36px;
     border-radius: 0 0 8px 8px;
+  }
+}
+@media (max-width: 480px) {
+  .agendar-form-content {
+    padding: 8px 2vw 56px 2vw;
+    gap: 8px;
+  }
+  .agendar-form-footer-fixed {
+    padding: 8px 2vw 10px 2vw;
   }
 }
 `;

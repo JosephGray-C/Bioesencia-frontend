@@ -1,5 +1,5 @@
 import "../assets/css/homepage.css";
-import "../App.css";
+import "../assets/css/App.css";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 

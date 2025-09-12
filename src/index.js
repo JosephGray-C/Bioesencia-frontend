@@ -6,9 +6,7 @@ import { UserProvider } from './context/UserContext';
 import App from './App';
 
 // css
-import './assets/css/homepage.css';
 import './assets/css/fonts.css';
-import './assets/css/calendar.css';
 import './assets/css/styles.css';
 
 const queryClient = new QueryClient({

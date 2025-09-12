@@ -10,7 +10,7 @@ export function formatTimeAmPm(time) {
 }
 
 export function convertDateToTimeAmPm(date) {
-    if (!date) return "";
+    if (!date) return "—";
     // horaStr puede venir como "2025-08-18 09:00:00" o "2025-08-18T09:00:00"
     const match = date.match(/(\d{2}):(\d{2})(?::\d{2})?/);
     if (!match) return date;
