@@ -45,7 +45,7 @@ export default function Calendario() {
                     className="bu-hero-inner"
                     style={{ maxWidth: 900, margin: "0 auto", width: "100%" }}
                 >
-                    <p className="bu-hero-subtitle bu-hero-subtitle--spaced">
+                    <p className="bu-hero-subtitle ">
                         Consulta tus citas y talleres agendados en{" "}
                         <strong>Bioesencia</strong>.
                     </p>

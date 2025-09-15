@@ -28,9 +28,9 @@ export default function Productos() {
 
     return (
         <div className="productos-page">
-            <header className="productos-hero">
-                <div className="productos-hero-inner">
-                    <p className="productos-subtitle">
+            <header className="bu-hero">
+                <div className="bu-hero-inner">
+                    <p className="bu-hero-subtitle">
                         Descubre la variedad de productos naturales y
                         artesanales de <strong>Bioesencia</strong>.
                     </p>

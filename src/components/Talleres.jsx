@@ -31,9 +31,9 @@ export default function Talleres() {
 
     return (
         <div className="tp">
-            <header className="tp-hero">
-                <div className="tp-hero-inner">
-                    <p className="tp-subtitle">
+            <header className="bu-hero">
+                <div className="bu-hero-inner">
+                    <p className="bu-hero-subtitle">
                         Descubre y participa en los talleres de{" "}
                         <strong>Bioesencia</strong> para tu bienestar.
                     </p>

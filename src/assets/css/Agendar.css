@@ -8,6 +8,8 @@
     margin-top: 3vh;
     background: transparent;
     padding: 18px 16px 10px;
+    width: 100%;
+    max-width: 900px;
 }
 .bu-hero-inner {
     display: flex;
@@ -16,18 +18,12 @@
     align-items: flex-start;
     width: 100%;
 }
-.bu-hero-title {
-    margin: 0 0 8px 0;
-    color: #5a0d0d;
-    font-size: clamp(22px, 3vw, 32px);
-    font-weight: 800;
-    letter-spacing: 0.2px;
-}
 .bu-hero-subtitle {
     margin: 0;
     color: #41503a;
     font-size: clamp(14px, 2vw, 17px);
 }
+
 .agendar-container {
     display: flex;
     flex-direction: row;

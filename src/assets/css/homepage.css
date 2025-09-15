@@ -1,66 +1,172 @@
-html, body {
+/* Wrapper para centrar imagen y redes sociales */
+.main__contact-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    padding: 32px 0 24px 0;
+    background: #fff;
+    box-sizing: border-box;
+}
+.main__contact-section__wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    width: 100%;
+    max-width: 900px;
+}
+.main__contact-section__img.img {
+    display: block;
+    margin: 0;
+    max-width: 420px;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 18px #0001;
+    object-fit: contain;
+}
+.main__contact-section__contact-information-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    max-width: 420px;
+    margin: 0;
+}
+/* Solo layout centrado y responsivo para la sección de contacto */
+.main__contact-section__title,
+.main__contact-section__information {
+    text-align: center;
+    margin-bottom: 14px;
+}
+.main__contact-section__links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+    .main__contact-section__wrapper {
+        gap: 18px;
+        max-width: 99vw;
+    }
+}
+@media (max-width: 700px) {
+    .main__contact-section__wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    .main__contact-section__img.img {
+        margin: 0 auto 8px auto;
+        max-width: 98vw;
+        border-radius: 6px;
+    }
+    .main__contact-section__contact-information-container {
+        align-items: center;
+        text-align: center;
+        max-width: 99vw;
+        padding: 0 2vw;
+    }
+    .main__contact-section__title,
+    .main__contact-section__information {
+        text-align: center;
+    }
+    .main__contact-section__links {
+        justify-content: center;
+        gap: 10px;
+        font-size: 1.2rem;
+    }
+}
+/* Imagen de contacto Home.jsx centrada y responsiva */
+.main__contact-section__img.img {
+    display: block;
+    margin: 0 auto 18px auto;
+    max-width: 420px;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 18px #0001;
+    object-fit: contain;
+}
+
+@media (max-width: 600px) {
+    .main__contact-section__img.img {
+        max-width: 98vw;
+        margin-bottom: 12px;
+        border-radius: 6px;
+    }
+}
+html,
+body {
     height: 100%;
     width: 100%;
 }
 
 .home-main {
-  display: grid;
-  min-height: 100vh;
-  grid-template-rows: auto 1fr auto ; 
-   width: 100%;
-  box-sizing: border-box;
-  background: #fff;
-  font-family: "Poppins", "Avenir Next", "Oswald", sans-serif;
-  padding: 32px 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
+    display: grid;
+    min-height: 100vh;
+    grid-template-rows: auto 1fr auto;
+    width: 100%;
+    box-sizing: border-box;
+    background: #fff;
+    font-family: "Poppins", "Avenir Next", "Oswald", sans-serif;
+    padding: 32px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
 }
 
-
 .home-main h1 {
-  font-size: 2.8rem;
-  font-family: "Avenir Next", "Poppins", sans-serif;
-  font-weight: 700;
-  margin-bottom: 36px;
-  letter-spacing: 2px;
-  width: 100%;
-  text-align: center;
+    font-size: 2.8rem;
+    font-family: "Avenir Next", "Poppins", sans-serif;
+    font-weight: 700;
+    margin-bottom: 36px;
+    letter-spacing: 2px;
+    width: 100%;
+    text-align: center;
 }
 
 .home-main p {
-  font-size: 1.15rem;
-  font-family: "Poppins", "Avenir Next", "Oswald", sans-serif;
-  line-height: 1.65;
-  margin: 18px 0;
-  text-align: justify;
-  max-width: 900px;
+    font-size: 1.15rem;
+    font-family: "Poppins", "Avenir Next", "Oswald", sans-serif;
+    line-height: 1.65;
+    margin: 18px 0;
+    text-align: justify;
+    max-width: 900px;
 }
 
 @media (max-width: 800px) {
-  .home-main {
-    padding: 24px 3vw 24px 3vw;
-  }
-  .home-main h1 {
-    font-size: 2.1rem;
-  }
-  .home-main p {
-    font-size: 1.01rem;
-    max-width: 99vw;
-  }
+    .home-main {
+        padding: 24px 3vw 24px 3vw;
+    }
+    .home-main h1 {
+        font-size: 2.1rem;
+    }
+    .home-main p {
+        font-size: 1.01rem;
+        max-width: 99vw;
+    }
 }
 
 .home-crud {
-  min-height: calc(100vh - 128px);
-  width: 100%;
-  box-sizing: border-box;
-  background: #fff;
-  font-family: "Poppins", "Avenir Next", "Oswald", sans-serif;
-  padding: 32px 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  margin: 0 auto;
+    min-height: calc(100vh - 128px);
+    width: 100%;
+    box-sizing: border-box;
+    background: #fff;
+    font-family: "Poppins", "Avenir Next", "Oswald", sans-serif;
+    padding: 32px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin: 0 auto;
 }
