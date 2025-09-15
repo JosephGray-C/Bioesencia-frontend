@@ -63,43 +63,6 @@ export default function BlogPost({ post, fillForm, isPreview }) {
                     </div>
                 )}
             </div>
-            <style>{styles}</style>
         </article>
     );
 }
-const styles = 
-`
-    .bu-card-action-btn {
-        background: #A9C499;
-        color: #5A0D0D;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 7px;
-        font-size: 0.98rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: background .15s, transform .15s;
-        min-width: 80px;
-    }
-    .bu-card-action-btn:hover {
-        background: #8aa37c;
-        transform: translateY(-1px);
-    }
-    .bu-card-edit {
-        background: #e6f7e6;
-        color: #388e3c;
-    }
-    .bu-card-edit:hover {
-        background: #cdeed0;
-    }
-    .bu-card-delete {
-        background: #fbeaea;
-        color: #5A0D0D;
-    }
-    .bu-card-delete:hover {
-        background: #f3d6d6;
-    }
-
-// 
-
-`;

@@ -1,0 +1,270 @@
+:root {
+    --wine: #5a0d0d;
+    --green: #a9c499;
+    --ink: #1f2937;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --card: #ffffff;
+    --bg: #ffffff;
+    --shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+}
+
+.calpage {
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 16px 16px;
+    display: flex;
+    flex-direction: column;
+}
+.bu-hero {
+    margin-top: 0;
+    padding: 18px 16px 10px;
+}
+.bu-hero-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+    width: 100%;
+}
+.bu-hero-title {
+    margin: 0 0 8px 0;
+    color: #5a0d0d;
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 800;
+    letter-spacing: 0.2px;
+}
+.bu-hero-subtitle {
+    margin: 0;
+    color: #41503a;
+    font-size: clamp(14px, 2vw, 17px);
+    line-height: 1.7;
+}
+.bu-hero-subtitle--spaced {
+    margin-top: 10px;
+    margin-bottom: 18px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    display: block;
+}
+@media (min-width: 768px) {
+    .calpage {
+        padding: 40px 28px;
+    }
+}
+
+.calgrid {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    justify-items: center;
+    align-items: stretch;
+}
+@media (min-width: 980px) {
+    .calgrid {
+        max-width: 680px;
+        gap: 40px;
+    }
+}
+
+.left {
+    grid-area: calendar;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.right {
+    grid-area: content;
+    width: 100%;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 320px;
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin: 24px 0 14px 0;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    padding-left: 24px;
+}
+@media (max-width: 700px) {
+    .tabs {
+        padding-left: 10px;
+        margin: 18px 0 10px 0;
+        gap: 6px;
+    }
+}
+.tabbtn {
+    padding: 8px 18px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: #f3f4f6;
+    color: var(--ink);
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease,
+        background 0.12s ease;
+}
+.tabbtn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+    background: #eef2f7;
+}
+.tabbtn.active {
+    background: var(--green);
+    color: var(--wine);
+    border-color: var(--green);
+}
+
+.calgrid table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    color: var(--ink);
+    min-width: 640px;
+    min-height: 120px;
+    font-size: 1.04rem;
+    margin: 0;
+}
+.calgrid thead tr {
+    background: #f7f9fb;
+}
+.calgrid th,
+.calgrid td {
+    padding: 14px 10px;
+}
+.calgrid th {
+    text-align: left;
+    font-weight: 800;
+    color: var(--ink);
+    background: #f7f9fb;
+}
+.calgrid td {
+    border-top: 1px solid #eef2f7;
+}
+.calgrid tbody tr:hover {
+    background: #fafbfd;
+}
+.calgrid td.center,
+.calgrid th.center {
+    text-align: center;
+}
+@media (max-width: 700px) {
+    .calgrid table {
+        min-width: 0;
+        font-size: 0.98rem;
+    }
+    .calgrid th,
+    .calgrid td {
+        padding: 10px 6px;
+    }
+}
+
+.bu-table {
+    width: 100%;
+    min-width: 600px;
+    border-radius: 0 0 14px 14px;
+    box-shadow: none;
+    margin: 0;
+    table-layout: auto;
+    background: #fff;
+    overflow: hidden;
+    font-size: 1rem;
+}
+.bu-table th {
+    background: #f6f7f9;
+    color: #5a0d0d;
+    font-weight: 800;
+    padding: 14px 8px;
+    border-bottom: 2px solid #e5e7eb;
+    text-align: left;
+    white-space: nowrap;
+}
+.bu-table td {
+    padding: 12px 8px;
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: middle;
+    word-break: break-word;
+    background: #fff;
+    transition: background 0.12s;
+}
+.bu-table tr:nth-child(even) td {
+    background: #f8fafb;
+}
+.bu-table tr:hover td {
+    background: #eef6ee;
+}
+.bu-table tr:last-child td {
+    border-bottom: none;
+}
+.bu-empty-row {
+    color: #6b7280;
+    font-size: 1.08rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.bu-servicio,
+.bu-titulo,
+.bu-lugar,
+.bu-hora,
+.bu-cupo,
+.bu-precio,
+.bu-fecha,
+.bu-notas {
+    font-weight: 600;
+    color: #23272f;
+    font-size: 1rem;
+}
+.tablewrap {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    border-radius: 0 0 18px 18px;
+    background: #fff;
+    box-shadow: none;
+    min-height: 180px;
+    display: block;
+    padding: 0;
+}
+/* Responsive styles */
+@media (max-width: 900px) {
+    .bu-table {
+        min-width: 480px;
+        font-size: 0.97rem;
+    }
+    .bu-table th,
+    .bu-table td {
+        padding: 10px 6px;
+    }
+}
+@media (max-width: 700px) {
+    .bu-table {
+        min-width: 340px;
+        font-size: 0.95rem;
+    }
+    .bu-table th,
+    .bu-table td {
+        padding: 8px 4px;
+    }
+    .tablewrap {
+        border-radius: 0 0 10px 10px;
+        min-height: 120px;
+    }
+}

@@ -170,10 +170,9 @@ export default function TallerModal({ tallerSelected, onClose }) {
     }
 
     return (
-        <div className="taller-modal-card" style={modalCardStyles}>
+        <div className="taller-modal-card modal-card-styles" >
             <button
-                className="modal-close"
-                style={modalCloseStyles}
+                className="modal-close-styles modal-close"
                 onClick={onClose}
                 title="Cerrar"
             >
@@ -344,30 +343,3 @@ export default function TallerModal({ tallerSelected, onClose }) {
         </div>
     );
 }
-
-const modalCardStyles = {
-    maxWidth: 480,
-    width: "100%",
-    background: "#fff",
-    border: `1px solid ${BORDER}`,
-    borderRadius: 24,
-    boxShadow: "0 16px 40px rgba(0,0,0,.18)",
-    color: TEXT,
-    textAlign: "left",
-    padding: "24px 22px 26px",
-    position: "relative",
-    margin: "0 auto",
-};
-
-const modalCloseStyles = {
-    position: "absolute",
-    top: 18,
-    right: 28,
-    background: "none",
-    border: "none",
-    fontSize: "2.2rem",
-    color: WINE,
-    cursor: "pointer",
-    zIndex: 2,
-    transition: "color .15s",
-};

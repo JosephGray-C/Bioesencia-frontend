@@ -27,8 +27,6 @@ export default function HeaderUser() {
 
   return (
       <>
-        <style>{styles}</style>
-
         <header className={`hu ${hidden ? "hu--hidden" : ""}`}>
           <div className="hu__wrap">
             <img
@@ -98,17 +96,3 @@ export default function HeaderUser() {
       </>
   );
 }
-
-const styles = `
-  .hu{position:sticky;top:0;z-index:1000;background:#A9C499;color:#5A0D0D;box-shadow:0 2px 8px #0001;transition:top .3s ease;}
-  .hu--hidden{top:-90px;}
-  .hu__wrap{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;}
-  .hu__brand{font-weight:900;font-size:clamp(20px,5.5vw,32px);font-family:Avenir Next,system-ui,sans-serif;letter-spacing:.4px;}
-  .hu__nav{display:flex;gap:28px;align-items:center;}
-  .hu__right{display:flex;gap:16px;align-items:center;}
-  .hu__link{font-weight:600;text-decoration:none;font-size:1.05rem;color:#5A0D0D;background:none;border:none;cursor:pointer;}
-  .hu__menu{background:transparent;border:none;width:40px;height:40px;font-size:24px;line-height:40px;cursor:pointer;color:#5A0D0D;}
-  /* Responsive */
-  @media (max-width: 900px){ .hu__nav{display:none;} }         
-  @media (max-width: 600px){ .hu__wrap{padding:12px 14px;} .hu__right>a, .hu__right>button.linklike{display:none;} }
-`;

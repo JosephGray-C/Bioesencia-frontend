@@ -62,8 +62,6 @@ export default function HeaderGuest() {
 
     return (
         <>
-            <style>{styles}</style>
-
             <header
                 ref={headerRef}
                 style={{
@@ -144,36 +142,13 @@ export default function HeaderGuest() {
                     padding: "12px 0",
                 }}
                 >
-                <Link to="/" onClick={() => setMenuOpen(false)} style={mobileItemStyle}>Inicio</Link>
-                <Link to="/about" onClick={() => setMenuOpen(false)} style={mobileItemStyle}>Nosotros</Link>
-                <Link to="/blogusuario" onClick={() => setMenuOpen(false)} style={mobileItemStyle}>Blog</Link>
-                <Link to="/login" onClick={() => setMenuOpen(false)} style={{...mobileItemStyle, marginTop: 8}}>
+                <Link to="/" onClick={() => setMenuOpen(false)} className="mobile-link" >Inicio</Link>
+                <Link to="/about" onClick={() => setMenuOpen(false)} className="mobile-link">Nosotros</Link>
+                <Link to="/blogusuario" onClick={() => setMenuOpen(false)} className="mobile-link">Blog</Link>
+                <Link to="/login" onClick={() => setMenuOpen(false)} className="mobile-link" style={{ marginTop: 8 }}>
                     Iniciar sesión
                 </Link>
             </nav>
         </>
     );
 }
-
-const mobileItemStyle = {
-    display: "flex",
-    alignItems: "center",
-    minHeight: 48,
-    padding: "12px 20px",
-    fontWeight: 600,
-    fontSize: "1.05rem",
-    color: "#5A0D0D",
-    textDecoration: "none",
-    borderRadius: 8,
-};
-const styles = `
-.hg-nav { display:flex; gap:32px; align-items:center; }
-.hg-link { font-weight:600; text-decoration:none; font-size:1.1rem; color:#5A0D0D; }
-.hg-actions { display:flex; align-items:center; gap:16px; }
-.hg-burger { display:none; background:transparent; border:none; font-size:1.6rem; line-height:1; color:#5A0D0D; cursor:pointer; }
-@media (max-width: 768px) {
-.hg-nav { display:none; }
-.hg-burger { display:inline-flex; }
-.hg-login { display:none; }
-}
-`;

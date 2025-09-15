@@ -8,6 +8,12 @@ import App from './App';
 // css
 import './assets/css/fonts.css';
 import './assets/css/styles.css';
+import './assets/css/Blog.css';
+import './assets/css/Agendar.css';
+import './assets/css/Taller.css';
+import './assets/css/Calendario.css';
+import './assets/css/Producto.css';
+import './assets/css/Header.css';
 
 const queryClient = new QueryClient({
     defaultOptions: {
