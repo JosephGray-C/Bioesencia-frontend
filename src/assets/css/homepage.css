@@ -1,3 +1,8 @@
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
 /* Wrapper para centrar imagen y redes sociales */
 .main__contact-section {
     width: 100%;
@@ -103,11 +108,6 @@
         margin-bottom: 12px;
         border-radius: 6px;
     }
-}
-html,
-body {
-    height: 100%;
-    width: 100%;
 }
 
 .home-main {
