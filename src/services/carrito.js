@@ -2,12 +2,10 @@ const API_CARRITO = "http://localhost:8080/api/carrito";
 
 export async function fetchCarrito({ queryKey, signal }) {
     const userId = queryKey[1];
-    console.log(userId)
     if (!userId) return [];
     const res = await fetch(`${API_CARRITO}/${userId}`, { signal });
     if (!res.ok) throw new Error(await res.text());
     const data = await res.json();
-    console.log(data)
     return Array.isArray(data) ? data : [];
 }
 
@@ -23,7 +21,6 @@ export async function postAgregarCarrito({ userId, productoId, cantidad }) {
 }
 
 export async function apiEliminarItem(itemId) {
-    console.log(itemId)
     const res = await fetch(`${API_CARRITO}/eliminar/${itemId}`, { method: "DELETE" });
     if (!res.ok) throw new Error(await res.text());
     return res;

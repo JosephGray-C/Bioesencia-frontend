@@ -23,9 +23,6 @@ export default function Carrito() {
 
     const showSpinner = isFetching && items.length === 0;
 
-    console.log(user?.id)
-    console.log(items)
-
     const mEliminar = useMutation({
         mutationFn: apiEliminarItem,
         onMutate: async (itemId) => {
@@ -47,7 +44,6 @@ export default function Carrito() {
 
     const eliminarItem = (itemId) => {
         mEliminar.mutate(itemId);
-        console.log(itemId);
     };
 
     const { total } = useMemo(() => {
@@ -144,7 +140,7 @@ export default function Carrito() {
                                     const imgUrl =
                                         item.producto?.imagenUrl ||
                                         item.producto?.imageUrl ||
-                                        "https://via.placeholder.com/100x70?text=IMG";
+                                        "imgs/no_image.png";
 
                                     return (
                                         <article
@@ -158,6 +154,41 @@ export default function Carrito() {
                                                         src={imgUrl}
                                                         alt={nombre}
                                                         loading="lazy"
+                                                        style={
+                                                            imgUrl.includes(
+                                                                "no_image.png"
+                                                            )
+                                                                ? {
+                                                                      width: 100,
+                                                                      height: 70,
+                                                                      objectFit:
+                                                                          "contain",
+                                                                      background:
+                                                                          "#f6f7f9",
+                                                                      display:
+                                                                          "block",
+                                                                      margin: "0 auto",
+                                                                  }
+                                                                : { width: 100 }
+                                                        }
+                                                        onError={(e) => {
+                                                            e.target.onerror =
+                                                                null;
+                                                            e.target.src =
+                                                                "imgs/no_image.png";
+                                                            e.target.style.objectFit =
+                                                                "contain";
+                                                            e.target.style.background =
+                                                                "#f6f7f9";
+                                                            e.target.style.width =
+                                                                "100px";
+                                                            e.target.style.height =
+                                                                "70px";
+                                                            e.target.style.display =
+                                                                "block";
+                                                            e.target.style.margin =
+                                                                "0 auto";
+                                                        }}
                                                     />
                                                     <div className="main__cart-product-table-item-name-and-price-container">
                                                         <button
@@ -260,5 +291,3 @@ export default function Carrito() {
         </div>
     );
 }
-
-

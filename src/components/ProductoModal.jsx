@@ -36,7 +36,7 @@ export default function ProductoModal({ producto, userId, onClose }) {
                 : [
                       ...prev,
                       {
-                          id: prev.id,
+                          id: `temp-${p.id}-${Date.now()}`,
                           cantidad: Number(cant || 1),
                           producto: {
                               id: p.id,
