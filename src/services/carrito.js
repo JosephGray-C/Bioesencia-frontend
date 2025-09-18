@@ -1,3 +1,4 @@
+// 
 const API_CARRITO = "http://localhost:8080/api/carrito";
 
 export async function fetchCarrito({ queryKey, signal }) {
@@ -6,6 +7,7 @@ export async function fetchCarrito({ queryKey, signal }) {
     const res = await fetch(`${API_CARRITO}/${userId}`, { signal });
     if (!res.ok) throw new Error(await res.text());
     const data = await res.json();
+    console.log(data)
     return Array.isArray(data) ? data : [];
 }
 
@@ -25,4 +27,3 @@ export async function apiEliminarItem(itemId) {
     if (!res.ok) throw new Error(await res.text());
     return res;
 }
-

@@ -16,7 +16,7 @@ export async function postCrearOrden(data) {
         body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error(await res.text());
-    return res;
+    return res.json();
 }
 
 export async function actualizarEstadoOrden({ id, estado }) {

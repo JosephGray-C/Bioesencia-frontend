@@ -1,12 +1,21 @@
-
 import Swal from "sweetalert2";
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { postAgregarCarrito } from "../services/carrito";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { postAgregarCarrito, fetchCarrito } from "../services/carrito";
 
 export default function ProductoModal({ producto, userId, onClose }) {
     const [cantidad, setCantidad] = useState(1);
     const qc = useQueryClient();
+
+    const { data: items = [] } = useQuery({
+        queryKey: ["carrito", userId],
+        queryFn: fetchCarrito,
+        enabled: !!userId,
+        initialData: () => qc.getQueryData(["carrito", userId]) || [],
+        staleTime: 30_000,
+        refetchOnWindowFocus: false,
+        refetchOnMount: "always",
+    });
 
     const mAgregar = useMutation({
         mutationFn: postAgregarCarrito,
@@ -88,6 +97,18 @@ export default function ProductoModal({ producto, userId, onClose }) {
         });
     };
 
+    const handleStock = (producto) => {
+        return (
+            producto.stock -
+            items
+                .map((it) => (it.producto.id === producto.id ? it.cantidad : 0))
+                .reduce((a, b) => a + b, 0)
+        );
+    };
+
+    const availableStock = handleStock(producto);
+    const isOutOfStock = availableStock < 1;
+
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -119,6 +140,7 @@ export default function ProductoModal({ producto, userId, onClose }) {
                 <div className="modal-main">
                     <h2 className="modal-title">{producto.nombre}</h2>
                     <p className="modal-description">{producto.descripcion}</p>
+
                     <div className="modal-info">
                         <span className="modal-price">
                             {Number(producto.precio || 0).toLocaleString(
@@ -131,32 +153,44 @@ export default function ProductoModal({ producto, userId, onClose }) {
                             )}
                         </span>
                         <span className="modal-stock">
-                            Stock: {producto.stock}
+                            Stock : {handleStock(producto)}
                         </span>
                     </div>
                     <div className="modal-cantidad">
-                        <label>Cantidad:</label>
-                        <input
-                            type="number"
-                            value={cantidad}
-                            onChange={(e) =>
-                                setCantidad(
-                                    Math.max(
-                                        1,
-                                        Math.min(
-                                            producto.stock,
-                                            Number(e.target.value) || 1
-                                        )
-                                    )
+                        {isOutOfStock ? (
+                            <div style={{ color: "red", marginTop: 8 }}>
+                                {items.some(
+                                    (it) => it.producto.id === producto.id
                                 )
-                            }
-                            min={1}
-                            max={producto.stock}
-                        />
+                                    ? "Ya tienes todos los disponibles en tu carrito."
+                                    : "Producto agotado."}
+                            </div>
+                        ) : (
+                            <>
+                                <label>Cantidad:</label>
+                                <input
+                                    type="number"
+                                    value={cantidad}
+                                    onChange={(e) =>
+                                        setCantidad(
+                                            Math.max(
+                                                1,
+                                                Math.min(
+                                                    availableStock,
+                                                    Number(e.target.value) || 1
+                                                )
+                                            )
+                                        )
+                                    }
+                                    min={1}
+                                    max={availableStock}
+                                />
+                            </>
+                        )}
                     </div>
                     <button
                         className="modal-agregar"
-                        disabled={producto.stock < 1 || mAgregar.isPending}
+                        disabled={isOutOfStock || mAgregar.isPending}
                         onClick={handleAgregar}
                         title={
                             mAgregar.isPending

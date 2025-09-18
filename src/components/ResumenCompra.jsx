@@ -44,7 +44,12 @@ export default function ResumenCompra() {
                 confirmButtonText: "Finalizar",
                 confirmButtonColor: "#5EA743",
             }).then(() => {
-                navigate(`/orden/${ordenGuardada.codigoOrden}`);
+                const codigo =
+                    typeof ordenGuardada?.codigoOrden === "string" ||
+                    typeof ordenGuardada?.codigoOrden === "number"
+                        ? ordenGuardada.codigoOrden
+                        : "";
+                navigate(`/orden/${codigo}`);
             });
         },
         onError: (err) => {

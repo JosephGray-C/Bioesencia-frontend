@@ -5,22 +5,54 @@ export default function OrdenConfirmada() {
     const { codigo } = useParams();
     const navigate = useNavigate();
 
-    return (
-        <div style={{ padding: "40px", display: "flex", justifyContent: "center" }}>
-            <div style={{
-                background: "#fff",
-                padding: "40px",
-                borderRadius: 16,
-                boxShadow: "0 0 10px rgba(0,0,0,0.15)",
-                width: "100%",
-                maxWidth: "900px"
-            }}>
-                <h2 style={{ color: "#5EA743", textAlign: "center" }}>¡Gracias por tu compra!</h2>
-                <p style={{ textAlign: "center", marginBottom: "20px" }}>
-                    Tu orden fue confirmada exitosamente. En tu correo puedes visualizar tu orden de compra: <strong>#{codigo}</strong>.
-                </p>
+    // Si el código no es válido, muestra un mensaje claro
+    const mostrarCodigo =
+        typeof codigo === "string" &&
+        codigo !== "" &&
+        codigo !== "[object Object]";
 
-                <div style={{ marginTop: "30px", display: "flex", justifyContent: "center" }}>
+    return (
+        <div
+            style={{
+                padding: "40px",
+                display: "flex",
+                justifyContent: "center",
+            }}
+        >
+            <div
+                style={{
+                    background: "#fff",
+                    padding: "40px",
+                    borderRadius: 16,
+                    boxShadow: "0 0 10px rgba(0,0,0,0.15)",
+                    width: "100%",
+                    maxWidth: "900px",
+                }}
+            >
+                <h2 style={{ color: "#5EA743", textAlign: "center" }}>
+                    ¡Gracias por tu compra!
+                </h2>
+                <p style={{ textAlign: "center", marginBottom: "20px" }}>
+                    {mostrarCodigo ? (
+                        <>
+                            Tu orden fue confirmada exitosamente. En tu correo
+                            puedes visualizar tu orden de compra:{" "}
+                            <strong>#{codigo}</strong>.
+                        </>
+                    ) : (
+                        <>
+                            Tu orden fue confirmada exitosamente, pero no se
+                            pudo obtener el código de la orden.
+                        </>
+                    )}
+                </p>
+                <div
+                    style={{
+                        marginTop: "30px",
+                        display: "flex",
+                        justifyContent: "center",
+                    }}
+                >
                     <button
                         onClick={() => navigate("/")}
                         style={{
@@ -30,7 +62,7 @@ export default function OrdenConfirmada() {
                             border: "none",
                             borderRadius: 8,
                             cursor: "pointer",
-                            fontSize: "1rem"
+                            fontSize: "1rem",
                         }}
                     >
                         Cerrar
