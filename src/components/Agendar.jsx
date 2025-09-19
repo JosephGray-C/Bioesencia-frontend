@@ -17,16 +17,18 @@ export default function AgendarPage() {
                     </p>
                 </div>
             </header>
-            <div className="agendar-container">
-                <div className="agendar-left">
-                    <Calendar
-                        selectedDate={selectedDate}
-                        setSelectedDate={setSelectedDate}
-                        component={"agendar"}
-                    />
-                </div>
-                <div className="agendar-right">
-                    <FormCita selectedDate={selectedDate} />
+            <div style={{ maxWidth: 900, margin: "0 auto", width: "100%" }}>
+                <div className="agendar-container">
+                    <div className="agendar-left">
+                        <Calendar
+                            selectedDate={selectedDate}
+                            setSelectedDate={setSelectedDate}
+                            component={"agendar"}
+                        />
+                    </div>
+                    <div className="agendar-right">
+                        <FormCita selectedDate={selectedDate} />
+                    </div>
                 </div>
             </div>
         </div>

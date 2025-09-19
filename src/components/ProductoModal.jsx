@@ -167,9 +167,38 @@ export default function ProductoModal({ producto, userId, onClose }) {
                             </div>
                         ) : (
                             <>
-                                <label>Cantidad:</label>
+                                <label style={{ marginRight: 8 }}>
+                                    Cantidad:
+                                </label>
+                                <button
+                                    type="button"
+                                    aria-label="Disminuir"
+                                    style={{
+                                        fontSize: 20,
+                                        width: 32,
+                                        height: 32,
+                                        borderRadius: 8,
+                                        border: "1.5px solid #e5e7eb",
+                                        background: "#f6f7f9",
+                                        color: "#5a0d0d",
+                                        marginRight: 4,
+                                        cursor:
+                                            cantidad <= 1
+                                                ? "not-allowed"
+                                                : "pointer",
+                                        opacity: cantidad <= 1 ? 0.5 : 1,
+                                    }}
+                                    disabled={cantidad <= 1}
+                                    onClick={() =>
+                                        setCantidad(Math.max(1, cantidad - 1))
+                                    }
+                                >
+                                    -
+                                </button>
                                 <input
                                     type="number"
+                                    inputMode="numeric"
+                                    pattern="[0-9]*"
                                     value={cantidad}
                                     onChange={(e) =>
                                         setCantidad(
@@ -184,7 +213,51 @@ export default function ProductoModal({ producto, userId, onClose }) {
                                     }
                                     min={1}
                                     max={availableStock}
+                                    className="no-spinner"
+                                    style={{
+                                        width: 56,
+                                        fontSize: 18,
+                                        textAlign: "center",
+                                        padding: "8px 0",
+                                        margin: "0 4px",
+                                        borderRadius: 8,
+                                        border: "1.5px solid #e5e7eb",
+                                        background: "#f6f7f9",
+                                    }}
                                 />
+                                <button
+                                    type="button"
+                                    aria-label="Aumentar"
+                                    style={{
+                                        fontSize: 20,
+                                        width: 32,
+                                        height: 32,
+                                        borderRadius: 8,
+                                        border: "1.5px solid #e5e7eb",
+                                        background: "#f6f7f9",
+                                        color: "#5a0d0d",
+                                        marginLeft: 4,
+                                        cursor:
+                                            cantidad >= availableStock
+                                                ? "not-allowed"
+                                                : "pointer",
+                                        opacity:
+                                            cantidad >= availableStock
+                                                ? 0.5
+                                                : 1,
+                                    }}
+                                    disabled={cantidad >= availableStock}
+                                    onClick={() =>
+                                        setCantidad(
+                                            Math.min(
+                                                availableStock,
+                                                cantidad + 1
+                                            )
+                                        )
+                                    }
+                                >
+                                    +
+                                </button>
                             </>
                         )}
                     </div>

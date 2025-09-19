@@ -51,7 +51,6 @@ export default function Blog() {
 
             {esAdmin && (
                 <section className="blog-admin-preview">
-                  
                     <BlogForm preview={preview} setPreview={setPreview} originalPost={originalPost} />
                     <BlogPost post={preview} isPreview={true} />
                 </section>

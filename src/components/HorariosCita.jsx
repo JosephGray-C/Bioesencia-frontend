@@ -22,6 +22,15 @@ export default function HorariosList({ selectedDate, cita, setCita }) {
     if (horarios.length === 0)
         return <p>No hay horarios disponibles para esta fecha.</p>;
 
+    // Filtrar horarios si es sábado (solo 09:00 a 15:00)
+    let horariosFiltrados = horarios;
+    if (selectedDate && new Date(selectedDate).getDay() === 6) {
+        horariosFiltrados = horarios.filter((hora) => {
+            const [h, m] = hora.split(":").map(Number);
+            return (h >= 9 && h < 15) || (h === 15 && m === 0);
+        });
+    }
+
     // Derive selected horario from cita.fechaHora
     const horarioSeleccionado = cita.fechaHora
         ? cita.fechaHora.split("T")[1]
@@ -31,7 +40,7 @@ export default function HorariosList({ selectedDate, cita, setCita }) {
         <div>
             <h3>Horarios</h3>
             <div className="horarios-list">
-                {horarios.map((hora) => (
+                {horariosFiltrados.map((hora) => (
                     <div
                         className={`horario-card${
                             horarioSeleccionado === hora ? " selected" : ""

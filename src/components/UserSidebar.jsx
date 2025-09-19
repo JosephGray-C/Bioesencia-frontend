@@ -7,11 +7,12 @@ import Swal from "sweetalert2";
 const sidebarOptions = [
   { path: "/", label: "Inicio", icon: "🏠" },
   { path: "/about", label: "Nosotros", icon: "ℹ️" },
-  { path: "/productos", label: "Comprar", icon: "🛒" },
   { path: "/agendar", label: "Agendar", icon: "📅" },
-  { path: "/talleres", label: "Talleres", icon: "🛠️" },
-  { path: "/blogusuario", label: "Blog", icon: "📝" },
   { path: "/calendario", label: "Calendario", icon: "📆" },
+  { path: "/talleres", label: "Talleres", icon: "🛠️" },
+  { path: "/productos", label: "Comprar", icon: "🛒" },
+  { path: "/carrito", label: "Carrito", icon: "🛍️" },
+  { path: "/blogusuario", label: "Blog", icon: "📝" },
 ];
 
 const sidebarBottomOptions = [{ path: "/carrito", label: "Carrito", icon: "🛍️" }];

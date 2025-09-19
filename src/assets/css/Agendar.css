@@ -4,26 +4,6 @@
     display: flex;
     flex-direction: column;
 }
-.bu-hero {
-    margin-top: 3vh;
-    background: transparent;
-    padding: 18px 16px 10px;
-    width: 100%;
-    max-width: 900px;
-}
-.bu-hero-inner {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    align-items: flex-start;
-    width: 100%;
-}
-.bu-hero-subtitle {
-    margin: 0;
-    color: #41503a;
-    font-size: clamp(14px, 2vw, 17px);
-}
-
 .agendar-container {
     display: flex;
     flex-direction: row;

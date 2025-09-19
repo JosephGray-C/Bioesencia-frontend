@@ -38,11 +38,11 @@ export default function HeaderUser() {
             <nav className="hu__nav">
               {esAdmin ? (
                   <>
-                    <Link to="/admin/productos" className="hu__link">Productos</Link>
-                    <Link to="/admin/talleres" className="hu__link">Talleres</Link>
-                    <Link to="/admin/servicios" className="hu__link">Servicios</Link>
                     <Link to="/admin/citas" className="hu__link">Citas</Link>
+                    <Link to="/admin/servicios" className="hu__link">Servicios</Link>
+                    <Link to="/admin/talleres" className="hu__link">Talleres</Link>
                     <Link to="/admin/inscripciones" className="hu__link">Inscripciones</Link>
+                    <Link to="/admin/productos" className="hu__link">Productos</Link>
                     <Link to="/admin/ordenes" className="hu__link">Órdenes</Link>
                     <Link to="/admin/blog" className="hu__link">Blog</Link>
                   </>
@@ -50,12 +50,12 @@ export default function HeaderUser() {
                   <>
                     <Link to="/" className="hu__link">Inicio</Link>
                     <Link to="/about" className="hu__link">Nosotros</Link>
-                    <Link to="/blogusuario" className="hu__link">Blog</Link>
                     <Link to="/agendar" className="hu__link">Agendar</Link>
                     <Link to="/calendario" className="hu__link">Calendario</Link>
                     <Link to="/talleres" className="hu__link">Talleres</Link>
                     <Link to="/productos" className="hu__link">Comprar</Link>
                     <Link to="/carrito" className="hu__link">Carrito</Link>
+                    <Link to="/blogusuario" className="hu__link">Blog</Link>
                   </>
               )}
             </nav>

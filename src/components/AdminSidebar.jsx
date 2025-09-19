@@ -6,11 +6,11 @@ import { useLogout } from "../hooks/useAuth";
 import Swal from "sweetalert2";
 
 const adminOptions = [
-    { path: "/admin/productos", label: "Productos", icon: "🛒" },
-    { path: "/admin/talleres", label: "Talleres", icon: "📚" },
-    { path: "/admin/servicios", label: "Servicios", icon: "🛠️" },
     { path: "/admin/citas", label: "Citas", icon: "📅" },
+    { path: "/admin/servicios", label: "Servicios", icon: "🛠️" },
+    { path: "/admin/talleres", label: "Talleres", icon: "📚" },
     { path: "/admin/inscripciones", label: "Inscripciones", icon: "📝" },
+    { path: "/admin/productos", label: "Productos", icon: "🛒" },
     { path: "/admin/ordenes", label: "Órdenes", icon: "📦" },
     { path: "/admin/blog", label: "Blog", icon: "📝" },
 ];

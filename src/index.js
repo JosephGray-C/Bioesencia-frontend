@@ -15,6 +15,8 @@ import './assets/css/Calendario.css';
 import './assets/css/Producto.css';
 import './assets/css/Header.css';
 import './assets/css/Carrito.css';
+import './assets/css/AdminLayout.css';
+import './assets/css/Title.css';
 
 const queryClient = new QueryClient({
     defaultOptions: {

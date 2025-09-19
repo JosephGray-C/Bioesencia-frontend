@@ -3,7 +3,12 @@ import { useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ClipLoader from "react-spinners/ClipLoader";
-import { fetchProductos, crearProducto, actualizarProducto, eliminarProducto } from "../services/productos"; 
+import {
+    fetchProductos,
+    crearProducto,
+    actualizarProducto,
+    eliminarProducto,
+} from "../services/productos";
 
 function CrearProductoModal({ form, onChange, onSubmit, onCancel }) {
     return (
@@ -14,12 +19,19 @@ function CrearProductoModal({ form, onChange, onSubmit, onCancel }) {
                         <div className="signup-form" style={{ width: "100%" }}>
                             <div
                                 className="title"
-                                style={{ fontWeight: 600, fontSize: 26, marginBottom: 12 }}
+                                style={{
+                                    fontWeight: 600,
+                                    fontSize: 26,
+                                    marginBottom: 12,
+                                }}
                             >
                                 Agregar producto
                             </div>
                             <form onSubmit={onSubmit}>
-                                <div className="input-boxes" style={{ marginTop: 18 }}>
+                                <div
+                                    className="input-boxes"
+                                    style={{ marginTop: 18 }}
+                                >
                                     {[
                                         "nombre",
                                         "descripcion",
@@ -29,7 +41,8 @@ function CrearProductoModal({ form, onChange, onSubmit, onCancel }) {
                                     ].map((key) => (
                                         <div className="input-box" key={key}>
                                             <i
-                                                className={`fas fa-${key === "nombre"
+                                                className={`fas fa-${
+                                                    key === "nombre"
                                                         ? "tag"
                                                         : key === "descripcion"
                                                         ? "align-left"
@@ -38,24 +51,58 @@ function CrearProductoModal({ form, onChange, onSubmit, onCancel }) {
                                                         : key === "stock"
                                                         ? "boxes"
                                                         : "image"
-                                                    }`}
-                                                    ></i>
-                                            <input
-                                                type={
-                                                    key === "precio" || key === "stock"
-                                                        ? "number"
-                                                        : "text"
+                                                }`}
+                                            ></i>
+                                            {key === "descripcion" ? (
+                                                <textarea
+                                                    name="descripcion"
+                                                    placeholder="Descripcion"
+                                                    value={form.descripcion}
+                                                    onChange={onChange}
+                                                    style={{
+                                                        resize: "vertical",
+                                                        minHeight: 48,
+                                                        width: "100%",
+                                                    }}
+                                                />
+                                            ) : (
+                                                <input
+                                                    type={
+                                                        key === "precio" ||
+                                                        key === "stock"
+                                                            ? "number"
+                                                            : "text"
                                                     }
                                                     name={key}
-                                                    placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
+                                                    placeholder={
+                                                        key
+                                                            .charAt(0)
+                                                            .toUpperCase() +
+                                                        key.slice(1)
+                                                    }
                                                     value={form[key]}
                                                     onChange={onChange}
-                                                    required={["nombre", "precio", "stock"].includes(key)}
-                                                    min={["precio", "stock"].includes(key) ? 0 : undefined}
-                                                    />
+                                                    required={[
+                                                        "nombre",
+                                                        "precio",
+                                                        "stock",
+                                                    ].includes(key)}
+                                                    min={
+                                                        [
+                                                            "precio",
+                                                            "stock",
+                                                        ].includes(key)
+                                                            ? 0
+                                                            : undefined
+                                                    }
+                                                />
+                                            )}
                                         </div>
                                     ))}
-                                    <div className="input-box" style={{ marginBottom: 0 }}>
+                                    <div
+                                        className="input-box"
+                                        style={{ marginBottom: 0 }}
+                                    >
                                         <label
                                             style={{
                                                 display: "flex",
@@ -63,21 +110,32 @@ function CrearProductoModal({ form, onChange, onSubmit, onCancel }) {
                                                 fontWeight: 500,
                                                 color: "#333",
                                             }}
-                                            >
+                                        >
                                             <input
                                                 type="checkbox"
                                                 name="activo"
                                                 checked={form.activo}
                                                 onChange={onChange}
                                                 style={{ marginRight: 8 }}
-                                                />
+                                            />
                                             Activo
                                         </label>
                                     </div>
-                                    <div className="button input-box" style={{ marginTop: 26 }}>
-                                        <input type="submit" value="Guardar producto" />
+                                    <div
+                                        className="button input-box"
+                                        style={{ marginTop: 26 }}
+                                    >
+                                        <input
+                                            type="submit"
+                                            value="Guardar producto"
+                                        />
                                     </div>
-                                    <div style={{ marginTop: 8, textAlign: "right" }}>
+                                    <div
+                                        style={{
+                                            marginTop: 8,
+                                            textAlign: "right",
+                                        }}
+                                    >
                                         <button
                                             type="button"
                                             onClick={onCancel}
@@ -115,11 +173,14 @@ function EditarProductoModal({ editForm, onChange, onSubmit, onCancel }) {
                                     marginBottom: 12,
                                     color: "#5EA743",
                                 }}
-                                >
+                            >
                                 Editar producto
                             </div>
                             <form onSubmit={onSubmit}>
-                                <div className="input-boxes" style={{ marginTop: 18 }}>
+                                <div
+                                    className="input-boxes"
+                                    style={{ marginTop: 18 }}
+                                >
                                     {[
                                         "nombre",
                                         "descripcion",
@@ -129,33 +190,68 @@ function EditarProductoModal({ editForm, onChange, onSubmit, onCancel }) {
                                     ].map((key) => (
                                         <div className="input-box" key={key}>
                                             <i
-                                                className={`fas fa-${key === "nombre"
-                                                    ? "tag"
-                                                    : key === "descripcion"
-                                                    ? "align-left"
-                                                    : key === "precio"
-                                                    ? "dollar-sign"
-                                                    : key === "stock"
-                                                    ? "boxes"
-                                                    : "image"
+                                                className={`fas fa-${
+                                                    key === "nombre"
+                                                        ? "tag"
+                                                        : key === "descripcion"
+                                                        ? ""
+                                                        : key === "precio"
+                                                        ? "dollar-sign"
+                                                        : key === "stock"
+                                                        ? "boxes"
+                                                        : "image"
                                                 }`}
-                                                ></i>
-                                            <input
-                                                type={
-                                                    key === "precio" || key === "stock"
-                                                    ? "number"
-                                                    : "text"
-                                                }
-                                                name={key}
-                                                placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-                                                value={editForm[key]}
-                                                onChange={onChange}
-                                                required={["nombre", "precio", "stock"].includes(key)}
-                                                min={["precio", "stock"].includes(key) ? 0 : undefined}
+                                            ></i>
+                                            {key === "descripcion" ? (
+                                                <textarea
+                                                    name="descripcion"
+                                                    placeholder="Descripcion"
+                                                    value={editForm.descripcion}
+                                                    onChange={onChange}
+                                                    style={{
+                                                        resize: "vertical",
+                                                        minHeight: 48,
+                                                        width: "100%",
+                                                    }}
                                                 />
+                                            ) : (
+                                                <input
+                                                    type={
+                                                        key === "precio" ||
+                                                        key === "stock"
+                                                            ? "number"
+                                                            : "text"
+                                                    }
+                                                    name={key}
+                                                    placeholder={
+                                                        key
+                                                            .charAt(0)
+                                                            .toUpperCase() +
+                                                        key.slice(1)
+                                                    }
+                                                    value={editForm[key]}
+                                                    onChange={onChange}
+                                                    required={[
+                                                        "nombre",
+                                                        "precio",
+                                                        "stock",
+                                                    ].includes(key)}
+                                                    min={
+                                                        [
+                                                            "precio",
+                                                            "stock",
+                                                        ].includes(key)
+                                                            ? 0
+                                                            : undefined
+                                                    }
+                                                />
+                                            )}
                                         </div>
                                     ))}
-                                    <div className="input-box" style={{ marginBottom: 0 }}>
+                                    <div
+                                        className="input-box"
+                                        style={{ marginBottom: 0 }}
+                                    >
                                         <label
                                             style={{
                                                 display: "flex",
@@ -163,26 +259,37 @@ function EditarProductoModal({ editForm, onChange, onSubmit, onCancel }) {
                                                 fontWeight: 500,
                                                 color: "#333",
                                             }}
-                                            >
+                                        >
                                             <input
                                                 type="checkbox"
                                                 name="activo"
                                                 checked={editForm.activo}
                                                 onChange={onChange}
                                                 style={{ marginRight: 8 }}
-                                                />
+                                            />
                                             Activo
                                         </label>
                                     </div>
-                                    <div className="button input-box" style={{ marginTop: 26 }}>
-                                        <input type="submit" value="Guardar cambios" />
+                                    <div
+                                        className="button input-box"
+                                        style={{ marginTop: 26 }}
+                                    >
+                                        <input
+                                            type="submit"
+                                            value="Guardar cambios"
+                                        />
                                     </div>
-                                    <div style={{ marginTop: 8, textAlign: "right" }}>
+                                    <div
+                                        style={{
+                                            marginTop: 8,
+                                            textAlign: "right",
+                                        }}
+                                    >
                                         <button
                                             type="button"
                                             onClick={onCancel}
                                             style={btnSecondary}
-                                            >
+                                        >
                                             Cancelar
                                         </button>
                                     </div>
@@ -202,15 +309,15 @@ function EditarProductoModal({ editForm, onChange, onSubmit, onCancel }) {
 
 export default function AdminProductos() {
     const POR_PAGINA = 6;
-    
+
     const qc = useQueryClient();
-    
+
     const [paginaActual, setPaginaActual] = useState(1);
     const [busqueda, setBusqueda] = useState("");
-    
+
     const [showForm, setShowForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
-    
+
     const [form, setForm] = useState({
         nombre: "",
         descripcion: "",
@@ -280,7 +387,10 @@ export default function AdminProductos() {
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setForm((f) => ({ ...f, [name]: type === "checkbox" ? checked : value }));
+        setForm((f) => ({
+            ...f,
+            [name]: type === "checkbox" ? checked : value,
+        }));
     };
 
     const handleEditChange = (e) => {
@@ -342,7 +452,9 @@ export default function AdminProductos() {
     const productosFiltrados = useMemo(() => {
         const q = busqueda.trim().toLowerCase();
         if (!q) return productos;
-        return productos.filter((p) => (p.nombre || "").toLowerCase().includes(q));
+        return productos.filter((p) =>
+            (p.nombre || "").toLowerCase().includes(q)
+        );
     }, [busqueda, productos]);
 
     const totalPaginas = Math.max(
@@ -452,16 +564,40 @@ export default function AdminProductos() {
                         >
                             Descripción
                         </th>
-                        <th style={{ padding: 12, width: 40, textAlign: "left" }}>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 40,
+                                textAlign: "left",
+                            }}
+                        >
                             Precio
                         </th>
-                        <th style={{ padding: 12, width: 80, textAlign: "center" }}>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 80,
+                                textAlign: "center",
+                            }}
+                        >
                             Stock
                         </th>
-                        <th style={{ padding: 12, width: 80, textAlign: "center" }}>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 80,
+                                textAlign: "center",
+                            }}
+                        >
                             Activo
                         </th>
-                        <th style={{ padding: 12, width: 80, textAlign: "center" }}>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 80,
+                                textAlign: "center",
+                            }}
+                        >
                             Acciones
                         </th>
                     </tr>
@@ -469,7 +605,10 @@ export default function AdminProductos() {
                 <tbody>
                     {productosPagina.length === 0 ? (
                         <tr>
-                            <td colSpan={6} style={{ textAlign: "center", padding: 20 }}>
+                            <td
+                                colSpan={6}
+                                style={{ textAlign: "center", padding: 20 }}
+                            >
                                 {showSpinner ? (
                                     <span
                                         style={{
@@ -478,7 +617,11 @@ export default function AdminProductos() {
                                             gap: 8,
                                         }}
                                     >
-                                        <ClipLoader size={18} color="#bbb" speedMultiplier={0.9} />
+                                        <ClipLoader
+                                            size={18}
+                                            color="#bbb"
+                                            speedMultiplier={0.9}
+                                        />
                                     </span>
                                 ) : (
                                     "Sin productos"
@@ -487,7 +630,10 @@ export default function AdminProductos() {
                         </tr>
                     ) : (
                         productosPagina.map((prod) => (
-                            <tr key={prod.id} style={{ borderBottom: "1px solid #222" }}>
+                            <tr
+                                key={prod.id}
+                                style={{ borderBottom: "1px solid #222" }}
+                            >
                                 <td
                                     style={{
                                         padding: 10,
@@ -588,9 +734,16 @@ export default function AdminProductos() {
                         textAlign: "center",
                     }}
                 >
-                    Mostrando {productosPagina.length} de {productosFiltrados.length}
+                    Mostrando {productosPagina.length} de{" "}
+                    {productosFiltrados.length}
                 </span>
-                <div style={{ display: "flex", justifyContent: "center", gap: 4 }}>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        gap: 4,
+                    }}
+                >
                     {Array.from({ length: totalPaginas }, (_, i) => (
                         <button
                             key={i}

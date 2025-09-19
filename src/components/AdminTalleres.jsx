@@ -54,6 +54,17 @@ function CrearTallerModal({ form, onChange, onSubmit, onCancel }) {
                                         />
                                     </div>
                                     <div className="input-box">
+                                        <i className="fas fa-image"></i>
+                                        <input
+                                            type="text"
+                                            name="imagenUrl"
+                                            placeholder="Imaegen URL"
+                                            value={form.imagenUrl}
+                                            onChange={onChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="input-box">
                                         <i className="fas fa-calendar"></i>
                                         <input
                                             type="datetime-local"
@@ -206,7 +217,7 @@ function EditarTallerModal({ editForm, onChange, onSubmit, onCancel }) {
                                         />
                                     </div>
                                     <div className="input-box">
-                                        <i className="fas fa-align-left"></i>
+                                        <i className=""></i>
                                         <textarea
                                             name="descripcion"
                                             placeholder="Descripción"
@@ -215,6 +226,16 @@ function EditarTallerModal({ editForm, onChange, onSubmit, onCancel }) {
                                             required
                                             rows={3}
                                             style={{ resize: "vertical", width: "100%" }}
+                                        />
+                                    </div>
+                                    <div className="input-box">
+                                        <i className="fas fa-image"></i>
+                                        <input
+                                            type="text"
+                                            name="imagenUrl"
+                                            placeholder="Imagen URL"
+                                            value={editForm.imagenUrl}
+                                            onChange={onChange}
                                         />
                                     </div>
                                     <div className="input-box">
@@ -348,6 +369,7 @@ export default function AdminTalleres() {
     const [form, setForm] = useState({
         titulo: "",
         descripcion: "",
+        imagenUrl: "",
         fechaInicio: "",
         fechaFin: "",
         lugar: "",
@@ -360,6 +382,7 @@ export default function AdminTalleres() {
         id: "",
         titulo: "",
         descripcion: "",
+        imagenUrl: "",
         fechaInicio: "",
         fechaFin: "",
         lugar: "",
@@ -409,6 +432,7 @@ export default function AdminTalleres() {
         setForm({
             titulo: "",
             descripcion: "",
+            imagenUrl: "",
             fechaInicio: "",
             fechaFin: "",
             lugar: "",
@@ -423,6 +447,7 @@ export default function AdminTalleres() {
             id: "",
             titulo: "",
             descripcion: "",
+            imagenUrl: "",
             fechaInicio: "",
             fechaFin: "",
             lugar: "",
@@ -591,6 +616,7 @@ export default function AdminTalleres() {
             id: taller.id ?? "",
             titulo: taller.titulo ?? "",
             descripcion: taller.descripcion ?? "",
+            imagenUrl: taller.imagenUrl ?? "",
             fechaInicio: taller.fechaInicio ?? "",
             fechaFin: taller.fechaFin ?? "",
             lugar: taller.lugar ?? "",

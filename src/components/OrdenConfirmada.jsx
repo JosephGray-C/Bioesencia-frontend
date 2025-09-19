@@ -46,6 +46,7 @@ export default function OrdenConfirmada() {
                         </>
                     )}
                 </p>
+                    
                 <div
                     style={{
                         marginTop: "30px",
