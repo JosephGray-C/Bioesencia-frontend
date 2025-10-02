@@ -23,11 +23,25 @@ export default function HorariosList({ selectedDate, cita, setCita }) {
         return <p>No hay horarios disponibles para esta fecha.</p>;
 
     // Filtrar horarios si es sábado (solo 09:00 a 15:00)
+    let horaActual = new Date().getHours();
+
+    console.log(`selectedDate: ${selectedDate.toDateString()}`);
+    console.log(`Fecha actual: ${new Date().toDateString()}`);
+    console.log(`Hora actual: ${horaActual} : ${new Date().getMinutes()}`);
+    console.log(`Día de la semana: ${selectedDate.getDay()}`);
+
     let horariosFiltrados = horarios;
-    if (selectedDate && new Date(selectedDate).getDay() === 6) {
+
+    if (selectedDate.toDateString() === new Date().toDateString()) {
         horariosFiltrados = horarios.filter((hora) => {
-            const [h, m] = hora.split(":").map(Number);
-            return (h >= 9 && h < 15) || (h === 15 && m === 0);
+            const [h] = hora.split(":").map(Number);
+            return h > horaActual;
+        });
+    }
+    if (selectedDate.getDay() === 6) {
+        horariosFiltrados = horarios.filter((hora) => {
+            const [h] = hora.split(":").map(Number);
+            return h >= 9 && h < 16;
         });
     }
 
