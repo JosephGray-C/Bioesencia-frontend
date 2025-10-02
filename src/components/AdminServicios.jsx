@@ -3,8 +3,12 @@ import { useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ClipLoader from "react-spinners/ClipLoader";
-import { fetchServicios, crearServicio, actualizarServicio, eliminarServicio } from "../services/servicios";
-
+import {
+    fetchServicios,
+    crearServicio,
+    actualizarServicio,
+    eliminarServicio,
+} from "../services/servicios";
 
 function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
     return (
@@ -21,7 +25,7 @@ function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
                 alignItems: "center",
                 justifyContent: "center",
             }}
-            >
+        >
             <div
                 className="container"
                 style={{
@@ -30,18 +34,25 @@ function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
                     position: "relative",
                     boxShadow: "0 8px 32px #0004",
                 }}
-                >
+            >
                 <div className="forms" style={{ background: "#fff" }}>
                     <div className="form-content">
                         <div className="signup-form" style={{ width: "100%" }}>
                             <div
                                 className="title"
-                                style={{ fontWeight: 600, fontSize: 26, marginBottom: 12 }}
-                                >
+                                style={{
+                                    fontWeight: 600,
+                                    fontSize: 26,
+                                    marginBottom: 12,
+                                }}
+                            >
                                 Agregar servicio
                             </div>
                             <form onSubmit={onSubmit}>
-                                <div className="input-boxes" style={{ marginTop: 18 }}>
+                                <div
+                                    className="input-boxes"
+                                    style={{ marginTop: 18 }}
+                                >
                                     <div className="input-box">
                                         <i className="fas fa-tag"></i>
                                         <input
@@ -51,7 +62,7 @@ function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
                                             value={form.nombre}
                                             onChange={onChange}
                                             required
-                                            />
+                                        />
                                     </div>
                                     <div className="input-box">
                                         <textarea
@@ -61,8 +72,11 @@ function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
                                             onChange={onChange}
                                             required
                                             rows={3}
-                                            style={{ resize: "vertical", width: "100%" }}
-                                            />
+                                            style={{
+                                                resize: "vertical",
+                                                width: "100%",
+                                            }}
+                                        />
                                     </div>
                                     <div className="input-box">
                                         <i className="fas fa-dollar-sign"></i>
@@ -75,12 +89,23 @@ function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
                                             required
                                             min={0}
                                             step="0.01"
-                                            />
+                                        />
                                     </div>
-                                    <div className="button input-box" style={{ marginTop: 26 }}>
-                                        <input type="submit" value="Guardar servicio" />
+                                    <div
+                                        className="button input-box"
+                                        style={{ marginTop: 26 }}
+                                    >
+                                        <input
+                                            type="submit"
+                                            value="Guardar servicio"
+                                        />
                                     </div>
-                                    <div style={{ marginTop: 8, textAlign: "right" }}>
+                                    <div
+                                        style={{
+                                            marginTop: 8,
+                                            textAlign: "right",
+                                        }}
+                                    >
                                         <button
                                             type="button"
                                             onClick={onCancel}
@@ -116,7 +141,7 @@ function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
                         color: "#888",
                     }}
                     title="Cerrar"
-                    >
+                >
                     ×
                 </button>
             </div>
@@ -127,18 +152,18 @@ function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
 function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
     return (
         <div
-        style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "rgba(0,0,0,0.25)",
-            zIndex: 1050,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-        }}
+            style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
+                background: "rgba(0,0,0,0.25)",
+                zIndex: 1050,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+            }}
         >
             <div
                 className="container"
@@ -148,7 +173,7 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
                     position: "relative",
                     boxShadow: "0 8px 32px #0004",
                 }}
-                >
+            >
                 <div className="forms" style={{ background: "#fff" }}>
                     <div className="form-content">
                         <div className="signup-form" style={{ width: "100%" }}>
@@ -160,11 +185,14 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
                                     marginBottom: 12,
                                     color: "#5EA743",
                                 }}
-                                >
+                            >
                                 Editar servicio
                             </div>
                             <form onSubmit={onSubmit}>
-                                <div className="input-boxes" style={{ marginTop: 18 }}>
+                                <div
+                                    className="input-boxes"
+                                    style={{ marginTop: 18 }}
+                                >
                                     <div className="input-box">
                                         <i className="fas fa-tag"></i>
                                         <input
@@ -174,7 +202,7 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
                                             value={editForm.nombre}
                                             onChange={onChange}
                                             required
-                                            />
+                                        />
                                     </div>
                                     <div className="input-box">
                                         <textarea
@@ -184,8 +212,11 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
                                             onChange={onChange}
                                             required
                                             rows={3}
-                                            style={{ resize: "vertical", width: "100%" }}
-                                            />
+                                            style={{
+                                                resize: "vertical",
+                                                width: "100%",
+                                            }}
+                                        />
                                     </div>
                                     <div className="input-box">
                                         <i className="fas fa-dollar-sign"></i>
@@ -198,12 +229,23 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
                                             required
                                             min={0}
                                             step="0.01"
-                                            />
+                                        />
                                     </div>
-                                    <div className="button input-box" style={{ marginTop: 26 }}>
-                                        <input type="submit" value="Guardar cambios" />
+                                    <div
+                                        className="button input-box"
+                                        style={{ marginTop: 26 }}
+                                    >
+                                        <input
+                                            type="submit"
+                                            value="Guardar cambios"
+                                        />
                                     </div>
-                                    <div style={{ marginTop: 8, textAlign: "right" }}>
+                                    <div
+                                        style={{
+                                            marginTop: 8,
+                                            textAlign: "right",
+                                        }}
+                                    >
                                         <button
                                             type="button"
                                             onClick={onCancel}
@@ -217,7 +259,7 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
                                                 fontSize: "1rem",
                                                 cursor: "pointer",
                                             }}
-                                            >
+                                        >
                                             Cancelar
                                         </button>
                                     </div>
@@ -239,7 +281,7 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
                         color: "#888",
                     }}
                     title="Cerrar"
-                    >
+                >
                     ×
                 </button>
             </div>
@@ -250,34 +292,32 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
 export default function AdminServicios() {
     const serviciosPorPagina = 8;
     const qc = useQueryClient();
-    
+
     const [paginaActual, setPaginaActual] = useState(1);
     const [busqueda, setBusqueda] = useState("");
-    
+
     const [showForm, setShowForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
-    
+
     const [form, setForm] = useState({
         nombre: "",
         detalle: "",
         precio: "",
     });
-    
+
     const [editForm, setEditForm] = useState({
         id: "",
         nombre: "",
         detalle: "",
         precio: "",
     });
-    
+
     const { data: servicios = [], isFetching } = useQuery({
         queryKey: ["servicios"],
         queryFn: fetchServicios,
         initialData: () => qc.getQueryData(["servicios"]) || [],
     });
-
     const showSpinner = isFetching && servicios.length === 0;
-
 
     const mCrear = useMutation({
         mutationFn: crearServicio,
@@ -309,7 +349,6 @@ export default function AdminServicios() {
             Swal.fire("¡Eliminado!", "Servicio borrado.", "success");
         },
         onError: (e) =>
-            
             Swal.fire("Error", e.message || "No se pudo eliminar", "error"),
     });
 
@@ -380,7 +419,7 @@ export default function AdminServicios() {
                 (s.detalle || "").toLowerCase().includes(q)
         );
     }, [busqueda, servicios]);
-
+    
     const totalPaginas =
         Math.ceil(serviciosFiltrados.length / serviciosPorPagina) || 1;
     const page = Math.min(paginaActual, totalPaginas);
@@ -471,16 +510,40 @@ export default function AdminServicios() {
             >
                 <thead>
                     <tr style={{ background: "#A9C499", color: "#fff" }}>
-                        <th style={{ padding: 12, width: 110, textAlign: "left" }}>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 110,
+                                textAlign: "left",
+                            }}
+                        >
                             Nombre
                         </th>
-                        <th style={{ padding: 12, width: 110, textAlign: "left" }}>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 110,
+                                textAlign: "left",
+                            }}
+                        >
                             Detalle
                         </th>
-                        <th style={{ padding: 12, width: 110, textAlign: "center" }}>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 110,
+                                textAlign: "center",
+                            }}
+                        >
                             Precio
                         </th>
-                        <th style={{ padding: 12, width: 110, textAlign: "center" }}>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 110,
+                                textAlign: "center",
+                            }}
+                        >
                             Acciones
                         </th>
                     </tr>
@@ -488,7 +551,10 @@ export default function AdminServicios() {
                 <tbody>
                     {serviciosPagina.length === 0 ? (
                         <tr>
-                            <td colSpan={4} style={{ textAlign: "center", padding: 20 }}>
+                            <td
+                                colSpan={4}
+                                style={{ textAlign: "center", padding: 20 }}
+                            >
                                 {showSpinner ? (
                                     <span
                                         style={{
@@ -497,7 +563,11 @@ export default function AdminServicios() {
                                             gap: 8,
                                         }}
                                     >
-                                        <ClipLoader size={18} color="#bbb" speedMultiplier={0.9} />
+                                        <ClipLoader
+                                            size={18}
+                                            color="#bbb"
+                                            speedMultiplier={0.9}
+                                        />
                                     </span>
                                 ) : (
                                     "No hay servicios"
@@ -506,7 +576,10 @@ export default function AdminServicios() {
                         </tr>
                     ) : (
                         serviciosPagina.map((s) => (
-                            <tr key={s.id} style={{ borderBottom: "1px solid #222" }}>
+                            <tr
+                                key={s.id}
+                                style={{ borderBottom: "1px solid #222" }}
+                            >
                                 <td
                                     style={{
                                         padding: 10,
@@ -600,9 +673,16 @@ export default function AdminServicios() {
                         textAlign: "center",
                     }}
                 >
-                    Mostrando {serviciosPagina.length} de {serviciosFiltrados.length}
+                    Mostrando {serviciosPagina.length} de{" "}
+                    {serviciosFiltrados.length}
                 </span>
-                <div style={{ display: "flex", justifyContent: "center", gap: 4 }}>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        gap: 4,
+                    }}
+                >
                     {Array.from({ length: totalPaginas }, (_, i) => (
                         <button
                             key={i}
@@ -611,7 +691,8 @@ export default function AdminServicios() {
                                 margin: "0 2px",
                                 padding: "6px 12px",
                                 borderRadius: 6,
-                                background: paginaActual === i + 1 ? "#5EA743" : "#444",
+                                background:
+                                    paginaActual === i + 1 ? "#5EA743" : "#444",
                                 color: "#fff",
                                 border: "none",
                                 cursor: "pointer",

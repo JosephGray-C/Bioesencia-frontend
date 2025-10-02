@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import Calendar from "./Calendar";
 import { useUser } from "../context/UserContext";
-import { convertDateToTimeAmPm } from "../utils/formatDateTime.js";
+import { convertDateToTimeAmPm, dateFormat } from "../utils/formatDateTime.js";
+import { inscripcionesAgendadas } from "../services/inscripciones.js";
+import { citasAgendadas } from "../services/citas.js";
 
 export default function Calendario() {
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -14,25 +16,12 @@ export default function Calendario() {
         const uid = user?.id;
         if (!uid) return;
 
-        const fechaStr =
-            selectedDate.getFullYear() +
-            "-" +
-            String(selectedDate.getMonth() + 1).padStart(2, "0") +
-            "-" +
-            String(selectedDate.getDate()).padStart(2, "0");
-
         if (activeTab === "citas") {
-            fetch(
-                `http://localhost:8080/api/citas/agendadas/${fechaStr}/${uid}`
-            )
-                .then((res) => res.json())
+            citasAgendadas(dateFormat(selectedDate), uid)
                 .then(setCitas)
                 .catch(() => setCitas([]));
         } else {
-            fetch(
-                `http://localhost:8080/api/inscripciones/agendadas/${fechaStr}/${uid}`
-            )
-                .then((res) => res.json())
+            inscripcionesAgendadas(dateFormat(selectedDate), uid)
                 .then(setTalleres)
                 .catch(() => setTalleres([]));
         }

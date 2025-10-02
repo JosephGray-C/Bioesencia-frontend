@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/api/talleres";
+const API_URL = process.env.REACT_APP_TALLERES_URL;
 
 export async function fetchTalleres({ signal }) {
     const res = await fetch(API_URL, { signal });
@@ -8,15 +8,15 @@ export async function fetchTalleres({ signal }) {
 }
 
 export async function fetchTaller({ queryKey, signal }) {
-  const [, id] = queryKey;
-  const res = await fetch(`${API_URL}/${id}`, { signal });
-  if (res.status === 404) {
-    const err = new Error("NOT_FOUND");
-    err.code = 404;
-    throw err;
-  }
-  if (!res.ok) throw new Error(res.text());
-  return res.json();
+    const [, id] = queryKey;
+    const res = await fetch(`${API_URL}/${id}`, { signal });
+    if (res.status === 404) {
+        const err = new Error("NOT_FOUND");
+        err.code = 404;
+        throw err;
+    }
+    if (!res.ok) throw new Error(res.text());
+    return res.json();
 }
 
 export async function createTaller(data) {

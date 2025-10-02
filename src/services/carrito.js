@@ -1,7 +1,7 @@
-// 
-const API_CARRITO = "http://localhost:8080/api/carrito";
+const API_CARRITO = process.env.REACT_APP_CARRITO_URL;
 
 export async function fetchCarrito({ queryKey, signal }) {
+    console.log(API_CARRITO)
     const userId = queryKey[1];
     if (!userId) return [];
     const res = await fetch(`${API_CARRITO}/${userId}`, { signal });

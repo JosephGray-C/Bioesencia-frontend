@@ -1,11 +1,11 @@
-const API_URL = "http://localhost:8080/api/posts";
+const API_URL = process.env.REACT_APP_POST_URL;
 
 export async function obtenerPosts({ signal }) {
     const res = await fetch(`${API_URL}/listar`, { signal });
     if (!res.ok) throw new Error(await res.text());
     const data = await res.json();
     return Array.isArray(data) ? data : [];
-}  
+}
 
 export async function obtenerPostPorId(id) {
     const res = await fetch(`${API_URL}/${id}`);

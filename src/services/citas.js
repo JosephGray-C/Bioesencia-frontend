@@ -1,10 +1,10 @@
-// 
-const API_URL = "http://localhost:8080/api/citas";
+const API_URL = process.env.REACT_APP_CITAS_URL;
 
 export async function fetchCitas({ signal }) {
     const res = await fetch(API_URL, { signal });
     if (!res.ok) throw new Error(await res.text());
     const data = await res.json();
+    console.log(data);
     return Array.isArray(data) ? data : [];
 }
 
@@ -39,4 +39,10 @@ export async function horariosDisponibles(fecha) {
     if (!res.ok) throw new Error(await res.text());
     const data = await res.json();
     return Array.isArray(data) ? data : [];
-} 
+}
+
+export async function citasAgendadas(date, uid) {
+    const res = await fetch(`${API_URL}/agendadas/${date}/${uid}`, { method: "GET" });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+}

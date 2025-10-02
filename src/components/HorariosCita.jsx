@@ -15,8 +15,8 @@ export default function HorariosList({ selectedDate, cita, setCita }) {
         initialData: () => qc.getQueryData(["horarios", selectedDate]) || [],
         enabled: !!selectedDate,
     });
-
     const showSpinner = isFetching && horarios.length === 0;
+
     if (error) return <p>Error al cargar los horarios: {error.message}</p>;
     if (showSpinner) return <p>Cargando horarios...</p>;
     if (horarios.length === 0)

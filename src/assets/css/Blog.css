@@ -38,6 +38,9 @@
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+
+
 /* Card Styles */
 .bu-card {
     background: #fff;

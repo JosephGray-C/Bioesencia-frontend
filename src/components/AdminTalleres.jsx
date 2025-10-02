@@ -4,33 +4,56 @@ import Swal from "sweetalert2";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ClipLoader from "react-spinners/ClipLoader";
 import { fetchInscripciones } from "../services/inscripciones";
-import { fetchTalleres, createTaller, updateTaller, deleteTaller } from "../services/talleres";
+import {
+    fetchTalleres,
+    createTaller,
+    updateTaller,
+    deleteTaller,
+} from "../services/talleres";
 
 function CrearTallerModal({ form, onChange, onSubmit, onCancel }) {
     return (
         <div
             style={{
                 position: "fixed",
-                top: 0, left: 0, width: "100vw", height: "100vh",
+                top: 0,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
                 background: "rgba(0,0,0,0.25)",
                 zIndex: 1050,
-                display: "flex", alignItems: "center", justifyContent: "center"
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
             }}
         >
-            <div className="container" style={{
-                maxWidth: 700,
-                width: "100%",
-                position: "relative",
-                boxShadow: "0 8px 32px #0004"
-            }}>
+            <div
+                className="container"
+                style={{
+                    maxWidth: 700,
+                    width: "100%",
+                    position: "relative",
+                    boxShadow: "0 8px 32px #0004",
+                }}
+            >
                 <div className="forms" style={{ background: "#fff" }}>
                     <div className="form-content">
                         <div className="signup-form" style={{ width: "100%" }}>
-                            <div className="title" style={{ fontWeight: 600, fontSize: 26, marginBottom: 12 }}>
+                            <div
+                                className="title"
+                                style={{
+                                    fontWeight: 600,
+                                    fontSize: 26,
+                                    marginBottom: 12,
+                                }}
+                            >
                                 Agregar taller
                             </div>
                             <form onSubmit={onSubmit}>
-                                <div className="input-boxes" style={{ marginTop: 18 }}>
+                                <div
+                                    className="input-boxes"
+                                    style={{ marginTop: 18 }}
+                                >
                                     <div className="input-box">
                                         <i className="fas fa-book"></i>
                                         <input
@@ -50,7 +73,10 @@ function CrearTallerModal({ form, onChange, onSubmit, onCancel }) {
                                             onChange={onChange}
                                             required
                                             rows={3}
-                                            style={{ resize: "vertical", width: "100%" }}
+                                            style={{
+                                                resize: "vertical",
+                                                width: "100%",
+                                            }}
                                         />
                                     </div>
                                     <div className="input-box">
@@ -123,13 +149,18 @@ function CrearTallerModal({ form, onChange, onSubmit, onCancel }) {
                                             step="0.01"
                                         />
                                     </div>
-                                    <div className="input-box" style={{ marginBottom: 0 }}>
-                                        <label style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            fontWeight: 500,
-                                            color: "#333"
-                                        }}>
+                                    <div
+                                        className="input-box"
+                                        style={{ marginBottom: 0 }}
+                                    >
+                                        <label
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                fontWeight: 500,
+                                                color: "#333",
+                                            }}
+                                        >
                                             <input
                                                 type="checkbox"
                                                 name="activo"
@@ -140,10 +171,21 @@ function CrearTallerModal({ form, onChange, onSubmit, onCancel }) {
                                             Activo
                                         </label>
                                     </div>
-                                    <div className="button input-box" style={{ marginTop: 26 }}>
-                                        <input type="submit" value="Guardar taller" />
+                                    <div
+                                        className="button input-box"
+                                        style={{ marginTop: 26 }}
+                                    >
+                                        <input
+                                            type="submit"
+                                            value="Guardar taller"
+                                        />
                                     </div>
-                                    <div style={{ marginTop: 8, textAlign: "right" }}>
+                                    <div
+                                        style={{
+                                            marginTop: 8,
+                                            textAlign: "right",
+                                        }}
+                                    >
                                         <button
                                             type="button"
                                             onClick={onCancel}
@@ -155,9 +197,10 @@ function CrearTallerModal({ form, onChange, onSubmit, onCancel }) {
                                                 padding: "8px 18px",
                                                 fontWeight: 500,
                                                 fontSize: "1rem",
-                                                cursor: "pointer"
+                                                cursor: "pointer",
                                             }}
-                                        >Cancelar
+                                        >
+                                            Cancelar
                                         </button>
                                     </div>
                                 </div>
@@ -168,11 +211,18 @@ function CrearTallerModal({ form, onChange, onSubmit, onCancel }) {
                 <button
                     onClick={onCancel}
                     style={{
-                        position: "absolute", top: 12, right: 18, fontSize: 26,
-                        background: "none", border: "none", cursor: "pointer", color: "#888"
+                        position: "absolute",
+                        top: 12,
+                        right: 18,
+                        fontSize: 26,
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        color: "#888",
                     }}
                     title="Cerrar"
-                >×
+                >
+                    ×
                 </button>
             </div>
         </div>
@@ -184,27 +234,45 @@ function EditarTallerModal({ editForm, onChange, onSubmit, onCancel }) {
         <div
             style={{
                 position: "fixed",
-                top: 0, left: 0, width: "100vw", height: "100vh",
+                top: 0,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
                 background: "rgba(0,0,0,0.25)",
                 zIndex: 1200,
-                display: "flex", alignItems: "center", justifyContent: "center"
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
             }}
         >
-            <div className="container" style={{
-                maxWidth: 700,
-                width: "100%",
-                position: "relative",
-                boxShadow: "0 8px 32px #0004"
-            }}>
+            <div
+                className="container"
+                style={{
+                    maxWidth: 700,
+                    width: "100%",
+                    position: "relative",
+                    boxShadow: "0 8px 32px #0004",
+                }}
+            >
                 <div className="forms" style={{ background: "#fff" }}>
                     <div className="form-content">
                         <div className="signup-form" style={{ width: "100%" }}>
-                            <div className="title"
-                                style={{ fontWeight: 600, fontSize: 26, marginBottom: 12, color: "#5EA743" }}>
+                            <div
+                                className="title"
+                                style={{
+                                    fontWeight: 600,
+                                    fontSize: 26,
+                                    marginBottom: 12,
+                                    color: "#5EA743",
+                                }}
+                            >
                                 Editar taller
                             </div>
                             <form onSubmit={onSubmit}>
-                                <div className="input-boxes" style={{ marginTop: 18 }}>
+                                <div
+                                    className="input-boxes"
+                                    style={{ marginTop: 18 }}
+                                >
                                     <div className="input-box">
                                         <i className="fas fa-book"></i>
                                         <input
@@ -225,7 +293,10 @@ function EditarTallerModal({ editForm, onChange, onSubmit, onCancel }) {
                                             onChange={onChange}
                                             required
                                             rows={3}
-                                            style={{ resize: "vertical", width: "100%" }}
+                                            style={{
+                                                resize: "vertical",
+                                                width: "100%",
+                                            }}
                                         />
                                     </div>
                                     <div className="input-box">
@@ -297,13 +368,18 @@ function EditarTallerModal({ editForm, onChange, onSubmit, onCancel }) {
                                             step="0.01"
                                         />
                                     </div>
-                                    <div className="input-box" style={{ marginBottom: 0 }}>
-                                        <label style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            fontWeight: 500,
-                                            color: "#333"
-                                        }}>
+                                    <div
+                                        className="input-box"
+                                        style={{ marginBottom: 0 }}
+                                    >
+                                        <label
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                fontWeight: 500,
+                                                color: "#333",
+                                            }}
+                                        >
                                             <input
                                                 type="checkbox"
                                                 name="activo"
@@ -314,13 +390,21 @@ function EditarTallerModal({ editForm, onChange, onSubmit, onCancel }) {
                                             Activo
                                         </label>
                                     </div>
-                                    <div className="button input-box" style={{ marginTop: 26 }}>
+                                    <div
+                                        className="button input-box"
+                                        style={{ marginTop: 26 }}
+                                    >
                                         <input
                                             type="submit"
                                             value="Guardar cambios"
                                         />
                                     </div>
-                                    <div style={{ marginTop: 8, textAlign: "right" }}>
+                                    <div
+                                        style={{
+                                            marginTop: 8,
+                                            textAlign: "right",
+                                        }}
+                                    >
                                         <button
                                             type="button"
                                             onClick={onCancel}
@@ -332,9 +416,10 @@ function EditarTallerModal({ editForm, onChange, onSubmit, onCancel }) {
                                                 padding: "8px 18px",
                                                 fontWeight: 500,
                                                 fontSize: "1rem",
-                                                cursor: "pointer"
+                                                cursor: "pointer",
                                             }}
-                                        >Cancelar
+                                        >
+                                            Cancelar
                                         </button>
                                     </div>
                                 </div>
@@ -345,11 +430,18 @@ function EditarTallerModal({ editForm, onChange, onSubmit, onCancel }) {
                 <button
                     onClick={onCancel}
                     style={{
-                        position: "absolute", top: 12, right: 18, fontSize: 26,
-                        background: "none", border: "none", cursor: "pointer", color: "#888"
+                        position: "absolute",
+                        top: 12,
+                        right: 18,
+                        fontSize: 26,
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        color: "#888",
                     }}
                     title="Cerrar"
-                >×
+                >
+                    ×
                 </button>
             </div>
         </div>
@@ -357,14 +449,31 @@ function EditarTallerModal({ editForm, onChange, onSubmit, onCancel }) {
 }
 
 export default function AdminTalleres() {
-    const qc = useQueryClient();
-
     const [paginaActual, setPaginaActual] = useState(1);
     const [busqueda, setBusqueda] = useState("");
-    const talleresPorPagina = 6;
+
+    const qc = useQueryClient();
 
     const [showForm, setShowForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
+
+    const {
+        data: talleres = [],
+        isFetching: isFetchingTalleres,
+        refetch: refetchTalleres,
+    } = useQuery({
+        queryKey: ["talleres"],
+        queryFn: fetchTalleres,
+        initialData: () => qc.getQueryData(["talleres"]) || [],
+    });
+    //
+    const showSpinner = isFetchingTalleres && talleres.length === 0;
+
+    const { data: inscripciones = [] } = useQuery({
+        queryKey: ["inscripciones"],
+        queryFn: fetchInscripciones,
+        initialData: () => qc.getQueryData(["inscripciones"]) || [],
+    });
 
     const [form, setForm] = useState({
         titulo: "",
@@ -375,7 +484,7 @@ export default function AdminTalleres() {
         lugar: "",
         cupoMaximo: "",
         precio: "",
-        activo: true
+        activo: true,
     });
 
     const [editForm, setEditForm] = useState({
@@ -388,26 +497,8 @@ export default function AdminTalleres() {
         lugar: "",
         cupoMaximo: "",
         precio: "",
-        activo: true
+        activo: true,
     });
-
-    const {
-        data: talleres = [],
-        isFetching: isFetchingTalleres,
-        refetch: refetchTalleres,
-    } = useQuery({
-        queryKey: ["talleres"],
-        queryFn: fetchTalleres,
-        initialData: () => qc.getQueryData(["talleres"]) || [],
-    });
-
-    const { data: inscripciones = [] } = useQuery({
-        queryKey: ["inscripciones"],
-        queryFn: fetchInscripciones,
-        initialData: () => qc.getQueryData(["inscripciones"]) || [],
-    });
-
-    const showSpinner = isFetchingTalleres && talleres.length === 0;
 
     const inscripcionesPorTaller = useMemo(() => {
         const mapa = {};
@@ -419,13 +510,19 @@ export default function AdminTalleres() {
         return mapa;
     }, [inscripciones]);
 
-    const handleChange = e => {
+    const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setForm(f => ({ ...f, [name]: type === "checkbox" ? checked : value }));
+        setForm((f) => ({
+            ...f,
+            [name]: type === "checkbox" ? checked : value,
+        }));
     };
-    const handleEditChange = e => {
+    const handleEditChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setEditForm(f => ({ ...f, [name]: type === "checkbox" ? checked : value }));
+        setEditForm((f) => ({
+            ...f,
+            [name]: type === "checkbox" ? checked : value,
+        }));
     };
 
     const clearForm = () => {
@@ -438,7 +535,7 @@ export default function AdminTalleres() {
             lugar: "",
             cupoMaximo: "",
             precio: "",
-            activo: true
+            activo: true,
         });
         setShowForm(false);
     };
@@ -453,26 +550,38 @@ export default function AdminTalleres() {
             lugar: "",
             cupoMaximo: "",
             precio: "",
-            activo: true
+            activo: true,
         });
         setShowEditForm(false);
     };
 
-    const handleSubmit = async e => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!form.fechaInicio || !form.fechaFin) {
-            Swal.fire("Error", "Debes ingresar la fecha y hora de inicio y fin.", "error");
+            Swal.fire(
+                "Error",
+                "Debes ingresar la fecha y hora de inicio y fin.",
+                "error"
+            );
             return;
         }
         const inicio = new Date(form.fechaInicio);
         const fin = new Date(form.fechaFin);
         if (isNaN(inicio.getTime()) || isNaN(fin.getTime())) {
-            Swal.fire("Error", "Fechas inválidas. Por favor selecciona correctamente las fechas y horas.", "error");
+            Swal.fire(
+                "Error",
+                "Fechas inválidas. Por favor selecciona correctamente las fechas y horas.",
+                "error"
+            );
             return;
         }
         if (fin <= inicio) {
-            Swal.fire("Error", "La fecha/hora de fin debe ser posterior a la de inicio.", "error");
+            Swal.fire(
+                "Error",
+                "La fecha/hora de fin debe ser posterior a la de inicio.",
+                "error"
+            );
             return;
         }
 
@@ -493,21 +602,33 @@ export default function AdminTalleres() {
         }
     };
 
-    const handleEditSubmit = async e => {
+    const handleEditSubmit = async (e) => {
         e.preventDefault();
 
         if (!editForm.fechaInicio || !editForm.fechaFin) {
-            Swal.fire("Error", "Debes ingresar la fecha y hora de inicio y fin.", "error");
+            Swal.fire(
+                "Error",
+                "Debes ingresar la fecha y hora de inicio y fin.",
+                "error"
+            );
             return;
         }
         const inicio = new Date(editForm.fechaInicio);
         const fin = new Date(editForm.fechaFin);
         if (isNaN(inicio.getTime()) || isNaN(fin.getTime())) {
-            Swal.fire("Error", "Fechas inválidas. Por favor selecciona correctamente las fechas y horas.", "error");
+            Swal.fire(
+                "Error",
+                "Fechas inválidas. Por favor selecciona correctamente las fechas y horas.",
+                "error"
+            );
             return;
         }
         if (fin <= inicio) {
-            Swal.fire("Error", "La fecha/hora de fin debe ser posterior a la de inicio.", "error");
+            Swal.fire(
+                "Error",
+                "La fecha/hora de fin debe ser posterior a la de inicio.",
+                "error"
+            );
             return;
         }
 
@@ -517,7 +638,11 @@ export default function AdminTalleres() {
             const actualizado = await res.json();
 
             qc.setQueryData(["talleres"], (prev) =>
-                Array.isArray(prev) ? prev.map(t => t.id === actualizado.id ? actualizado : t) : prev
+                Array.isArray(prev)
+                    ? prev.map((t) =>
+                          t.id === actualizado.id ? actualizado : t
+                      )
+                    : prev
             );
 
             Swal.fire("¡Actualizado!", "Taller modificado.", "success");
@@ -528,7 +653,7 @@ export default function AdminTalleres() {
         }
     };
 
-    const handleDelete = async id => {
+    const handleDelete = async (id) => {
         const confirm = await Swal.fire({
             title: "¿Eliminar taller?",
             text: "No podrás revertir esto.",
@@ -537,7 +662,7 @@ export default function AdminTalleres() {
             confirmButtonColor: "#5A0D0D",
             cancelButtonColor: "#6c757d",
             confirmButtonText: "Eliminar",
-            cancelButtonText: "Cancelar"
+            cancelButtonText: "Cancelar",
         });
         if (!confirm.isConfirmed) return;
 
@@ -546,7 +671,7 @@ export default function AdminTalleres() {
             if (!res.ok) throw new Error(await res.text());
 
             qc.setQueryData(["talleres"], (prev) =>
-                Array.isArray(prev) ? prev.filter(t => t.id !== id) : prev
+                Array.isArray(prev) ? prev.filter((t) => t.id !== id) : prev
             );
 
             Swal.fire("¡Eliminado!", "Taller borrado.", "success");
@@ -557,7 +682,7 @@ export default function AdminTalleres() {
     };
 
     const handleVerInscritos = (taller) => {
-        const lista = inscripciones.filter(i => i.tallerId === taller.id);
+        const lista = inscripciones.filter((i) => i.tallerId === taller.id);
 
         if (!Array.isArray(lista) || lista.length === 0) {
             Swal.fire({
@@ -569,39 +694,45 @@ export default function AdminTalleres() {
             return;
         }
 
-        const filas = lista.map((i, idx) => `
-      <tr>
-        <td style="padding:6px;white-space:nowrap;">${idx + 1}</td>
-        <td style="padding:6px;white-space:nowrap;">${i.usuarioNombre ?? "—"}</td>
-        <td style="padding:6px;white-space:nowrap;">${i.usuarioApellido ?? "—"}</td>
-        <td style="padding:6px;white-space:nowrap;">${i.usuarioEmail ?? "—"}</td>
-        <td style="padding:6px;white-space:nowrap;">${i.fechaInscripcion ? new Date(i.fechaInscripcion).toLocaleString() : "—"}</td>
-        <td style="padding:6px;white-space:nowrap;">${i.estado ?? "—"}</td>
-      </tr>
-    `).join("");
+        const filas = lista
+            .map(
+                (i, idx) => `
+    <tr>
+    <td style="padding:6px;white-space:nowrap;">${idx + 1}</td>
+    <td style="padding:6px;white-space:nowrap;">${i.usuarioNombre ?? "—"}</td>
+    <td style="padding:6px;white-space:nowrap;">${i.usuarioApellido ?? "—"}</td>
+    <td style="padding:6px;white-space:nowrap;">${i.usuarioEmail ?? "—"}</td>
+    <td style="padding:6px;white-space:nowrap;">${
+        i.fechaInscripcion ? new Date(i.fechaInscripcion).toLocaleString() : "—"
+    }</td>
+    <td style="padding:6px;white-space:nowrap;">${i.estado ?? "—"}</td>
+    </tr>
+    `
+            )
+            .join("");
 
         const tabla = `
-      <div style="max-height:60vh;overflow:auto;text-align:left">
-        <p><b>Taller:</b> ${taller.titulo}</p>
-        <p style="margin-top:4px"><b>Total inscritos:</b> ${lista.length}</p>
-        <div style="overflow-x:auto;">
-          <table style="width:100%;border-collapse:collapse;table-layout:auto;">
-            <thead>
-              <tr>
-                <th style="text-align:left;padding:6px;white-space:nowrap;">#</th>
-                <th style="text-align:left;padding:6px;white-space:nowrap;">Nombre</th>
-                <th style="text-align:left;padding:6px;white-space:nowrap;">Apellido</th>
-                <th style="text-align:left;padding:6px;white-space:nowrap;">Email</th>
+    <div style="max-height:60vh;overflow:auto;text-align:left">
+    <p><b>Taller:</b> ${taller.titulo}</p>
+    <p style="margin-top:4px"><b>Total inscritos:</b> ${lista.length}</p>
+    <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;table-layout:auto;">
+    <thead>
+    <tr>
+    <th style="text-align:left;padding:6px;white-space:nowrap;">#</th>
+    <th style="text-align:left;padding:6px;white-space:nowrap;">Nombre</th>
+    <th style="text-align:left;padding:6px;white-space:nowrap;">Apellido</th>
+    <th style="text-align:left;padding:6px;white-space:nowrap;">Email</th>
                 <th style="text-align:left;padding:6px;white-space:nowrap;">Fecha inscrip.</th>
                 <th style="text-align:left;padding:6px;white-space:nowrap;">Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${filas}
+                </tr>
+                </thead>
+                <tbody>
+                ${filas}
             </tbody>
-          </table>
-        </div>
-      </div>`;
+            </table>
+            </div>
+            </div>`;
         Swal.fire({
             title: "Inscritos",
             html: tabla,
@@ -611,7 +742,7 @@ export default function AdminTalleres() {
     };
 
     // Preparar datos cuando se va a editar
-    const onEdit = taller => {
+    const onEdit = (taller) => {
         setEditForm({
             id: taller.id ?? "",
             titulo: taller.titulo ?? "",
@@ -622,53 +753,60 @@ export default function AdminTalleres() {
             lugar: taller.lugar ?? "",
             cupoMaximo: taller.cupoMaximo ?? "",
             precio: taller.precio ?? "",
-            activo: typeof taller.activo === "boolean" ? taller.activo : true
+            activo: typeof taller.activo === "boolean" ? taller.activo : true,
         });
         setShowEditForm(true);
     };
 
     // Filtrado y paginación
     const talleresFiltrados = useMemo(
-        () => (talleres || []).filter(t => {
-            const q = busqueda.trim().toLowerCase();
-            if (!q) return true;
-            return (
-                (t.titulo || "").toLowerCase().includes(q) ||
-                (t.descripcion || "").toLowerCase().includes(q) ||
-                (t.lugar || "").toLowerCase().includes(q) ||
-                (t.fechaInicio || "").toLowerCase().includes(q) ||
-                (t.fechaFin || "").toLowerCase().includes(q) ||
-                (t.cupoMaximo?.toString() || "").toLowerCase().includes(q) ||
-                (t.precio?.toString() || "").toLowerCase().includes(q) ||
-                (t.activo ? "sí" : "no").includes(q)
-            );
-        }),
+        () =>
+            (talleres || []).filter((t) => {
+                const q = busqueda.trim().toLowerCase();
+                if (!q) return true;
+                return (
+                    (t.titulo || "").toLowerCase().includes(q) ||
+                    (t.descripcion || "").toLowerCase().includes(q) ||
+                    (t.lugar || "").toLowerCase().includes(q) ||
+                    (t.fechaInicio || "").toLowerCase().includes(q) ||
+                    (t.fechaFin || "").toLowerCase().includes(q) ||
+                    (t.cupoMaximo?.toString() || "")
+                        .toLowerCase()
+                        .includes(q) ||
+                    (t.precio?.toString() || "").toLowerCase().includes(q) ||
+                    (t.activo ? "sí" : "no").includes(q)
+                );
+            }),
         [talleres, busqueda]
     );
 
+    const talleresPorPagina = 6;
     const indexUltimo = paginaActual * talleresPorPagina;
     const indexPrimero = indexUltimo - talleresPorPagina;
     const talleresPagina = talleresFiltrados.slice(indexPrimero, indexUltimo);
-    const totalPaginas = Math.ceil(talleresFiltrados.length / talleresPorPagina) || 1;
+    const totalPaginas =
+        Math.ceil(talleresFiltrados.length / talleresPorPagina) || 1;
 
     return (
         <div className="home-crud">
             {/* HEADER de acciones */}
-            <div style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: 14,
-                gap: 18,
-                width: "100%"
-            }}>
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginBottom: 14,
+                    gap: 18,
+                    width: "100%",
+                }}
+            >
                 {/* Search */}
                 <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
                     <input
                         type="text"
                         placeholder="Buscar taller"
                         value={busqueda}
-                        onChange={e => {
+                        onChange={(e) => {
                             setBusqueda(e.target.value);
                             setPaginaActual(1);
                         }}
@@ -678,7 +816,7 @@ export default function AdminTalleres() {
                             border: "1px solid #ccc",
                             fontSize: 16,
                             width: "100%",
-                            maxWidth: 260
+                            maxWidth: 260,
                         }}
                     />
                 </div>
@@ -694,7 +832,7 @@ export default function AdminTalleres() {
                             borderRadius: 8,
                             padding: "10px 20px",
                             fontSize: 16,
-                            cursor: "pointer"
+                            cursor: "pointer",
                         }}
                     >
                         + Agregar taller
@@ -721,29 +859,137 @@ export default function AdminTalleres() {
             )}
 
             {/* DATATABLE */}
-            <table style={{ width: "100%", background: "#fff", borderCollapse: "collapse", color: "#000000" }}>
+            <table
+                style={{
+                    width: "100%",
+                    background: "#fff",
+                    borderCollapse: "collapse",
+                    color: "#000000",
+                }}
+            >
                 <thead>
                     <tr style={{ background: "#A9C499", color: "#fff" }}>
-                        <th style={{ padding: 12, width: 120, textAlign: "left" }}>Título</th>
-                        <th style={{ padding: 12, width: 200, textAlign: "left" }}>Descripción</th>
-                        <th style={{ padding: 12, width: 145, textAlign: "center" }}>Fecha inicio</th>
-                        <th style={{ padding: 12, width: 145, textAlign: "center" }}>Fecha fin</th>
-                        <th style={{ padding: 12, width: 200, textAlign: "left" }}>Lugar</th>
-                        <th style={{ padding: 12, width: 70, textAlign: "center" }}>Cupo</th>
-                        <th style={{ padding: 12, width: 90, textAlign: "center" }}>Precio</th>
-                        <th style={{ padding: 12, width: 70, textAlign: "center" }}>Activo</th>
-                        <th style={{ padding: 12, width: 90, textAlign: "center" }}>Inscritos</th>
-                        <th style={{ padding: 12, width: 90, textAlign: "center" }}>Disponibles</th>
-                        <th style={{ padding: 12, width: 90, textAlign: "center" }}>Acciones</th>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 120,
+                                textAlign: "left",
+                            }}
+                        >
+                            Título
+                        </th>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 200,
+                                textAlign: "left",
+                            }}
+                        >
+                            Descripción
+                        </th>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 145,
+                                textAlign: "center",
+                            }}
+                        >
+                            Fecha inicio
+                        </th>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 145,
+                                textAlign: "center",
+                            }}
+                        >
+                            Fecha fin
+                        </th>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 200,
+                                textAlign: "left",
+                            }}
+                        >
+                            Lugar
+                        </th>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 70,
+                                textAlign: "center",
+                            }}
+                        >
+                            Cupo
+                        </th>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 90,
+                                textAlign: "center",
+                            }}
+                        >
+                            Precio
+                        </th>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 70,
+                                textAlign: "center",
+                            }}
+                        >
+                            Activo
+                        </th>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 90,
+                                textAlign: "center",
+                            }}
+                        >
+                            Inscritos
+                        </th>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 90,
+                                textAlign: "center",
+                            }}
+                        >
+                            Disponibles
+                        </th>
+                        <th
+                            style={{
+                                padding: 12,
+                                width: 90,
+                                textAlign: "center",
+                            }}
+                        >
+                            Acciones
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     {talleresPagina.length === 0 ? (
                         <tr>
-                            <td colSpan={11} style={{ textAlign: "center", padding: 20 }}>
+                            <td
+                                colSpan={11}
+                                style={{ textAlign: "center", padding: 20 }}
+                            >
                                 {showSpinner ? (
-                                    <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                                        <ClipLoader size={18} color="#bbb" speedMultiplier={0.9} />
+                                    <span
+                                        style={{
+                                            display: "inline-flex",
+                                            alignItems: "center",
+                                            gap: 8,
+                                        }}
+                                    >
+                                        <ClipLoader
+                                            size={18}
+                                            color="#bbb"
+                                            speedMultiplier={0.9}
+                                        />
                                     </span>
                                 ) : (
                                     "No hay talleres"
@@ -751,9 +997,20 @@ export default function AdminTalleres() {
                             </td>
                         </tr>
                     ) : (
-                        talleresPagina.map(t => (
-                            <tr key={t.id} style={{ borderBottom: "1px solid #222" }}>
-                                <td style={{ padding: 10, textAlign: "left", verticalAlign: "middle" }}>{t.titulo}</td>
+                        talleresPagina.map((t) => (
+                            <tr
+                                key={t.id}
+                                style={{ borderBottom: "1px solid #222" }}
+                            >
+                                <td
+                                    style={{
+                                        padding: 10,
+                                        textAlign: "left",
+                                        verticalAlign: "middle",
+                                    }}
+                                >
+                                    {t.titulo}
+                                </td>
                                 <td
                                     style={{
                                         padding: 10,
@@ -762,55 +1019,113 @@ export default function AdminTalleres() {
                                         maxWidth: 320,
                                         overflow: "hidden",
                                         textOverflow: "ellipsis",
-                                        whiteSpace: "nowrap"
+                                        whiteSpace: "nowrap",
                                     }}
                                     title={t.descripcion}
                                 >
                                     {t.descripcion}
                                 </td>
-                                <td style={{
-                                    padding: 10,
-                                    textAlign: "center",
-                                    verticalAlign: "middle",
-                                    whiteSpace: "nowrap"
-                                }}>
-                                    {t.fechaInicio && new Date(t.fechaInicio).toLocaleString()}
+                                <td
+                                    style={{
+                                        padding: 10,
+                                        textAlign: "center",
+                                        verticalAlign: "middle",
+                                        whiteSpace: "nowrap",
+                                    }}
+                                >
+                                    {t.fechaInicio &&
+                                        new Date(
+                                            t.fechaInicio
+                                        ).toLocaleString()}
                                 </td>
-                                <td style={{
-                                    padding: 10,
-                                    textAlign: "center",
-                                    verticalAlign: "middle",
-                                    whiteSpace: "nowrap"
-                                }}>
-                                    {t.fechaFin && new Date(t.fechaFin).toLocaleString()}
+                                <td
+                                    style={{
+                                        padding: 10,
+                                        textAlign: "center",
+                                        verticalAlign: "middle",
+                                        whiteSpace: "nowrap",
+                                    }}
+                                >
+                                    {t.fechaFin &&
+                                        new Date(t.fechaFin).toLocaleString()}
                                 </td>
-                                <td style={{ padding: 10, textAlign: "left", verticalAlign: "middle" }}>{t.lugar}</td>
-                                <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>{t.cupoMaximo}</td>
-                                <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>
+                                <td
+                                    style={{
+                                        padding: 10,
+                                        textAlign: "left",
+                                        verticalAlign: "middle",
+                                    }}
+                                >
+                                    {t.lugar}
+                                </td>
+                                <td
+                                    style={{
+                                        padding: 10,
+                                        textAlign: "center",
+                                        verticalAlign: "middle",
+                                    }}
+                                >
+                                    {t.cupoMaximo}
+                                </td>
+                                <td
+                                    style={{
+                                        padding: 10,
+                                        textAlign: "center",
+                                        verticalAlign: "middle",
+                                    }}
+                                >
                                     {Number(t.precio).toLocaleString("es-CR", {
                                         style: "currency",
                                         currency: "CRC",
-                                        minimumFractionDigits: 2
+                                        minimumFractionDigits: 2,
                                     })}
                                 </td>
-                                <td style={{
-                                    padding: 10,
-                                    textAlign: "center",
-                                    verticalAlign: "middle"
-                                }}>{t.activo ? "Sí" : "No"}</td>
-                                <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>
+                                <td
+                                    style={{
+                                        padding: 10,
+                                        textAlign: "center",
+                                        verticalAlign: "middle",
+                                    }}
+                                >
+                                    {t.activo ? "Sí" : "No"}
+                                </td>
+                                <td
+                                    style={{
+                                        padding: 10,
+                                        textAlign: "center",
+                                        verticalAlign: "middle",
+                                    }}
+                                >
                                     {inscripcionesPorTaller[t.id] || 0}
                                 </td>
-                                <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>
-                                    {Math.max(0, (t.cupoMaximo || 0) - (inscripcionesPorTaller[t.id] || 0))}
+                                <td
+                                    style={{
+                                        padding: 10,
+                                        textAlign: "center",
+                                        verticalAlign: "middle",
+                                    }}
+                                >
+                                    {Math.max(
+                                        0,
+                                        (t.cupoMaximo || 0) -
+                                            (inscripcionesPorTaller[t.id] || 0)
+                                    )}
                                 </td>
-                                <td style={{ padding: 10, textAlign: "center", verticalAlign: "middle" }}>
-                                    <div style={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        alignItems: "center",
-                                        gap: 8
-                                    }}>
+                                <td
+                                    style={{
+                                        padding: 10,
+                                        textAlign: "center",
+                                        verticalAlign: "middle",
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            gap: 8,
+                                        }}
+                                    >
                                         <button
                                             onClick={() => onEdit(t)}
                                             style={{
@@ -821,14 +1136,16 @@ export default function AdminTalleres() {
                                                 padding: "5px 8px",
                                                 fontSize: 16,
                                                 cursor: "pointer",
-                                                width: 40
+                                                width: 40,
                                             }}
                                             title="Editar taller"
                                         >
                                             <i className="fas fa-edit"></i>
                                         </button>
                                         <button
-                                            onClick={() => handleVerInscritos(t)}
+                                            onClick={() =>
+                                                handleVerInscritos(t)
+                                            }
                                             style={{
                                                 background: "#fff",
                                                 color: "#1976D2",
@@ -837,7 +1154,7 @@ export default function AdminTalleres() {
                                                 padding: "5px 8px",
                                                 fontSize: 16,
                                                 cursor: "pointer",
-                                                width: 40
+                                                width: 40,
                                             }}
                                             title="Ver inscritos"
                                         >
@@ -853,7 +1170,7 @@ export default function AdminTalleres() {
                                                 padding: "5px 8px",
                                                 fontSize: 16,
                                                 cursor: "pointer",
-                                                width: 40
+                                                width: 40,
                                             }}
                                             title="Eliminar taller"
                                         >
@@ -869,10 +1186,24 @@ export default function AdminTalleres() {
 
             {/* FOOTER + PAGINACIÓN */}
             <div style={{ width: "100%", marginTop: 20 }}>
-                <span style={{ color: "#000000", display: "block", marginBottom: 8, textAlign: "center" }}>
-                    Mostrando {talleresPagina.length} de {talleresFiltrados.length}
+                <span
+                    style={{
+                        color: "#000000",
+                        display: "block",
+                        marginBottom: 8,
+                        textAlign: "center",
+                    }}
+                >
+                    Mostrando {talleresPagina.length} de{" "}
+                    {talleresFiltrados.length}
                 </span>
-                <div style={{ display: "flex", justifyContent: "center", gap: 4 }}>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        gap: 4,
+                    }}
+                >
                     {Array.from({ length: totalPaginas }, (_, i) => (
                         <button
                             key={i}
@@ -881,10 +1212,11 @@ export default function AdminTalleres() {
                                 margin: "0 2px",
                                 padding: "6px 12px",
                                 borderRadius: 6,
-                                background: paginaActual === i + 1 ? "#5EA743" : "#444",
+                                background:
+                                    paginaActual === i + 1 ? "#5EA743" : "#444",
                                 color: "#fff",
                                 border: "none",
-                                cursor: "pointer"
+                                cursor: "pointer",
                             }}
                         >
                             {i + 1}

@@ -308,12 +308,10 @@ function EditarProductoModal({ editForm, onChange, onSubmit, onCancel }) {
 }
 
 export default function AdminProductos() {
-    const POR_PAGINA = 6;
-
-    const qc = useQueryClient();
-
     const [paginaActual, setPaginaActual] = useState(1);
     const [busqueda, setBusqueda] = useState("");
+
+    const qc = useQueryClient();
 
     const [showForm, setShowForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
@@ -342,7 +340,7 @@ export default function AdminProductos() {
         queryFn: fetchProductos,
         initialData: () => qc.getQueryData(["productos"]) || [],
     });
-
+    //
     const showSpinner = isFetching && productos.length === 0;
 
     const mCrear = useMutation({
@@ -457,6 +455,7 @@ export default function AdminProductos() {
         );
     }, [busqueda, productos]);
 
+    const POR_PAGINA = 6;
     const totalPaginas = Math.max(
         1,
         Math.ceil(productosFiltrados.length / POR_PAGINA)
@@ -464,6 +463,7 @@ export default function AdminProductos() {
     const page = Math.min(paginaActual, totalPaginas);
     const start = (page - 1) * POR_PAGINA;
     const productosPagina = productosFiltrados.slice(start, start + POR_PAGINA);
+    
     return (
         <div className="home-crud">
             {/* HEADER */}

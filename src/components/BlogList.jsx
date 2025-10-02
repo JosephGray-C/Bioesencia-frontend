@@ -19,25 +19,22 @@ export default function BlogList({ fillForm }) {
     );
     
     return (
-        <main
-            className="bu-main"
-            style={{ width: "100%", maxWidth: 980, margin: "0 auto" }}
-        >
+        <>
             {posts.length === 0 ? (
                 <div className="bu-empty">
                     {showSpinner ? (
                         <span
-                            style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: 8,
-                            }}
+                        style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 8,
+                        }}
                         >
                             <ClipLoader
                                 size={22}
                                 color="#A9C499"
                                 speedMultiplier={0.9}
-                            />
+                                />
                             <span style={{ color: "#5A0D0D" }}>
                                 Cargando publicaciones…
                             </span>
@@ -50,14 +47,14 @@ export default function BlogList({ fillForm }) {
                 <section className="bu-grid">
                     {postsOrdenados.map((post) => (
                         <BlogPost
-                            key={post.idPost}
-                            post={post}
-                            fillForm={fillForm}
-                            isPreview={false}
+                        key={post.idPost}
+                        post={post}
+                        fillForm={fillForm}
+                        isPreview={false}
                         ></BlogPost>
                     ))}
                 </section>
             )}
-        </main>
+        </> 
     );
 }

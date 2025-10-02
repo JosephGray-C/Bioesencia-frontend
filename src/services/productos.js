@@ -1,6 +1,8 @@
-const API_URL = "http://localhost:8080/api/productos";
+const API_URL = process.env.REACT_APP_PRODUCTOS_URL;
 
 export async function fetchProductos({ signal }) {
+    console.log(API_URL);
+    console.log("asdfasdfasdfasdafasd")
     const res = await fetch(`${API_URL}`, { signal });
     if (!res.ok) throw new Error("No se pudo cargar productos");
     const data = await res.json();

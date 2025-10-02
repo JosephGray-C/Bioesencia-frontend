@@ -6,20 +6,19 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { fetchInscripciones, eliminarInscripcion } from "../services/inscripciones";
 
 export default function AdminInscripciones() {
-    const porPagina = 10;
-    const qc = useQueryClient();
-
-    const [busqueda, setBusqueda] = useState("");
     const [paginaActual, setPaginaActual] = useState(1);
-
+    const [busqueda, setBusqueda] = useState("");
+    
+    const qc = useQueryClient();
+   
     const { data: inscripciones = [], isFetching } = useQuery({
         queryKey: ["inscripciones"],
         queryFn: fetchInscripciones,
         initialData: () => qc.getQueryData(["inscripciones"]) || [],
     });
-
+    // 
     const showSpinner = isFetching && inscripciones.length === 0;
-
+    
     const mEliminar = useMutation({
         mutationFn: eliminarInscripcion,
         onSuccess: (_ok, id) => {
@@ -106,11 +105,12 @@ export default function AdminInscripciones() {
         });
     }, [busqueda, inscripciones]);
 
+    const porPagina = 10;
     const totalPaginas = Math.ceil(listaFiltrada.length / porPagina) || 1;
     const pageSafe = Math.min(paginaActual, totalPaginas);
     const indexIni = (pageSafe - 1) * porPagina;
     const page = listaFiltrada.slice(indexIni, indexIni + porPagina);
-
+    
     return (
         <div className="home-crud">
             {/* HEADER acciones */}

@@ -7,6 +7,7 @@ import HorariosList from "./HorariosCita";
 import NotasCita from "./NotasCita";
 import ConfirmarCita from "./ConfirmarCita";
 import { crearCita } from "../services/citas";
+import { ClipLoader } from "react-spinners";
 
 export default function FormCita({ selectedDate }) {
     const [step, setStep] = useState(0);
@@ -116,7 +117,16 @@ export default function FormCita({ selectedDate }) {
                     >
                         Agendar
                     </button>
-                    {mCrear.isPending && <p>Procesando...</p>}
+                    {mCrear.isPending && (
+                        <>
+                            <ClipLoader
+                                size={22}
+                                color="var(--green)"
+                                speedMultiplier={0.9}
+                            />{" "}
+                            <span>Procesando...</span>
+                        </>
+                    )}
                 </div>
             )}
             <div style={{ flex: 1 }}></div>

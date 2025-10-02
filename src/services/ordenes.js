@@ -1,4 +1,4 @@
-const API_ORDENES = "http://localhost:8080/api/ordenes";
+const API_ORDENES = process.env.REACT_APP_ORDENES_URL;
 
 export async function fetchOrdenes({ signal }) {
     const res = await fetch(API_ORDENES, { signal });

@@ -39,47 +39,50 @@ export default function Talleres() {
                     </p>
                 </div>
             </header>
-            {talleres.length === 0 ? (
-                <div className="tp-empty">
-                    {showSpinner ? (
-                        <span
-                            style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: 10,
-                            }}
-                        >
-                            <ClipLoader
-                                size={22}
-                                color="var(--green)"
-                                speedMultiplier={0.9}
+
+            <section>
+                {talleres.length === 0 ? (
+                    <div className="tp-empty">
+                        {showSpinner ? (
+                            <span
+                                style={{
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    gap: 10,
+                                }}
+                            >
+                                <ClipLoader
+                                    size={22}
+                                    color="var(--green)"
+                                    speedMultiplier={0.9}
+                                />
+                                <span>Cargando talleres…</span>
+                            </span>
+                        ) : (
+                            "No hay talleres disponibles en este momento."
+                        )}
+                    </div>
+                ) : (
+                    <ul className="tp-grid">
+                        {talleres.map((taller) => (
+                            <Taller
+                                taller={taller}
+                                selectedTaller={selectedTaller}
+                                setSelectedTaller={setSelectedTaller}
+                                key={taller.id}
                             />
-                            <span>Cargando talleres…</span>
-                        </span>
-                    ) : (
-                        <p>No hay talleres disponibles en este momento.</p>
-                    )}
-                </div>
-            ) : (
-                <ul className="tp-grid">
-                    {talleres.map((taller) => (
-                        <Taller
-                            taller={taller}
-                            selectedTaller={selectedTaller}
-                            setSelectedTaller={setSelectedTaller}
-                            key={taller.id}
+                        ))}
+                    </ul>
+                )}
+                {selectedTaller && (
+                    <div className="modal-overlay">
+                        <TallerModal
+                            tallerSelected={selectedTaller}
+                            onClose={() => setSelectedTaller(null)}
                         />
-                    ))}
-                </ul>
-            )}
-            {selectedTaller && (
-                <div className="modal-overlay">
-                    <TallerModal
-                        tallerSelected={selectedTaller}
-                        onClose={() => setSelectedTaller(null)}
-                    />
-                </div>
-            )}
+                    </div>
+                )}
+            </section>
         </div>
     );
 }

@@ -49,7 +49,7 @@ export default function BlogPost({ post, fillForm, isPreview }) {
                 ) : (
                     <div>
                         {esAdmin && (
-                            <div style={{ display: "flex", gap: "6px" }}>
+                            <div style={{ display: "flex", gap: "6px", paddingTop: "8px" }}>
                                 <button
                                     type="button"
                                     onClick={() => handleModificarPost(post)}
