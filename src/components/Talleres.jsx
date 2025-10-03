@@ -1,9 +1,9 @@
 import { useState } from "react";
-import ClipLoader from "react-spinners/ClipLoader";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchTalleres } from "../services/talleres";
 import TallerModal from "./TallerModal";
 import Taller from "./Taller";
+import Loading from "./Loading";
 
 export default function Talleres() {
     const qc = useQueryClient();
@@ -12,7 +12,6 @@ export default function Talleres() {
     const {
         data: talleres = [],
         isFetching,
-        error,
     } = useQuery({
         queryKey: ["talleres"],
         queryFn: fetchTalleres,
@@ -21,16 +20,10 @@ export default function Talleres() {
 
     const showSpinner = isFetching && talleres.length === 0;
 
-    if (error) {
-        return (
-            <div className="tp-error">
-                ⚠️ No se pudieron cargar los talleres.
-            </div>
-        );
-    }
 
     return (
-        <div className="tp">
+        <div className="list-page">
+
             <header className="bu-hero">
                 <div className="bu-hero-inner">
                     <p className="bu-hero-subtitle">
@@ -42,7 +35,16 @@ export default function Talleres() {
 
             <section>
                 {talleres.length === 0 ? (
-                    <div className="tp-empty">
+                    <div
+                        className="empty"
+                        style={{
+                            gridColumn: "1 / -1",
+                            minHeight: 180,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    >
                         {showSpinner ? (
                             <span
                                 style={{
@@ -51,19 +53,14 @@ export default function Talleres() {
                                     gap: 10,
                                 }}
                             >
-                                <ClipLoader
-                                    size={22}
-                                    color="var(--green)"
-                                    speedMultiplier={0.9}
-                                />
-                                <span>Cargando talleres…</span>
+                               <Loading message="Cargando talleres" />
                             </span>
                         ) : (
                             "No hay talleres disponibles en este momento."
                         )}
                     </div>
                 ) : (
-                    <ul className="tp-grid">
+                    <ul className="list-grid">
                         {talleres.map((taller) => (
                             <Taller
                                 taller={taller}
@@ -74,15 +71,16 @@ export default function Talleres() {
                         ))}
                     </ul>
                 )}
-                {selectedTaller && (
-                    <div className="modal-overlay">
-                        <TallerModal
-                            tallerSelected={selectedTaller}
-                            onClose={() => setSelectedTaller(null)}
-                        />
-                    </div>
-                )}
             </section>
+
+            {selectedTaller && (
+                <div className="modal-overlay">
+                    <TallerModal
+                        tallerSelected={selectedTaller}
+                        onClose={() => setSelectedTaller(null)}
+                    />
+                </div>
+            )}
         </div>
     );
 }

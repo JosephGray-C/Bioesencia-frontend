@@ -1,4 +1,4 @@
-import "../assets/css/calendar.css";
+import "../assets/css/Calendar.css";
 import { useState, useEffect } from "react";
 
 export default function Calendar({ selectedDate ,setSelectedDate, component }) {

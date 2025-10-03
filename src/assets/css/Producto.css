@@ -1,48 +1,3 @@
-.productos-page {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.productos-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 24px;
-    align-items: stretch;
-    width: 100%;
-    max-width: 900px;
-    margin: auto;
-    margin-right: auto;
-}
-@media (max-width: 700px) {
-    .productos-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;           
-        padding: 0 2vw;
-    }
-    .bu-card.producto-card {
-        max-width: 98vw;
-        border-radius: 12px;
-    }
-}
-@media (max-width: 600px) {
-    .productos-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-        padding: 0 2vw;
-    }
-    .bu-card.producto-card {
-        max-width: 98vw;
-        border-radius: 12px;
-    }
-}
-
-
-
 /* Card Styles */
 .bu-card.producto-card {
     background: #fff;
@@ -130,6 +85,7 @@
     letter-spacing: 0.5px;
 }
 
+/* Modal Styles */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -351,15 +307,4 @@
         height: 100px;
         height: 100px;
     }
-}
-
-/* Quitar flechas de los input[type=number] en todos los navegadores */
-.no-spinner::-webkit-outer-spin-button,
-.no-spinner::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-.no-spinner {
-    -moz-appearance: textfield;
-    appearance: textfield;
 }

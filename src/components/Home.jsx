@@ -1,4 +1,4 @@
-import "../assets/css/homepage.css";
+import "../assets/css/Home.css";
 import "../assets/css/App.css";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";

@@ -1,5 +1,5 @@
 import React from "react";
-import "../assets/css/homepage.css";
+import "../assets/css/Home.css";
 import "../assets/css/App.css";
 
 

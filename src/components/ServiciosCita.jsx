@@ -1,6 +1,7 @@
 import React from "react";
 import { fetchServicios } from "../services/servicios";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import Loading from "./Loading";
 
 export default function ServiciosList({ cita, setCita }) {
     const qc = useQueryClient();
@@ -17,7 +18,7 @@ export default function ServiciosList({ cita, setCita }) {
 
     const showSpinner = isFetching && servicios.length === 0;
     if (error) return <p>Error al cargar los servicios: {error.message}</p>;
-    if (showSpinner) return <p>Cargando servicios...</p>;
+    if (showSpinner) return <Loading message="Cargando servicios" />;
     if (servicios.length === 0) return <p>No hay servicios disponibles.</p>;
 
     const servicioSeleccionado =

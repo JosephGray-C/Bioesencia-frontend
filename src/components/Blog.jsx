@@ -29,7 +29,8 @@ export default function Blog() {
     };
 
     return (
-        <div className="bu-page">
+        <div className="list-page">
+
             <header className="bu-hero">
                 <div
                     className="bu-hero-inner"
