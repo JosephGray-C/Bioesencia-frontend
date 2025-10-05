@@ -1,7 +1,7 @@
 import "../assets/css/Calendar.css";
 import { useState, useEffect } from "react";
 
-export default function Calendar({ selectedDate ,setSelectedDate, component }) {
+export default function Calendar({ selectedDate, setSelectedDate, component }) {
     const [date, setDate] = useState(new Date());
 
     useEffect(() => {
@@ -12,8 +12,18 @@ export default function Calendar({ selectedDate ,setSelectedDate, component }) {
     }, [selectedDate, setSelectedDate]);
 
     const months = [
-        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Deciembre"
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Deciembre",
     ];
 
     const renderCalendar = () => {
@@ -28,8 +38,14 @@ export default function Calendar({ selectedDate ,setSelectedDate, component }) {
 
         // Prev Month Days
         for (let i = firstDay; i > 0; i--) {
-            days.push(<li key={`prev-${i}`} className="inactive">{prevLastDate - i + 1}</li>);
+            days.push(
+                <li key={`prev-${i}`} className="inactive">
+                    {prevLastDate - i + 1}
+                </li>
+            );
         }
+
+        
 
         // Current Month Days
         for (let i = 1; i <= lastDate; i++) {
@@ -47,7 +63,7 @@ export default function Calendar({ selectedDate ,setSelectedDate, component }) {
             let isPast = false;
             let isAfterMax = false;
 
-            if (component === 'agendar') {
+            if (component === "agendar") {
                 const now = new Date();
                 now.setHours(0, 0, 0, 0);
                 isPast = currentDate < now;
@@ -65,9 +81,23 @@ export default function Calendar({ selectedDate ,setSelectedDate, component }) {
             days.push(
                 <li
                     key={`curr-${i}`}
-                    className={`${isToday ? "active" : ""} ${isSelected ? "selected" : ""} ${(isPast || isWeekend || isAfterMax) ? "inactive" : ""}`}
-                    onClick={!(isPast || isWeekend || isAfterMax) ? () => setSelectedDate(new Date(year, month, i)) : undefined}
-                    style={(isPast || isWeekend || isAfterMax) ? { pointerEvents: "none", opacity: 0.5, cursor: "not-allowed" } : {}}
+                    className={`${isToday ? "active" : ""} ${
+                        isSelected ? "selected" : ""
+                    } ${isPast || isWeekend || isAfterMax ? "inactive" : ""}`}
+                    onClick={
+                        !(isPast || isWeekend || isAfterMax)
+                            ? () => setSelectedDate(new Date(year, month, i))
+                            : undefined
+                    }
+                    style={
+                        isPast || isWeekend || isAfterMax
+                            ? {
+                                  pointerEvents: "none",
+                                  opacity: 0.5,
+                                  cursor: "not-allowed",
+                              }
+                            : {}
+                    }
                 >
                     {i}
                 </li>
@@ -77,7 +107,11 @@ export default function Calendar({ selectedDate ,setSelectedDate, component }) {
         // Next Month Days
         const lastDay = new Date(year, month + 1, 0).getDay();
         for (let i = lastDay; i < 6; i++) {
-            days.push(<li key={`next-${i}`} className="inactive">{i - lastDay + 1}</li>);
+            days.push(
+                <li key={`next-${i}`} className="inactive">
+                    {i - lastDay + 1}
+                </li>
+            );
         }
 
         return days;
@@ -96,7 +130,6 @@ export default function Calendar({ selectedDate ,setSelectedDate, component }) {
     return (
         <>
             <div className="wrapper">
-
                 <header>
                     {/* Month */}
                     <p className="current-date">
@@ -105,13 +138,16 @@ export default function Calendar({ selectedDate ,setSelectedDate, component }) {
 
                     {/* Next and Previous */}
                     <div className="icons">
-                        <span id="prev" onClick={handlePrev}>❮</span>
-                        <span id="next" onClick={handleNext}>❯</span>
+                        <span id="prev" onClick={handlePrev}>
+                            ❮
+                        </span>
+                        <span id="next" onClick={handleNext}>
+                            ❯
+                        </span>
                     </div>
                 </header>
 
                 <div className="calendar">
-
                     <ul className="weeks">
                         <li>D</li>
                         <li>L</li>
@@ -122,12 +158,8 @@ export default function Calendar({ selectedDate ,setSelectedDate, component }) {
                         <li>S</li>
                     </ul>
 
-                    <ul className="days">
-                        {renderCalendar()}
-                    </ul>
-
+                    <ul className="days">{renderCalendar()}</ul>
                 </div>
-
             </div>
         </>
     );

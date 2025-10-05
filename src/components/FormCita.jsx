@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import { useUser } from "../context/UserContext";
@@ -23,11 +23,7 @@ export default function FormCita({ selectedDate }) {
         notas: "",
     });
 
-    useEffect(() => {
-        console.log(cita);
-    }, [cita]);
-
-    const limpiarCita = () => {
+    const limpiarCita = useCallback(() => {
         setCita({
             usuario: user || null,
             duracion: 60,
@@ -37,7 +33,11 @@ export default function FormCita({ selectedDate }) {
             notas: "",
         });
         setStep(0);
-    };
+    }, []);
+
+    useEffect(() => {
+        limpiarCita();
+    }, [selectedDate,limpiarCita]);
 
     const mCrear = useMutation({
         mutationFn: crearCita,
