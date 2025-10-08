@@ -1,5 +1,5 @@
 // src/components/AdminServicios.jsx
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Swal from "sweetalert2";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -10,314 +10,37 @@ import {
     eliminarServicio,
 } from "../services/servicios";
 import usePaginacion from "../hooks/usePaginacion";
-
-function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
-    return (
-        <div
-            style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100vw",
-                height: "100vh",
-                background: "rgba(0,0,0,0.25)",
-                zIndex: 1050,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-            }}
-        >
-            <div
-                className="container"
-                style={{
-                    maxWidth: 600,
-                    width: "100%",
-                    position: "relative",
-                    boxShadow: "0 8px 32px #0004",
-                }}
-            >
-                <div className="forms" style={{ background: "#fff" }}>
-                    <div className="form-content">
-                        <div className="signup-form" style={{ width: "100%" }}>
-                            <div
-                                className="title"
-                                style={{
-                                    fontWeight: 600,
-                                    fontSize: 26,
-                                    marginBottom: 12,
-                                }}
-                            >
-                                Agregar servicio
-                            </div>
-                            <form onSubmit={onSubmit}>
-                                <div
-                                    className="input-boxes"
-                                    style={{ marginTop: 18 }}
-                                >
-                                    <div className="input-box">
-                                        <i className="fas fa-tag"></i>
-                                        <input
-                                            type="text"
-                                            name="nombre"
-                                            placeholder="Nombre del servicio"
-                                            value={form.nombre}
-                                            onChange={onChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="input-box">
-                                        <textarea
-                                            name="detalle"
-                                            placeholder="Detalle"
-                                            value={form.detalle}
-                                            onChange={onChange}
-                                            required
-                                            rows={3}
-                                            style={{
-                                                resize: "vertical",
-                                                width: "100%",
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="input-box">
-                                        <i className="fas fa-dollar-sign"></i>
-                                        <input
-                                            type="number"
-                                            name="precio"
-                                            placeholder="Precio"
-                                            value={form.precio}
-                                            onChange={onChange}
-                                            required
-                                            min={0}
-                                            step="0.01"
-                                        />
-                                    </div>
-                                    <div
-                                        className="button input-box"
-                                        style={{ marginTop: 26 }}
-                                    >
-                                        <input
-                                            type="submit"
-                                            value="Guardar servicio"
-                                        />
-                                    </div>
-                                    <div
-                                        style={{
-                                            marginTop: 8,
-                                            textAlign: "right",
-                                        }}
-                                    >
-                                        <button
-                                            type="button"
-                                            onClick={onCancel}
-                                            style={{
-                                                background: "#6c757d",
-                                                color: "#fff",
-                                                border: "none",
-                                                borderRadius: 6,
-                                                padding: "8px 18px",
-                                                fontWeight: 500,
-                                                fontSize: "1rem",
-                                                cursor: "pointer",
-                                            }}
-                                        >
-                                            Cancelar
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <button
-                    onClick={onCancel}
-                    style={{
-                        position: "absolute",
-                        top: 12,
-                        right: 18,
-                        fontSize: 26,
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        color: "#888",
-                    }}
-                    title="Cerrar"
-                >
-                    ×
-                </button>
-            </div>
-        </div>
-    );
-}
-
-function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
-    return (
-        <div
-            style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100vw",
-                height: "100vh",
-                background: "rgba(0,0,0,0.25)",
-                zIndex: 1050,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-            }}
-        >
-            <div
-                className="container"
-                style={{
-                    maxWidth: 600,
-                    width: "100%",
-                    position: "relative",
-                    boxShadow: "0 8px 32px #0004",
-                }}
-            >
-                <div className="forms" style={{ background: "#fff" }}>
-                    <div className="form-content">
-                        <div className="signup-form" style={{ width: "100%" }}>
-                            <div
-                                className="title"
-                                style={{
-                                    fontWeight: 600,
-                                    fontSize: 26,
-                                    marginBottom: 12,
-                                    color: "#5EA743",
-                                }}
-                            >
-                                Editar servicio
-                            </div>
-                            <form onSubmit={onSubmit}>
-                                <div
-                                    className="input-boxes"
-                                    style={{ marginTop: 18 }}
-                                >
-                                    <div className="input-box">
-                                        <i className="fas fa-tag"></i>
-                                        <input
-                                            type="text"
-                                            name="nombre"
-                                            placeholder="Nombre del servicio"
-                                            value={editForm.nombre}
-                                            onChange={onChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="input-box">
-                                        <textarea
-                                            name="detalle"
-                                            placeholder="Detalle"
-                                            value={editForm.detalle}
-                                            onChange={onChange}
-                                            required
-                                            rows={3}
-                                            style={{
-                                                resize: "vertical",
-                                                width: "100%",
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="input-box">
-                                        <i className="fas fa-dollar-sign"></i>
-                                        <input
-                                            type="number"
-                                            name="precio"
-                                            placeholder="Precio"
-                                            value={editForm.precio}
-                                            onChange={onChange}
-                                            required
-                                            min={0}
-                                            step="0.01"
-                                        />
-                                    </div>
-                                    <div
-                                        className="button input-box"
-                                        style={{ marginTop: 26 }}
-                                    >
-                                        <input
-                                            type="submit"
-                                            value="Guardar cambios"
-                                        />
-                                    </div>
-                                    <div
-                                        style={{
-                                            marginTop: 8,
-                                            textAlign: "right",
-                                        }}
-                                    >
-                                        <button
-                                            type="button"
-                                            onClick={onCancel}
-                                            style={{
-                                                background: "#6c757d",
-                                                color: "#fff",
-                                                border: "none",
-                                                borderRadius: 6,
-                                                padding: "8px 18px",
-                                                fontWeight: 500,
-                                                fontSize: "1rem",
-                                                cursor: "pointer",
-                                            }}
-                                        >
-                                            Cancelar
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <button
-                    onClick={onCancel}
-                    style={{
-                        position: "absolute",
-                        top: 12,
-                        right: 18,
-                        fontSize: 26,
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        color: "#888",
-                    }}
-                    title="Cerrar"
-                >
-                    ×
-                </button>
-            </div>
-        </div>
-    );
-}
+import useFiltrarServicios from "../hooks/useFiltrarServicios";
+import AdminCrearServicioModal from "./AdminCrearServicioModal";
+import AdminEditarServicioModal from "./AdminEditarServicioModal";
 
 export default function AdminServicios() {
-    const qc = useQueryClient();
-
-
-    const [busqueda, setBusqueda] = useState("");
-
     const [showForm, setShowForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
+    
+    // 
+    const qc = useQueryClient();
+    const { data: servicios = [], isFetching } = useQuery({
+        queryKey: ["servicios"],
+        queryFn: fetchServicios,
+        initialData: () => qc.getQueryData(["servicios"]) || [],
+    });
+    // 
+    const showSpinner = isFetching && servicios.length === 0;
 
     const [form, setForm] = useState({
         nombre: "",
         detalle: "",
         precio: "",
     });
-
+    
     const [editForm, setEditForm] = useState({
         id: "",
         nombre: "",
         detalle: "",
         precio: "",
     });
-
-    const { data: servicios = [], isFetching } = useQuery({
-        queryKey: ["servicios"],
-        queryFn: fetchServicios,
-        initialData: () => qc.getQueryData(["servicios"]) || [],
-    });
-    const showSpinner = isFetching && servicios.length === 0;
+    
 
     const mCrear = useMutation({
         mutationFn: crearServicio,
@@ -409,16 +132,9 @@ export default function AdminServicios() {
         setEditForm({ ...servicio, precio: servicio.precio ?? "" });
         setShowEditForm(true);
     };
+    
     // Filtro de búsqueda
-    const listaFiltrada = useMemo(() => {
-        const q = busqueda.trim().toLowerCase();
-        if (!q) return servicios;
-        return servicios.filter(
-            (s) =>
-                (s.nombre || "").toLowerCase().includes(q) ||
-                (s.detalle || "").toLowerCase().includes(q)
-        );
-    }, [busqueda, servicios]);
+    const { listaFiltrada, busqueda, setBusqueda } = useFiltrarServicios(servicios);
     // Paginación
     const { pagina,totalPaginas, paginaActual, setPaginaActual } = usePaginacion(listaFiltrada);
     
@@ -476,7 +192,7 @@ export default function AdminServicios() {
 
             {/* MODALES */}
             {showForm && (
-                <CrearServicioModal
+                <AdminCrearServicioModal
                     form={form}
                     onChange={handleChange}
                     onSubmit={handleSubmit}
@@ -484,7 +200,7 @@ export default function AdminServicios() {
                 />
             )}
             {showEditForm && (
-                <EditarServicioModal
+                <AdminEditarServicioModal
                     editForm={editForm}
                     onChange={handleEditChange}
                     onSubmit={handleEditSubmit}

@@ -1,5 +1,5 @@
 // src/components/AdminTalleres.jsx
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -10,453 +10,18 @@ import {
     updateTaller,
     deleteTaller,
 } from "../services/talleres";
+import usePaginacion from "../hooks/usePaginacion";
+import useFiltrarTalleres from "../hooks/useFiltrarTalleres";
+import AdminCrearTallerModal from "./AdminCrearTallerModad";
+import AdminEditarTallerModal from "./AdminEditarTallerModal";
 
-function CrearTallerModal({ form, onChange, onSubmit, onCancel }) {
-    return (
-        <div
-            style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100vw",
-                height: "100vh",
-                background: "rgba(0,0,0,0.25)",
-                zIndex: 1050,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-            }}
-        >
-            <div
-                className="container"
-                style={{
-                    maxWidth: 700,
-                    width: "100%",
-                    position: "relative",
-                    boxShadow: "0 8px 32px #0004",
-                }}
-            >
-                <div className="forms" style={{ background: "#fff" }}>
-                    <div className="form-content">
-                        <div className="signup-form" style={{ width: "100%" }}>
-                            <div
-                                className="title"
-                                style={{
-                                    fontWeight: 600,
-                                    fontSize: 26,
-                                    marginBottom: 12,
-                                }}
-                            >
-                                Agregar taller
-                            </div>
-                            <form onSubmit={onSubmit}>
-                                <div
-                                    className="input-boxes"
-                                    style={{ marginTop: 18 }}
-                                >
-                                    <div className="input-box">
-                                        <i className="fas fa-book"></i>
-                                        <input
-                                            type="text"
-                                            name="titulo"
-                                            placeholder="Título"
-                                            value={form.titulo}
-                                            onChange={onChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="input-box">
-                                        <textarea
-                                            name="descripcion"
-                                            placeholder="Descripción"
-                                            value={form.descripcion}
-                                            onChange={onChange}
-                                            required
-                                            rows={3}
-                                            style={{
-                                                resize: "vertical",
-                                                width: "100%",
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="input-box">
-                                        <i className="fas fa-image"></i>
-                                        <input
-                                            type="text"
-                                            name="imagenUrl"
-                                            placeholder="Imaegen URL"
-                                            value={form.imagenUrl}
-                                            onChange={onChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="input-box">
-                                        <i className="fas fa-calendar"></i>
-                                        <input
-                                            type="datetime-local"
-                                            name="fechaInicio"
-                                            placeholder="Fecha inicio"
-                                            value={form.fechaInicio}
-                                            onChange={onChange}
-                                            required
-                                            style={{ width: "100%" }}
-                                        />
-                                    </div>
-                                    <div className="input-box">
-                                        <i className="fas fa-calendar"></i>
-                                        <input
-                                            type="datetime-local"
-                                            name="fechaFin"
-                                            placeholder="Fecha fin"
-                                            value={form.fechaFin}
-                                            onChange={onChange}
-                                            required
-                                            style={{ width: "100%" }}
-                                        />
-                                    </div>
-                                    <div className="input-box">
-                                        <i className="fas fa-map-marker-alt"></i>
-                                        <input
-                                            type="text"
-                                            name="lugar"
-                                            placeholder="Lugar"
-                                            value={form.lugar}
-                                            onChange={onChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="input-box">
-                                        <i className="fas fa-users"></i>
-                                        <input
-                                            type="number"
-                                            name="cupoMaximo"
-                                            placeholder="Cupo máximo"
-                                            value={form.cupoMaximo}
-                                            onChange={onChange}
-                                            required
-                                            min={1}
-                                        />
-                                    </div>
-                                    <div className="input-box">
-                                        <i className="fas fa-dollar-sign"></i>
-                                        <input
-                                            type="number"
-                                            name="precio"
-                                            placeholder="Precio"
-                                            value={form.precio}
-                                            onChange={onChange}
-                                            min={0}
-                                            step="0.01"
-                                        />
-                                    </div>
-                                    <div
-                                        className="input-box"
-                                        style={{ marginBottom: 0 }}
-                                    >
-                                        <label
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                fontWeight: 500,
-                                                color: "#333",
-                                            }}
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                name="activo"
-                                                checked={form.activo}
-                                                onChange={onChange}
-                                                style={{ marginRight: 8 }}
-                                            />
-                                            Activo
-                                        </label>
-                                    </div>
-                                    <div
-                                        className="button input-box"
-                                        style={{ marginTop: 26 }}
-                                    >
-                                        <input
-                                            type="submit"
-                                            value="Guardar taller"
-                                        />
-                                    </div>
-                                    <div
-                                        style={{
-                                            marginTop: 8,
-                                            textAlign: "right",
-                                        }}
-                                    >
-                                        <button
-                                            type="button"
-                                            onClick={onCancel}
-                                            style={{
-                                                background: "#6c757d",
-                                                color: "#fff",
-                                                border: "none",
-                                                borderRadius: 6,
-                                                padding: "8px 18px",
-                                                fontWeight: 500,
-                                                fontSize: "1rem",
-                                                cursor: "pointer",
-                                            }}
-                                        >
-                                            Cancelar
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <button
-                    onClick={onCancel}
-                    style={{
-                        position: "absolute",
-                        top: 12,
-                        right: 18,
-                        fontSize: 26,
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        color: "#888",
-                    }}
-                    title="Cerrar"
-                >
-                    ×
-                </button>
-            </div>
-        </div>
-    );
-}
-
-function EditarTallerModal({ editForm, onChange, onSubmit, onCancel }) {
-    return (
-        <div
-            style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100vw",
-                height: "100vh",
-                background: "rgba(0,0,0,0.25)",
-                zIndex: 1200,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-            }}
-        >
-            <div
-                className="container"
-                style={{
-                    maxWidth: 700,
-                    width: "100%",
-                    position: "relative",
-                    boxShadow: "0 8px 32px #0004",
-                }}
-            >
-                <div className="forms" style={{ background: "#fff" }}>
-                    <div className="form-content">
-                        <div className="signup-form" style={{ width: "100%" }}>
-                            <div
-                                className="title"
-                                style={{
-                                    fontWeight: 600,
-                                    fontSize: 26,
-                                    marginBottom: 12,
-                                    color: "#5EA743",
-                                }}
-                            >
-                                Editar taller
-                            </div>
-                            <form onSubmit={onSubmit}>
-                                <div
-                                    className="input-boxes"
-                                    style={{ marginTop: 18 }}
-                                >
-                                    <div className="input-box">
-                                        <i className="fas fa-book"></i>
-                                        <input
-                                            type="text"
-                                            name="titulo"
-                                            placeholder="Título"
-                                            value={editForm.titulo}
-                                            onChange={onChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="input-box">
-                                        <i className=""></i>
-                                        <textarea
-                                            name="descripcion"
-                                            placeholder="Descripción"
-                                            value={editForm.descripcion}
-                                            onChange={onChange}
-                                            required
-                                            rows={3}
-                                            style={{
-                                                resize: "vertical",
-                                                width: "100%",
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="input-box">
-                                        <i className="fas fa-image"></i>
-                                        <input
-                                            type="text"
-                                            name="imagenUrl"
-                                            placeholder="Imagen URL"
-                                            value={editForm.imagenUrl}
-                                            onChange={onChange}
-                                        />
-                                    </div>
-                                    <div className="input-box">
-                                        <i className="fas fa-calendar"></i>
-                                        <input
-                                            type="datetime-local"
-                                            name="fechaInicio"
-                                            placeholder="Fecha inicio"
-                                            value={editForm.fechaInicio}
-                                            onChange={onChange}
-                                            required
-                                            style={{ width: "100%" }}
-                                        />
-                                    </div>
-                                    <div className="input-box">
-                                        <i className="fas fa-calendar"></i>
-                                        <input
-                                            type="datetime-local"
-                                            name="fechaFin"
-                                            placeholder="Fecha fin"
-                                            value={editForm.fechaFin}
-                                            onChange={onChange}
-                                            required
-                                            style={{ width: "100%" }}
-                                        />
-                                    </div>
-                                    <div className="input-box">
-                                        <i className="fas fa-map-marker-alt"></i>
-                                        <input
-                                            type="text"
-                                            name="lugar"
-                                            placeholder="Lugar"
-                                            value={editForm.lugar}
-                                            onChange={onChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="input-box">
-                                        <i className="fas fa-users"></i>
-                                        <input
-                                            type="number"
-                                            name="cupoMaximo"
-                                            placeholder="Cupo máximo"
-                                            value={editForm.cupoMaximo}
-                                            onChange={onChange}
-                                            required
-                                            min={1}
-                                        />
-                                    </div>
-                                    <div className="input-box">
-                                        <i className="fas fa-dollar-sign"></i>
-                                        <input
-                                            type="number"
-                                            name="precio"
-                                            placeholder="Precio"
-                                            value={editForm.precio}
-                                            onChange={onChange}
-                                            min={0}
-                                            step="0.01"
-                                        />
-                                    </div>
-                                    <div
-                                        className="input-box"
-                                        style={{ marginBottom: 0 }}
-                                    >
-                                        <label
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                fontWeight: 500,
-                                                color: "#333",
-                                            }}
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                name="activo"
-                                                checked={editForm.activo}
-                                                onChange={onChange}
-                                                style={{ marginRight: 8 }}
-                                            />
-                                            Activo
-                                        </label>
-                                    </div>
-                                    <div
-                                        className="button input-box"
-                                        style={{ marginTop: 26 }}
-                                    >
-                                        <input
-                                            type="submit"
-                                            value="Guardar cambios"
-                                        />
-                                    </div>
-                                    <div
-                                        style={{
-                                            marginTop: 8,
-                                            textAlign: "right",
-                                        }}
-                                    >
-                                        <button
-                                            type="button"
-                                            onClick={onCancel}
-                                            style={{
-                                                background: "#6c757d",
-                                                color: "#fff",
-                                                border: "none",
-                                                borderRadius: 6,
-                                                padding: "8px 18px",
-                                                fontWeight: 500,
-                                                fontSize: "1rem",
-                                                cursor: "pointer",
-                                            }}
-                                        >
-                                            Cancelar
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <button
-                    onClick={onCancel}
-                    style={{
-                        position: "absolute",
-                        top: 12,
-                        right: 18,
-                        fontSize: 26,
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        color: "#888",
-                    }}
-                    title="Cerrar"
-                >
-                    ×
-                </button>
-            </div>
-        </div>
-    );
-}
 
 export default function AdminTalleres() {
-    const [paginaActual, setPaginaActual] = useState(1);
-    const [busqueda, setBusqueda] = useState("");
-
-    const qc = useQueryClient();
-
     const [showForm, setShowForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
-
+    
+    // 
+    const qc = useQueryClient();
     const {
         data: talleres = [],
         isFetching: isFetchingTalleres,
@@ -469,11 +34,13 @@ export default function AdminTalleres() {
     //
     const showSpinner = isFetchingTalleres && talleres.length === 0;
 
+    // 
     const { data: inscripciones = [] } = useQuery({
         queryKey: ["inscripciones"],
         queryFn: fetchInscripciones,
         initialData: () => qc.getQueryData(["inscripciones"]) || [],
     });
+    // 
 
     const [form, setForm] = useState({
         titulo: "",
@@ -759,30 +326,9 @@ export default function AdminTalleres() {
     };
 
     // Filtrado
-    const listaFiltrada = useMemo(
-        () =>
-            (talleres || []).filter((t) => {
-                const q = busqueda.trim().toLowerCase();
-                if (!q) return true;
-                return (
-                    (t.titulo || "").toLowerCase().includes(q) ||
-                    (t.descripcion || "").toLowerCase().includes(q) ||
-                    (t.lugar || "").toLowerCase().includes(q) ||
-                    (t.fechaInicio || "").toLowerCase().includes(q) ||
-                    (t.fechaFin || "").toLowerCase().includes(q) ||
-                    (t.cupoMaximo?.toString() || "").toLowerCase().includes(q) ||
-                    (t.precio?.toString() || "").toLowerCase().includes(q) ||
-                    (t.activo ? "sí" : "no").includes(q)
-                );
-            }),
-        [talleres, busqueda]
-    );
+    const { busqueda, setBusqueda, listaFiltrada } = useFiltrarTalleres(talleres); 
     // Paginación
-    const porPagina = 8;
-    const totalPaginas = Math.ceil(listaFiltrada.length / porPagina) || 1;
-    const paginaSegura = Math.min(paginaActual, totalPaginas);
-    const indice = (paginaSegura - 1) * porPagina;
-    const pagina = listaFiltrada.slice(indice, indice + porPagina);
+    const { pagina,totalPaginas, paginaActual, setPaginaActual } = usePaginacion(listaFiltrada);
 
     return (
         <div className="home-crud">
@@ -839,7 +385,7 @@ export default function AdminTalleres() {
 
             {/* MODALES */}
             {showForm && (
-                <CrearTallerModal
+                <AdminCrearTallerModal
                     form={form}
                     onChange={handleChange}
                     onSubmit={handleSubmit}
@@ -847,7 +393,7 @@ export default function AdminTalleres() {
                 />
             )}
             {showEditForm && (
-                <EditarTallerModal
+                <AdminEditarTallerModal
                     editForm={editForm}
                     onChange={handleEditChange}
                     onSubmit={handleEditSubmit}

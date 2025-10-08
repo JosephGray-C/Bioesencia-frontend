@@ -1,5 +1,4 @@
 // src/components/AdminInscripciones.jsx
-import { useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -8,12 +7,11 @@ import {
     eliminarInscripcion,
 } from "../services/inscripciones";
 import usePaginacion from "../hooks/usePaginacion";
+import useFiltrarInscripciones from "../hooks/useFiltrarInscripciones";
 
 export default function AdminInscripciones() {
-    const [busqueda, setBusqueda] = useState("");
-
+    // 
     const qc = useQueryClient();
-
     const { data: inscripciones = [], isFetching } = useQuery({
         queryKey: ["inscripciones"],
         queryFn: fetchInscripciones,
@@ -90,19 +88,9 @@ export default function AdminInscripciones() {
         if (!confirm.isConfirmed) return;
         mEliminar.mutate(id);
     };
-    // Filtrado de búsqueda
-    const listaFiltrada = useMemo(() => {
-        const q = busqueda.trim().toLowerCase();
-        if (!q) return inscripciones;
-        return inscripciones.filter(
-            (i) => 
-                (i.tallerNombre || "").toLowerCase().includes(q) ||
-                (i.usuarioNombre || "").toLowerCase().includes(q) ||
-                (i.usuarioApellido || "").toLowerCase().includes(q) ||
-                (i.usuarioEmail || "").toLowerCase().includes(q) ||
-                (i.estado || "").toLowerCase().includes(q)
-        );
-    }, [busqueda, inscripciones]);
+   
+    // Filtrado
+    const { listaFiltrada, busqueda, setBusqueda } = useFiltrarInscripciones(inscripciones);
     // Paginación
     const { pagina,totalPaginas, paginaActual, setPaginaActual } = usePaginacion(listaFiltrada); 
 
