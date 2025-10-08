@@ -9,6 +9,7 @@ import {
     actualizarServicio,
     eliminarServicio,
 } from "../services/servicios";
+import usePaginacion from "../hooks/usePaginacion";
 
 function CrearServicioModal({ form, onChange, onSubmit, onCancel }) {
     return (
@@ -292,7 +293,7 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
 export default function AdminServicios() {
     const qc = useQueryClient();
 
-    const [paginaActual, setPaginaActual] = useState(1);
+
     const [busqueda, setBusqueda] = useState("");
 
     const [showForm, setShowForm] = useState(false);
@@ -419,12 +420,8 @@ export default function AdminServicios() {
         );
     }, [busqueda, servicios]);
     // Paginación
-    const porPagina = 8;
-    const totalPaginas = Math.ceil(listaFiltrada.length / porPagina) || 1;
-    const paginaSegura = Math.min(paginaActual, totalPaginas);
-    const indice = (paginaSegura - 1) * porPagina;
-    const pagina = listaFiltrada.slice(indice, indice + porPagina);
-
+    const { pagina,totalPaginas, paginaActual, setPaginaActual } = usePaginacion(listaFiltrada);
+    
     return (
         <div className="home-crud">
             {/* HEADER de acciones */}

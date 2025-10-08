@@ -10,6 +10,7 @@ import {
     actualizarCita,
     eliminarCita,
 } from "../services/citas";
+import usePaginacion from "../hooks/usePaginacion";
 
 function CrearCitaModal({
     form,
@@ -406,7 +407,6 @@ function EditarCitaModal({
 }
 
 export default function AdminCitas() {
-    const [paginaActual, setPaginaActual] = useState(1);
     const [busqueda, setBusqueda] = useState("");
 
     const qc = useQueryClient();
@@ -586,11 +586,7 @@ export default function AdminCitas() {
         );
     }, [citas, busqueda]);
     // Paginación
-    const porPagina = 8;
-    const totalPaginas = Math.ceil(listaFiltrada.length / porPagina) || 1;
-    const paginaSegura = Math.min(paginaActual, totalPaginas);
-    const indice = (paginaSegura - 1) * porPagina;
-    const pagina = listaFiltrada.slice(indice, indice + porPagina);
+    const { pagina,totalPaginas, paginaActual, setPaginaActual } = usePaginacion(listaFiltrada);
 
     return (
         <div className="home-crud">

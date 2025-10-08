@@ -9,6 +9,7 @@ import {
     actualizarProducto,
     eliminarProducto,
 } from "../services/productos";
+import usePaginacion from "../hooks/usePaginacion";
 
 function CrearProductoModal({ form, onChange, onSubmit, onCancel }) {
     return (
@@ -308,7 +309,6 @@ function EditarProductoModal({ editForm, onChange, onSubmit, onCancel }) {
 }
 
 export default function AdminProductos() {
-    const [paginaActual, setPaginaActual] = useState(1);
     const [busqueda, setBusqueda] = useState("");
 
     const qc = useQueryClient();
@@ -456,11 +456,7 @@ export default function AdminProductos() {
         );
     }, [busqueda, productos]);
     // Paginación
-    const porPagina = 8;
-    const totalPaginas = Math.ceil(listaFiltrada.length / porPagina) || 1;
-    const paginaSegura = Math.min(paginaActual, totalPaginas);
-    const indice = (paginaSegura - 1) * porPagina;
-    const pagina = listaFiltrada.slice(indice, indice + porPagina);
+    const { pagina,totalPaginas, paginaActual, setPaginaActual } = usePaginacion(listaFiltrada); 
 
     return (
         <div className="home-crud">
@@ -757,7 +753,7 @@ export default function AdminProductos() {
                                 margin: "0 2px",
                                 padding: "6px 12px",
                                 borderRadius: 6,
-                                background: paginaSegura === i + 1 ? "#5EA743" : "#444",
+                                background: paginaActual === i + 1 ? "#5EA743" : "#444",
                                 color: "#fff",
                                 border: "none",
                                 cursor: "pointer",

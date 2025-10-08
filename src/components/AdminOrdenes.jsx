@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ClipLoader from "react-spinners/ClipLoader";
 import { fetchOrdenes, actualizarEstadoOrden } from "../services/ordenes";
+import usePaginacion from "../hooks/usePaginacion";
 
 /* Modal editar */
 function EditarOrdenModal({ editForm, onChange, onSubmit, onCancel }) {
@@ -158,7 +159,6 @@ function EditarOrdenModal({ editForm, onChange, onSubmit, onCancel }) {
 }
 
 export default function AdminOrdenes() {
-    const [paginaActual, setPaginaActual] = useState(1);
     const [busqueda, setBusqueda] = useState("");
 
     const qc = useQueryClient();
@@ -252,12 +252,7 @@ export default function AdminOrdenes() {
         );
     }, [ordenes, busqueda]);
     // Paginación
-    const porPagina = 8;
-    const totalPaginas = Math.ceil(listaFiltrada.length / porPagina) || 1;
-    const paginaSegura = Math.min(paginaActual, totalPaginas);
-    const indice = (paginaSegura - 1) * porPagina;
-    const pagina = listaFiltrada.slice(indice, indice + porPagina);
-
+    const { pagina,totalPaginas, paginaActual, setPaginaActual } = usePaginacion(listaFiltrada);
     return (
         <div className="home-crud">
             {/* HEADER acciones */}
