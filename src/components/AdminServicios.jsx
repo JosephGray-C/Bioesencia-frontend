@@ -17,23 +17,11 @@ import AdminEditarServicioModal from "./AdminEditarServicioModal";
 export default function AdminServicios() {
     const [showForm, setShowForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
-    
-    // 
-    const qc = useQueryClient();
-    const { data: servicios = [], isFetching } = useQuery({
-        queryKey: ["servicios"],
-        queryFn: fetchServicios,
-        initialData: () => qc.getQueryData(["servicios"]) || [],
-    });
-    // 
-    const showSpinner = isFetching && servicios.length === 0;
-
     const [form, setForm] = useState({
         nombre: "",
         detalle: "",
         precio: "",
     });
-    
     const [editForm, setEditForm] = useState({
         id: "",
         nombre: "",
@@ -41,7 +29,18 @@ export default function AdminServicios() {
         precio: "",
     });
     
+    // queries
+    const qc = useQueryClient();
+    const { data: servicios = [], isFetching } = useQuery({
+        queryKey: ["servicios"],
+        queryFn: fetchServicios,
+        initialData: () => qc.getQueryData(["servicios"]) || [],
+    });
 
+    // spinner 
+    const showSpinner = isFetching && servicios.length === 0;
+    
+    // crear
     const mCrear = useMutation({
         mutationFn: crearServicio,
         onSuccess: () => {
@@ -53,7 +52,23 @@ export default function AdminServicios() {
         onError: (e) =>
             Swal.fire("Error", e.message || "No se pudo crear", "error"),
     });
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        mCrear.mutate({
+            ...form,
+            precio: Number(form.precio),
+        });
+    };
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setForm((f) => ({ ...f, [name]: value }));
+    };
+    const clearForm = () => {
+        setForm({ nombre: "", detalle: "", precio: "" });
+        setShowForm(false);
+    };
 
+    // editar
     const mEditar = useMutation({
         mutationFn: actualizarServicio,
         onSuccess: () => {
@@ -64,45 +79,6 @@ export default function AdminServicios() {
         onError: (e) =>
             Swal.fire("Error", e.message || "No se pudo actualizar", "error"),
     });
-
-    const mEliminar = useMutation({
-        mutationFn: eliminarServicio,
-        onSuccess: () => {
-            qc.invalidateQueries({ queryKey: ["servicios"] });
-            Swal.fire("¡Eliminado!", "Servicio borrado.", "success");
-        },
-        onError: (e) =>
-            Swal.fire("Error", e.message || "No se pudo eliminar", "error"),
-    });
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm((f) => ({ ...f, [name]: value }));
-    };
-
-    const handleEditChange = (e) => {
-        const { name, value } = e.target;
-        setEditForm((f) => ({ ...f, [name]: value }));
-    };
-
-    const clearForm = () => {
-        setForm({ nombre: "", detalle: "", precio: "" });
-        setShowForm(false);
-    };
-
-    const clearEditForm = () => {
-        setEditForm({ id: "", nombre: "", detalle: "", precio: "" });
-        setShowEditForm(false);
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        mCrear.mutate({
-            ...form,
-            precio: Number(form.precio),
-        });
-    };
-
     const handleEditSubmit = (e) => {
         e.preventDefault();
         mEditar.mutate({
@@ -113,7 +89,29 @@ export default function AdminServicios() {
             },
         });
     };
+    const handleEditChange = (e) => {
+        const { name, value } = e.target;
+        setEditForm((f) => ({ ...f, [name]: value }));
+    };
+    const onEdit = (servicio) => {
+        setEditForm({ ...servicio, precio: servicio.precio ?? "" });
+        setShowEditForm(true);
+    };
+    const clearEditForm = () => {
+        setEditForm({ id: "", nombre: "", detalle: "", precio: "" });
+        setShowEditForm(false);
+    };
 
+    // eliminar
+    const mEliminar = useMutation({
+        mutationFn: eliminarServicio,
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: ["servicios"] });
+            Swal.fire("¡Eliminado!", "Servicio borrado.", "success");
+        },
+        onError: (e) =>
+            Swal.fire("Error", e.message || "No se pudo eliminar", "error"),
+    });
     const handleDelete = async (id) => {
         const confirm = await Swal.fire({
             title: "¿Eliminar servicio?",
@@ -128,11 +126,6 @@ export default function AdminServicios() {
         if (confirm.isConfirmed) mEliminar.mutate(id);
     };
 
-    const onEdit = (servicio) => {
-        setEditForm({ ...servicio, precio: servicio.precio ?? "" });
-        setShowEditForm(true);
-    };
-    
     // Filtro de búsqueda
     const { listaFiltrada, busqueda, setBusqueda } = useFiltrarServicios(servicios);
     // Paginación

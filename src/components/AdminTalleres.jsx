@@ -15,33 +15,9 @@ import useFiltrarTalleres from "../hooks/useFiltrarTalleres";
 import AdminCrearTallerModal from "./AdminCrearTallerModad";
 import AdminEditarTallerModal from "./AdminEditarTallerModal";
 
-
 export default function AdminTalleres() {
     const [showForm, setShowForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
-    
-    // 
-    const qc = useQueryClient();
-    const {
-        data: talleres = [],
-        isFetching: isFetchingTalleres,
-        refetch: refetchTalleres,
-    } = useQuery({
-        queryKey: ["talleres"],
-        queryFn: fetchTalleres,
-        initialData: () => qc.getQueryData(["talleres"]) || [],
-    });
-    //
-    const showSpinner = isFetchingTalleres && talleres.length === 0;
-
-    // 
-    const { data: inscripciones = [] } = useQuery({
-        queryKey: ["inscripciones"],
-        queryFn: fetchInscripciones,
-        initialData: () => qc.getQueryData(["inscripciones"]) || [],
-    });
-    // 
-
     const [form, setForm] = useState({
         titulo: "",
         descripcion: "",
@@ -53,7 +29,6 @@ export default function AdminTalleres() {
         precio: "",
         activo: true,
     });
-
     const [editForm, setEditForm] = useState({
         id: "",
         titulo: "",
@@ -67,61 +42,27 @@ export default function AdminTalleres() {
         activo: true,
     });
 
-    const inscripcionesPorTaller = useMemo(() => {
-        const mapa = {};
-        for (const i of inscripciones) {
-            if (i?.tallerId) {
-                mapa[i.tallerId] = (mapa[i.tallerId] || 0) + 1;
-            }
-        }
-        return mapa;
-    }, [inscripciones]);
+    // queries
+    const qc = useQueryClient();
+    const {
+        data: talleres = [],
+        isFetching: isFetchingTalleres,
+        refetch: refetchTalleres,
+    } = useQuery({
+        queryKey: ["talleres"],
+        queryFn: fetchTalleres,
+        initialData: () => qc.getQueryData(["talleres"]) || [],
+    });
+    const { data: inscripciones = [] } = useQuery({
+        queryKey: ["inscripciones"],
+        queryFn: fetchInscripciones,
+        initialData: () => qc.getQueryData(["inscripciones"]) || [],
+    });
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setForm((f) => ({
-            ...f,
-            [name]: type === "checkbox" ? checked : value,
-        }));
-    };
-    const handleEditChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setEditForm((f) => ({
-            ...f,
-            [name]: type === "checkbox" ? checked : value,
-        }));
-    };
+    // spinner
+    const showSpinner = isFetchingTalleres && talleres.length === 0;
 
-    const clearForm = () => {
-        setForm({
-            titulo: "",
-            descripcion: "",
-            imagenUrl: "",
-            fechaInicio: "",
-            fechaFin: "",
-            lugar: "",
-            cupoMaximo: "",
-            precio: "",
-            activo: true,
-        });
-        setShowForm(false);
-    };
-    const clearEditForm = () => {
-        setEditForm({
-            id: "",
-            titulo: "",
-            descripcion: "",
-            imagenUrl: "",
-            fechaInicio: "",
-            fechaFin: "",
-            lugar: "",
-            cupoMaximo: "",
-            precio: "",
-            activo: true,
-        });
-        setShowEditForm(false);
-    };
-
+    // crear
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -168,7 +109,30 @@ export default function AdminTalleres() {
             Swal.fire("Error", err.message, "error");
         }
     };
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setForm((f) => ({
+            ...f,
+            [name]: type === "checkbox" ? checked : value,
+        }));
+    };
 
+    const clearForm = () => {
+        setForm({
+            titulo: "",
+            descripcion: "",
+            imagenUrl: "",
+            fechaInicio: "",
+            fechaFin: "",
+            lugar: "",
+            cupoMaximo: "",
+            precio: "",
+            activo: true,
+        });
+        setShowForm(false);
+    };
+
+    // editar
     const handleEditSubmit = async (e) => {
         e.preventDefault();
 
@@ -219,7 +183,45 @@ export default function AdminTalleres() {
             Swal.fire("Error", err.message, "error");
         }
     };
+    const handleEditChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setEditForm((f) => ({
+            ...f,
+            [name]: type === "checkbox" ? checked : value,
+        }));
+    };
+    const onEdit = (taller) => {
+        setEditForm({
+            id: taller.id ?? "",
+            titulo: taller.titulo ?? "",
+            descripcion: taller.descripcion ?? "",
+            imagenUrl: taller.imagenUrl ?? "",
+            fechaInicio: taller.fechaInicio ?? "",
+            fechaFin: taller.fechaFin ?? "",
+            lugar: taller.lugar ?? "",
+            cupoMaximo: taller.cupoMaximo ?? "",
+            precio: taller.precio ?? "",
+            activo: typeof taller.activo === "boolean" ? taller.activo : true,
+        });
+        setShowEditForm(true);
+    };
+    const clearEditForm = () => {
+        setEditForm({
+            id: "",
+            titulo: "",
+            descripcion: "",
+            imagenUrl: "",
+            fechaInicio: "",
+            fechaFin: "",
+            lugar: "",
+            cupoMaximo: "",
+            precio: "",
+            activo: true,
+        });
+        setShowEditForm(false);
+    };
 
+    // eliminar
     const handleDelete = async (id) => {
         const confirm = await Swal.fire({
             title: "¿Eliminar taller?",
@@ -248,6 +250,7 @@ export default function AdminTalleres() {
         }
     };
 
+    // inscritos
     const handleVerInscritos = (taller) => {
         const lista = inscripciones.filter((i) => i.tallerId === taller.id);
 
@@ -307,28 +310,22 @@ export default function AdminTalleres() {
             confirmButtonColor: "#5EA743",
         });
     };
-
-    // Preparar datos cuando se va a editar
-    const onEdit = (taller) => {
-        setEditForm({
-            id: taller.id ?? "",
-            titulo: taller.titulo ?? "",
-            descripcion: taller.descripcion ?? "",
-            imagenUrl: taller.imagenUrl ?? "",
-            fechaInicio: taller.fechaInicio ?? "",
-            fechaFin: taller.fechaFin ?? "",
-            lugar: taller.lugar ?? "",
-            cupoMaximo: taller.cupoMaximo ?? "",
-            precio: taller.precio ?? "",
-            activo: typeof taller.activo === "boolean" ? taller.activo : true,
-        });
-        setShowEditForm(true);
-    };
+    const inscripcionesPorTaller = useMemo(() => {
+        const mapa = {};
+        for (const i of inscripciones) {
+            if (i?.tallerId) {
+                mapa[i.tallerId] = (mapa[i.tallerId] || 0) + 1;
+            }
+        }
+        return mapa;
+    }, [inscripciones]);
 
     // Filtrado
-    const { busqueda, setBusqueda, listaFiltrada } = useFiltrarTalleres(talleres); 
+    const { busqueda, setBusqueda, listaFiltrada } =
+        useFiltrarTalleres(talleres);
     // Paginación
-    const { pagina,totalPaginas, paginaActual, setPaginaActual } = usePaginacion(listaFiltrada);
+    const { pagina, totalPaginas, paginaActual, setPaginaActual } =
+        usePaginacion(listaFiltrada);
 
     return (
         <div className="home-crud">
@@ -737,8 +734,7 @@ export default function AdminTalleres() {
                         textAlign: "center",
                     }}
                 >
-                    Mostrando {pagina.length} de{" "}
-                    {listaFiltrada.length}
+                    Mostrando {pagina.length} de {listaFiltrada.length}
                 </span>
                 <div
                     style={{

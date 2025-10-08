@@ -10,16 +10,18 @@ import usePaginacion from "../hooks/usePaginacion";
 import useFiltrarInscripciones from "../hooks/useFiltrarInscripciones";
 
 export default function AdminInscripciones() {
-    // 
+    // queries
     const qc = useQueryClient();
     const { data: inscripciones = [], isFetching } = useQuery({
         queryKey: ["inscripciones"],
         queryFn: fetchInscripciones,
         initialData: () => qc.getQueryData(["inscripciones"]) || [],
     });
-    //
+
+    // spinner
     const showSpinner = isFetching && inscripciones.length === 0;
 
+    // eliminar
     const mEliminar = useMutation({
         mutationFn: eliminarInscripcion,
         onSuccess: (_ok, id) => {
@@ -47,8 +49,23 @@ export default function AdminInscripciones() {
             qc.invalidateQueries({ queryKey: ["inscripciones"] });
         },
     });
+    const handleEliminar = async (id) => {
+        const confirm = await Swal.fire({
+            title: "¿Eliminar inscripción?",
+            text: "No podrás revertir esta acción.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Eliminar",
+            cancelButtonText: "Cancelar",
+            confirmButtonColor: "#B71C1C",
+            cancelButtonColor: "#6c757d",
+        });
+        if (!confirm.isConfirmed) return;
+        mEliminar.mutate(id);
+    };
 
-    const handleVer = (i) => {
+    // detalle
+    const handleDetalle = (i) => {
         const html = `
       <div style="text-align:left">
         <p><b>ID inscripción:</b> ${i?.id ?? "—"}</p>
@@ -74,25 +91,12 @@ export default function AdminInscripciones() {
         });
     };
 
-    const handleEliminar = async (id) => {
-        const confirm = await Swal.fire({
-            title: "¿Eliminar inscripción?",
-            text: "No podrás revertir esta acción.",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Eliminar",
-            cancelButtonText: "Cancelar",
-            confirmButtonColor: "#B71C1C",
-            cancelButtonColor: "#6c757d",
-        });
-        if (!confirm.isConfirmed) return;
-        mEliminar.mutate(id);
-    };
-   
     // Filtrado
-    const { listaFiltrada, busqueda, setBusqueda } = useFiltrarInscripciones(inscripciones);
+    const { listaFiltrada, busqueda, setBusqueda } =
+        useFiltrarInscripciones(inscripciones);
     // Paginación
-    const { pagina,totalPaginas, paginaActual, setPaginaActual } = usePaginacion(listaFiltrada); 
+    const { pagina, totalPaginas, paginaActual, setPaginaActual } =
+        usePaginacion(listaFiltrada);
 
     return (
         <div className="home-crud">
@@ -260,7 +264,7 @@ export default function AdminInscripciones() {
                                     }}
                                 >
                                     <button
-                                        onClick={() => handleVer(i)}
+                                        onClick={() => handleDetalle(i)}
                                         style={{
                                             marginRight: 8,
                                             background: "#fff",

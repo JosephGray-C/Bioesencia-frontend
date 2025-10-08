@@ -18,23 +18,6 @@ import AdminEditarCitaModal from "./AdminEditarCitaModal";
 export default function AdminCitas() {
     const [showForm, setShowForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
-    
-    // 
-    const qc = useQueryClient();
-    const { data: citas = [], isFetching } = useQuery({
-        queryKey: ["citas"],
-        queryFn: fetchCitas,
-        initialData: () => qc.getQueryData(["citas"]) || [],
-    });
-    // 
-    const showSpinner = isFetching && citas.length === 0;
-
-    const { data: serviciosDisponibles = [] } = useQuery({
-        queryKey: ["servicios"],
-        queryFn: fetchServicios,
-        initialData: () => qc.getQueryData(["servicios"]) || [],
-    });
-
     const [form, setForm] = useState({
         usuarioId: "",
         fechaHora: "",
@@ -43,7 +26,6 @@ export default function AdminCitas() {
         estado: "AGENDADA",
         notas: "",
     });
-
     const [editForm, setEditForm] = useState({
         id: "",
         fechaHora: "",
@@ -54,6 +36,23 @@ export default function AdminCitas() {
         usuario: {},
     });
 
+    // queries
+    const qc = useQueryClient();
+    const { data: citas = [], isFetching } = useQuery({
+        queryKey: ["citas"],
+        queryFn: fetchCitas,
+        initialData: () => qc.getQueryData(["citas"]) || [],
+    });
+    const { data: serviciosDisponibles = [] } = useQuery({
+        queryKey: ["servicios"],
+        queryFn: fetchServicios,
+        initialData: () => qc.getQueryData(["servicios"]) || [],
+    });
+
+    // spinner
+    const showSpinner = isFetching && citas.length === 0;
+
+    // crear
     const mCrear = useMutation({
         mutationFn: crearCita,
         onSuccess: () => {
@@ -72,66 +71,10 @@ export default function AdminCitas() {
         onError: (e) =>
             Swal.fire("Error", e.message || "No se pudo crear", "error"),
     });
-
-    const mEditar = useMutation({
-        mutationFn: actualizarCita,
-        onSuccess: () => {
-            qc.invalidateQueries({ queryKey: ["citas"] });
-            setShowEditForm(false);
-            Swal.fire("¡Actualizada!", "Cita modificada.", "success");
-        },
-        onError: (e) =>
-            Swal.fire("Error", e.message || "No se pudo actualizar", "error"),
-    });
-
-    const mEliminar = useMutation({
-        mutationFn: eliminarCita,
-        onSuccess: () => {
-            qc.invalidateQueries({ queryKey: ["citas"] });
-            Swal.fire("¡Eliminada!", "Cita borrada.", "success");
-        },
-        onError: (e) => {
-            console.log(e);
-            Swal.fire("Error", e.message || "No se pudo eliminar", "error");
-        },
-    });
-
-    // Handlers formularios
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm((f) => ({ ...f, [name]: value }));
     };
-
-    const handleEditChange = (e) => {
-        const { name, value } = e.target;
-        setEditForm((f) => ({ ...f, [name]: value }));
-    };
-
-    const clearForm = () => {
-        setForm({
-            usuarioId: "",
-            fechaHora: "",
-            duracion: 60,
-            servicio: "",
-            estado: "AGENDADA",
-            notas: "",
-        });
-        setShowForm(false);
-    };
-
-    const clearEditForm = () => {
-        setEditForm({
-            id: "",
-            fechaHora: "",
-            duracion: 60,
-            servicio: "",
-            estado: "AGENDADA",
-            notas: "",
-            usuario: null,
-        });
-        setShowEditForm(false);
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!form.usuarioId) {
@@ -145,14 +88,76 @@ export default function AdminCitas() {
         delete payload.usuarioId;
         mCrear.mutate(payload);
     };
+    const clearForm = () => {
+        setForm({
+            usuarioId: "",
+            fechaHora: "",
+            duracion: 60,
+            servicio: "",
+            estado: "AGENDADA",
+            notas: "",
+        });
+        setShowForm(false);
+    };
 
+    // editar
+    const mEditar = useMutation({
+        mutationFn: actualizarCita,
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: ["citas"] });
+            setShowEditForm(false);
+            Swal.fire("¡Actualizada!", "Cita modificada.", "success");
+        },
+        onError: (e) =>
+            Swal.fire("Error", e.message || "No se pudo actualizar", "error"),
+    });
+    const handleEditChange = (e) => {
+        const { name, value } = e.target;
+        setEditForm((f) => ({ ...f, [name]: value }));
+    };
     const handleEditSubmit = async (e) => {
         e.preventDefault();
         const payload = { ...editForm };
         delete payload.usuario;
         mEditar.mutate({ id: editForm.id, payload });
     };
+    const onEdit = (cita) => {
+        setEditForm({
+            id: cita.id,
+            fechaHora: cita.fechaHora,
+            duracion: cita.duracion,
+            servicio: cita.servicio,
+            estado: cita.estado,
+            notas: cita.notas,
+            usuario: cita.usuario || null,
+        });
+        setShowEditForm(true);
+    };
+    const clearEditForm = () => {
+        setEditForm({
+            id: "",
+            fechaHora: "",
+            duracion: 60,
+            servicio: "",
+            estado: "AGENDADA",
+            notas: "",
+            usuario: null,
+        });
+        setShowEditForm(false);
+    };
 
+    // eliminar
+    const mEliminar = useMutation({
+        mutationFn: eliminarCita,
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: ["citas"] });
+            Swal.fire("¡Eliminada!", "Cita borrada.", "success");
+        },
+        onError: (e) => {
+            console.log(e);
+            Swal.fire("Error", e.message || "No se pudo eliminar", "error");
+        },
+    });
     const handleDelete = async (id) => {
         const confirm = await Swal.fire({
             title: "¿Eliminar cita?",
@@ -167,23 +172,11 @@ export default function AdminCitas() {
         if (confirm.isConfirmed) mEliminar.mutate(id);
     };
 
-    const onEdit = (cita) => {
-        setEditForm({
-            id: cita.id,
-            fechaHora: cita.fechaHora,
-            duracion: cita.duracion,
-            servicio: cita.servicio,
-            estado: cita.estado,
-            notas: cita.notas,
-            usuario: cita.usuario || null,
-        });
-        setShowEditForm(true);
-    };
-
     // Filtrado
     const { listaFiltrada, busqueda, setBusqueda } = useFiltrarCitas(citas);
     // Paginación
-    const { pagina,totalPaginas, paginaActual, setPaginaActual } = usePaginacion(listaFiltrada);
+    const { pagina, totalPaginas, paginaActual, setPaginaActual } =
+        usePaginacion(listaFiltrada);
 
     return (
         <div className="home-crud">

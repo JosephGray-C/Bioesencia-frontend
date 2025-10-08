@@ -7,12 +7,17 @@ import { fetchOrdenes, actualizarEstadoOrden } from "../services/ordenes";
 import usePaginacion from "../hooks/usePaginacion";
 import useFiltrarOrdenes from "../hooks/useFiltrarOrdenes";
 import AdminEditarOrdenModal from "./AdminEditarOrdenModal";
+import { fmtFecha, fmtCRC } from "../utils/formatDateTime";
 
 export default function AdminOrdenes() {
     const [showEdit, setShowEdit] = useState(false);
-    const [editForm, setEditForm] = useState({ id: "", codigoOrden: "", estado: "PENDIENTE" });
+    const [editForm, setEditForm] = useState({
+        id: "",
+        codigoOrden: "",
+        estado: "PENDIENTE",
+    });
 
-    //
+    // queries
     const qc = useQueryClient();
     const {
         data: ordenes = [],
@@ -23,11 +28,12 @@ export default function AdminOrdenes() {
         queryFn: fetchOrdenes,
         initialData: () => qc.getQueryData(["ordenes"]) || [],
     });
-    //
+
+    // spinner
     const showSpinner = isFetching && ordenes.length === 0;
 
-    // MUTATION para actualizar estado
-    const mEstado = useMutation({
+    // editar
+    const mEditar = useMutation({
         mutationFn: actualizarEstadoOrden,
         onSuccess: () => {
             Swal.fire(
@@ -46,22 +52,14 @@ export default function AdminOrdenes() {
             );
         },
     });
-
-    const fmtCRC = (n) =>
-        Number(n || 0).toLocaleString("es-CR", {
-            style: "currency",
-            currency: "CRC",
-            minimumFractionDigits: 2,
-        });
-
-    const fmtFecha = (f) => {
-        if (!f) return "";
-        const d = new Date(f);
-        return isNaN(d.getTime())
-            ? f
-            : d.toLocaleString("es-CR", { hour12: false });
+    const handleEditSubmit = (e) => {
+        e.preventDefault();
+        mEditar.mutate({ id: editForm.id, estado: editForm.estado });
     };
-
+    const handleEditChange = (e) => {
+        const { name, value } = e.target;
+        setEditForm((f) => ({ ...f, [name]: value }));
+    };
     const onEdit = (ord) => {
         setEditForm({
             id: ord.id,
@@ -71,22 +69,12 @@ export default function AdminOrdenes() {
         setShowEdit(true);
     };
 
-    const onEditChange = (e) => {
-        const { name, value } = e.target;
-        setEditForm((f) => ({ ...f, [name]: value }));
-    };
-
-    const onEditSubmit = (e) => {
-        e.preventDefault();
-        mEstado.mutate({ id: editForm.id, estado: editForm.estado });
-    };
-    console.log(ordenes);
-
     // Filtrado
     const { listaFiltrada, busqueda, setBusqueda } = useFiltrarOrdenes(ordenes);
     // Paginación
     const { pagina, totalPaginas, paginaActual, setPaginaActual } =
         usePaginacion(listaFiltrada);
+        
     return (
         <div className="home-crud">
             {/* HEADER acciones */}
@@ -289,8 +277,8 @@ export default function AdminOrdenes() {
             {showEdit && (
                 <AdminEditarOrdenModal
                     editForm={editForm}
-                    onChange={onEditChange}
-                    onSubmit={onEditSubmit}
+                    onChange={handleEditChange}
+                    onSubmit={handleEditSubmit}
                     onCancel={() => setShowEdit(false)}
                 />
             )}

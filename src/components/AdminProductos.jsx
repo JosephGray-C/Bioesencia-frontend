@@ -17,17 +17,6 @@ import AdminEditarProductoModal from "./AdminEditarProductoModal";
 export default function AdminProductos() {
     const [showForm, setShowForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
-    
-    // 
-    const qc = useQueryClient();
-    const { data: productos = [], isFetching } = useQuery({
-        queryKey: ["productos"],
-        queryFn: fetchProductos,
-        initialData: () => qc.getQueryData(["productos"]) || [],
-    });
-    //
-    const showSpinner = isFetching && productos.length === 0;
-
     const [form, setForm] = useState({
         nombre: "",
         descripcion: "",
@@ -36,7 +25,6 @@ export default function AdminProductos() {
         imagenUrl: "",
         activo: true,
     });
-    
     const [editForm, setEditForm] = useState({
         id: "",
         nombre: "",
@@ -47,6 +35,18 @@ export default function AdminProductos() {
         activo: true,
     });
 
+    // queries
+    const qc = useQueryClient();
+    const { data: productos = [], isFetching } = useQuery({
+        queryKey: ["productos"],
+        queryFn: fetchProductos,
+        initialData: () => qc.getQueryData(["productos"]) || [],
+    });
+
+    // spinner
+    const showSpinner = isFetching && productos.length === 0;
+
+    // crear
     const mCrear = useMutation({
         mutationFn: crearProducto,
         onSuccess: () => {
@@ -65,7 +65,23 @@ export default function AdminProductos() {
         onError: (e) =>
             Swal.fire("Error", e.message || "No se pudo crear", "error"),
     });
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        mCrear.mutate({
+            ...form,
+            precio: Number(form.precio),
+            stock: Number(form.stock),
+        });
+    };
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setForm((f) => ({
+            ...f,
+            [name]: type === "checkbox" ? checked : value,
+        }));
+    };
 
+    // editar
     const mEditar = useMutation({
         mutationFn: actualizarProducto,
         onSuccess: () => {
@@ -76,42 +92,6 @@ export default function AdminProductos() {
         onError: (e) =>
             Swal.fire("Error", e.message || "No se pudo actualizar", "error"),
     });
-
-    const mEliminar = useMutation({
-        mutationFn: eliminarProducto,
-        onSuccess: () => {
-            qc.invalidateQueries({ queryKey: ["productos"] });
-            Swal.fire("¡Eliminado!", "Producto borrado.", "success");
-        },
-        onError: (e) =>
-            Swal.fire("Error", e.message || "No se pudo eliminar", "error"),
-    });
-
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setForm((f) => ({
-            ...f,
-            [name]: type === "checkbox" ? checked : value,
-        }));
-    };
-
-    const handleEditChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setEditForm((f) => ({
-            ...f,
-            [name]: type === "checkbox" ? checked : value,
-        }));
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        mCrear.mutate({
-            ...form,
-            precio: Number(form.precio),
-            stock: Number(form.stock),
-        });
-    };
-
     const handleEditSubmit = (e) => {
         e.preventDefault();
         mEditar.mutate({
@@ -123,7 +103,36 @@ export default function AdminProductos() {
             },
         });
     };
+    const handleEditChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setEditForm((f) => ({
+            ...f,
+            [name]: type === "checkbox" ? checked : value,
+        }));
+    };
+    const onEdit = (prod) => {
+        setEditForm({
+            id: prod.id,
+            nombre: prod.nombre || "",
+            descripcion: prod.descripcion || "",
+            precio: prod.precio ?? "",
+            stock: prod.stock ?? "",
+            imagenUrl: prod.imagenUrl || "",
+            activo: !!prod.activo,
+        });
+        setShowEditForm(true);
+    };
 
+    // eliminar
+    const mEliminar = useMutation({
+        mutationFn: eliminarProducto,
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: ["productos"] });
+            Swal.fire("¡Eliminado!", "Producto borrado.", "success");
+        },
+        onError: (e) =>
+            Swal.fire("Error", e.message || "No se pudo eliminar", "error"),
+    });
     const handleDelete = async (id) => {
         const confirm = await Swal.fire({
             title: "¿Eliminar producto?",
@@ -138,19 +147,7 @@ export default function AdminProductos() {
         if (confirm.isConfirmed) mEliminar.mutate(id);
     };
 
-    const onEdit = (prod) => {
-        setEditForm({
-            id: prod.id,
-            nombre: prod.nombre || "",
-            descripcion: prod.descripcion || "",
-            precio: prod.precio ?? "",
-            stock: prod.stock ?? "",
-            imagenUrl: prod.imagenUrl || "",
-            activo: !!prod.activo,
-        });
-        setShowEditForm(true);
-    };
-    // Filtro de productos
+    // Filtrado
     const { listaFiltrada, busqueda, setBusqueda } =
         useFiltrarProductos(productos);
     // Paginación

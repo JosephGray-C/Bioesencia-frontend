@@ -67,3 +67,19 @@ export function dateFormat(date) {
     if (!date) return "—";
     return date.toISOString().split("T")[0]; // "2025-08-18"
 }
+
+export function fmtFecha(f) {
+    if (!f) return "";
+    const d = new Date(f);
+    return isNaN(d.getTime())
+        ? f
+        : d.toLocaleString("es-CR", { hour12: false });
+}
+
+export function fmtCRC(n) {
+    return Number(n || 0).toLocaleString("es-CR", {
+        style: "currency",
+        currency: "CRC",
+        minimumFractionDigits: 2,
+    });
+}
