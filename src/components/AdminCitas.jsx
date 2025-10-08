@@ -571,10 +571,10 @@ export default function AdminCitas() {
         });
         setShowEditForm(true);
     };
-
     // Filtrado y paginación
-    const citasFiltradas = useMemo(() => {
+    const listaFiltrada = useMemo(() => {
         const q = busqueda.toLowerCase();
+        if (!q) return citas;
         return citas.filter(
             (c) =>
                 c.fechaHora?.toLowerCase().includes(q) ||
@@ -585,16 +585,12 @@ export default function AdminCitas() {
                 c.notas?.toLowerCase().includes(q)
         );
     }, [citas, busqueda]);
-
     // Paginación
-    const citasPorPagina = 8;
-    const totalPaginas = Math.ceil(citasFiltradas.length / citasPorPagina) || 1;
-    const page = Math.min(paginaActual, totalPaginas);
-    const indexPrimero = (page - 1) * citasPorPagina;
-    const citasPagina = citasFiltradas.slice(
-        indexPrimero,
-        indexPrimero + citasPorPagina
-    );
+    const porPagina = 8;
+    const totalPaginas = Math.ceil(listaFiltrada.length / porPagina) || 1;
+    const paginaSegura = Math.min(paginaActual, totalPaginas);
+    const indice = (paginaSegura - 1) * porPagina;
+    const pagina = listaFiltrada.slice(indice, indice + porPagina);
 
     return (
         <div className="home-crud">
@@ -703,7 +699,7 @@ export default function AdminCitas() {
                     </tr>
                 </thead>
                 <tbody>
-                    {citasPagina.length === 0 ? (
+                    {pagina.length === 0 ? (
                         <tr>
                             <td
                                 colSpan={7}
@@ -729,7 +725,7 @@ export default function AdminCitas() {
                             </td>
                         </tr>
                     ) : (
-                        citasPagina.map((c) => (
+                        pagina.map((c) => (
                             <tr
                                 key={c.id}
                                 style={{ borderBottom: "1px solid #222" }}
@@ -852,7 +848,7 @@ export default function AdminCitas() {
                         textAlign: "center",
                     }}
                 >
-                    Mostrando {citasPagina.length} de {citasFiltradas.length}
+                    Mostrando {pagina.length} de {listaFiltrada.length}
                 </span>
                 <div
                     style={{

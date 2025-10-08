@@ -3,22 +3,25 @@ import { useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ClipLoader from "react-spinners/ClipLoader";
-import { fetchInscripciones, eliminarInscripcion } from "../services/inscripciones";
+import {
+    fetchInscripciones,
+    eliminarInscripcion,
+} from "../services/inscripciones";
 
 export default function AdminInscripciones() {
     const [paginaActual, setPaginaActual] = useState(1);
     const [busqueda, setBusqueda] = useState("");
-    
+
     const qc = useQueryClient();
-   
+
     const { data: inscripciones = [], isFetching } = useQuery({
         queryKey: ["inscripciones"],
         queryFn: fetchInscripciones,
         initialData: () => qc.getQueryData(["inscripciones"]) || [],
     });
-    // 
+    //
     const showSpinner = isFetching && inscripciones.length === 0;
-    
+
     const mEliminar = useMutation({
         mutationFn: eliminarInscripcion,
         onSuccess: (_ok, id) => {
@@ -51,14 +54,16 @@ export default function AdminInscripciones() {
         const html = `
       <div style="text-align:left">
         <p><b>ID inscripción:</b> ${i?.id ?? "—"}</p>
-        <p><b>Fecha inscripción:</b> ${i?.fechaInscripcion
+        <p><b>Fecha inscripción:</b> ${
+            i?.fechaInscripcion
                 ? new Date(i.fechaInscripcion).toLocaleString()
                 : "—"
-            }</p>
+        }</p>
         <hr/>
         <p><b>Taller:</b> ${i?.tallerNombre ?? "—"}</p>
-        <p><b>Usuario:</b> ${i?.usuarioNombre ?? "—"} ${i?.usuarioApellido ?? ""
-            }</p>
+        <p><b>Usuario:</b> ${i?.usuarioNombre ?? "—"} ${
+            i?.usuarioApellido ?? ""
+        }</p>
         <p><b>Email:</b> ${i?.usuarioEmail ?? "—"}</p>
         ${i?.estado ? `<hr/><p><b>Estado:</b> ${i.estado}</p>` : ""}
       </div>
@@ -85,32 +90,26 @@ export default function AdminInscripciones() {
         if (!confirm.isConfirmed) return;
         mEliminar.mutate(id);
     };
-
+    // Filtrado de búsqueda
     const listaFiltrada = useMemo(() => {
-        const filtros = busqueda.trim().toLowerCase();
-        if (!filtros) return inscripciones;
-        return inscripciones.filter((i) => {
-            const a = [
-                i?.fechaInscripcion,
-                i?.tallerNombre,
-                i?.usuarioNombre,
-                i?.usuarioApellido,
-                i?.usuarioEmail,
-                i?.estado,
-            ]
-                .filter(Boolean)
-                .join(" ")
-                .toLowerCase();
-            return a.includes(filtros);
-        });
+        const q = busqueda.trim().toLowerCase();
+        if (!q) return inscripciones;
+        return inscripciones.filter(
+            (i) => 
+                (i.tallerNombre || "").toLowerCase().includes(q) ||
+                (i.usuarioNombre || "").toLowerCase().includes(q) ||
+                (i.usuarioApellido || "").toLowerCase().includes(q) ||
+                (i.usuarioEmail || "").toLowerCase().includes(q) ||
+                (i.estado || "").toLowerCase().includes(q)
+        );
     }, [busqueda, inscripciones]);
-
-    const porPagina = 10;
+    // Paginación
+    const porPagina = 8;
     const totalPaginas = Math.ceil(listaFiltrada.length / porPagina) || 1;
-    const pageSafe = Math.min(paginaActual, totalPaginas);
-    const indexIni = (pageSafe - 1) * porPagina;
-    const page = listaFiltrada.slice(indexIni, indexIni + porPagina);
-    
+    const paginaSegura = Math.min(paginaActual, totalPaginas);
+    const indice = (paginaSegura - 1) * porPagina;
+    const pagina = listaFiltrada.slice(indice, indice + porPagina);
+
     return (
         <div className="home-crud">
             {/* HEADER acciones */}
@@ -156,19 +155,36 @@ export default function AdminInscripciones() {
             >
                 <thead>
                     <tr style={{ background: "#A9C499", color: "#fff" }}>
-                        <th style={{ padding: 12, textAlign: "left" }}>Fecha inscrip.</th>
-                        <th style={{ padding: 12, textAlign: "left" }}>Taller</th>
-                        <th style={{ padding: 12, textAlign: "left" }}>Nombre</th>
-                        <th style={{ padding: 12, textAlign: "left" }}>Apellido</th>
-                        <th style={{ padding: 12, textAlign: "left" }}>Email</th>
-                        <th style={{ padding: 12, textAlign: "center" }}>Estado</th>
-                        <th style={{ padding: 12, textAlign: "center" }}>Acciones</th>
+                        <th style={{ padding: 12, textAlign: "left" }}>
+                            Fecha inscrip.
+                        </th>
+                        <th style={{ padding: 12, textAlign: "left" }}>
+                            Taller
+                        </th>
+                        <th style={{ padding: 12, textAlign: "left" }}>
+                            Nombre
+                        </th>
+                        <th style={{ padding: 12, textAlign: "left" }}>
+                            Apellido
+                        </th>
+                        <th style={{ padding: 12, textAlign: "left" }}>
+                            Email
+                        </th>
+                        <th style={{ padding: 12, textAlign: "center" }}>
+                            Estado
+                        </th>
+                        <th style={{ padding: 12, textAlign: "center" }}>
+                            Acciones
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {page.length === 0 ? (
+                    {pagina.length === 0 ? (
                         <tr>
-                            <td colSpan={7} style={{ textAlign: "center", padding: 20 }}>
+                            <td
+                                colSpan={7}
+                                style={{ textAlign: "center", padding: 20 }}
+                            >
                                 {showSpinner ? (
                                     <span
                                         style={{
@@ -177,7 +193,11 @@ export default function AdminInscripciones() {
                                             gap: 8,
                                         }}
                                     >
-                                        <ClipLoader size={18} color="#bbb" speedMultiplier={0.9} />
+                                        <ClipLoader
+                                            size={18}
+                                            color="#bbb"
+                                            speedMultiplier={0.9}
+                                        />
                                     </span>
                                 ) : (
                                     "No hay inscripciones"
@@ -185,11 +205,21 @@ export default function AdminInscripciones() {
                             </td>
                         </tr>
                     ) : (
-                        page.map((i) => (
-                            <tr key={i.id} style={{ borderBottom: "1px solid #222" }}>
-                                <td style={{ padding: 10, verticalAlign: "middle" }}>
+                        pagina.map((i) => (
+                            <tr
+                                key={i.id}
+                                style={{ borderBottom: "1px solid #222" }}
+                            >
+                                <td
+                                    style={{
+                                        padding: 10,
+                                        verticalAlign: "middle",
+                                    }}
+                                >
                                     {i?.fechaInscripcion
-                                        ? new Date(i.fechaInscripcion).toLocaleString()
+                                        ? new Date(
+                                              i.fechaInscripcion
+                                          ).toLocaleString()
                                         : "—"}
                                 </td>
                                 <td
@@ -205,13 +235,28 @@ export default function AdminInscripciones() {
                                 >
                                     {i?.tallerNombre ?? "—"}
                                 </td>
-                                <td style={{ padding: 10, verticalAlign: "middle" }}>
+                                <td
+                                    style={{
+                                        padding: 10,
+                                        verticalAlign: "middle",
+                                    }}
+                                >
                                     {i?.usuarioNombre ?? "—"}
                                 </td>
-                                <td style={{ padding: 10, verticalAlign: "middle" }}>
+                                <td
+                                    style={{
+                                        padding: 10,
+                                        verticalAlign: "middle",
+                                    }}
+                                >
                                     {i?.usuarioApellido ?? "—"}
                                 </td>
-                                <td style={{ padding: 10, verticalAlign: "middle" }}>
+                                <td
+                                    style={{
+                                        padding: 10,
+                                        verticalAlign: "middle",
+                                    }}
+                                >
                                     {i?.usuarioEmail ?? "—"}
                                 </td>
                                 <td
@@ -279,9 +324,15 @@ export default function AdminInscripciones() {
                         textAlign: "center",
                     }}
                 >
-                    Mostrando {page.length} de {listaFiltrada.length}
+                    Mostrando {pagina.length} de {listaFiltrada.length}
                 </span>
-                <div style={{ display: "flex", justifyContent: "center", gap: 4 }}>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        gap: 4,
+                    }}
+                >
                     {Array.from({ length: totalPaginas }, (_, i) => (
                         <button
                             key={`pagina-${i + 1}`}
@@ -290,7 +341,8 @@ export default function AdminInscripciones() {
                                 margin: "0 2px",
                                 padding: "6px 12px",
                                 borderRadius: 6,
-                                background: paginaActual === i + 1 ? "#5EA743" : "#444",
+                                background:
+                                    paginaActual === i + 1 ? "#5EA743" : "#444",
                                 color: "#fff",
                                 border: "none",
                                 cursor: "pointer",

@@ -18,6 +18,11 @@ import './assets/css/Carrito.css';
 import './assets/css/AdminLayout.css';
 import './assets/css/Title.css';
 import './assets/css/List.css';
+import './assets/css/Card.css';
+import './assets/css/BlogPreview.css';
+import './assets/css/BlogForm.css';
+import './assets/css/ProductoModal.css';
+import './assets/css/TallerModal.css';
 
 const queryClient = new QueryClient({
     defaultOptions: {

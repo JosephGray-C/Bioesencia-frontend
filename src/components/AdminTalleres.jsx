@@ -758,8 +758,8 @@ export default function AdminTalleres() {
         setShowEditForm(true);
     };
 
-    // Filtrado y paginación
-    const talleresFiltrados = useMemo(
+    // Filtrado
+    const listaFiltrada = useMemo(
         () =>
             (talleres || []).filter((t) => {
                 const q = busqueda.trim().toLowerCase();
@@ -770,22 +770,19 @@ export default function AdminTalleres() {
                     (t.lugar || "").toLowerCase().includes(q) ||
                     (t.fechaInicio || "").toLowerCase().includes(q) ||
                     (t.fechaFin || "").toLowerCase().includes(q) ||
-                    (t.cupoMaximo?.toString() || "")
-                        .toLowerCase()
-                        .includes(q) ||
+                    (t.cupoMaximo?.toString() || "").toLowerCase().includes(q) ||
                     (t.precio?.toString() || "").toLowerCase().includes(q) ||
                     (t.activo ? "sí" : "no").includes(q)
                 );
             }),
         [talleres, busqueda]
     );
-
-    const talleresPorPagina = 6;
-    const indexUltimo = paginaActual * talleresPorPagina;
-    const indexPrimero = indexUltimo - talleresPorPagina;
-    const talleresPagina = talleresFiltrados.slice(indexPrimero, indexUltimo);
-    const totalPaginas =
-        Math.ceil(talleresFiltrados.length / talleresPorPagina) || 1;
+    // Paginación
+    const porPagina = 8;
+    const totalPaginas = Math.ceil(listaFiltrada.length / porPagina) || 1;
+    const paginaSegura = Math.min(paginaActual, totalPaginas);
+    const indice = (paginaSegura - 1) * porPagina;
+    const pagina = listaFiltrada.slice(indice, indice + porPagina);
 
     return (
         <div className="home-crud">
@@ -971,7 +968,7 @@ export default function AdminTalleres() {
                     </tr>
                 </thead>
                 <tbody>
-                    {talleresPagina.length === 0 ? (
+                    {pagina.length === 0 ? (
                         <tr>
                             <td
                                 colSpan={11}
@@ -997,7 +994,7 @@ export default function AdminTalleres() {
                             </td>
                         </tr>
                     ) : (
-                        talleresPagina.map((t) => (
+                        pagina.map((t) => (
                             <tr
                                 key={t.id}
                                 style={{ borderBottom: "1px solid #222" }}
@@ -1194,8 +1191,8 @@ export default function AdminTalleres() {
                         textAlign: "center",
                     }}
                 >
-                    Mostrando {talleresPagina.length} de{" "}
-                    {talleresFiltrados.length}
+                    Mostrando {pagina.length} de{" "}
+                    {listaFiltrada.length}
                 </span>
                 <div
                     style={{

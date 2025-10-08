@@ -33,11 +33,11 @@ export default function FormCita({ selectedDate }) {
             notas: "",
         });
         setStep(0);
-    }, []);
+    }, [user]);
 
     useEffect(() => {
         limpiarCita();
-    }, [selectedDate,limpiarCita]);
+    }, [selectedDate, limpiarCita]);
 
     const mCrear = useMutation({
         mutationFn: crearCita,

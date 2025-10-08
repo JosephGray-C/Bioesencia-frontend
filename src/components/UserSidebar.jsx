@@ -15,7 +15,7 @@ const sidebarOptions = [
   { path: "/blogusuario", label: "Blog", icon: "📝" },
 ];
 
-const sidebarBottomOptions = [{ path: "/carrito", label: "Carrito", icon: "🛍️" }];
+const sidebarBottomOptions = [];
 
 export default function UserSidebar({ open, onClose }) {
   const location = useLocation();

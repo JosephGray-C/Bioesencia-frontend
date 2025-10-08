@@ -446,24 +446,22 @@ export default function AdminProductos() {
         });
         setShowEditForm(true);
     };
-
-    const productosFiltrados = useMemo(() => {
+    // Filtro de búsqueda
+    const listaFiltrada = useMemo(() => {
         const q = busqueda.trim().toLowerCase();
         if (!q) return productos;
-        return productos.filter((p) =>
+        return productos.filter(
+            (p) =>
             (p.nombre || "").toLowerCase().includes(q)
         );
     }, [busqueda, productos]);
+    // Paginación
+    const porPagina = 8;
+    const totalPaginas = Math.ceil(listaFiltrada.length / porPagina) || 1;
+    const paginaSegura = Math.min(paginaActual, totalPaginas);
+    const indice = (paginaSegura - 1) * porPagina;
+    const pagina = listaFiltrada.slice(indice, indice + porPagina);
 
-    const POR_PAGINA = 6;
-    const totalPaginas = Math.max(
-        1,
-        Math.ceil(productosFiltrados.length / POR_PAGINA)
-    );
-    const page = Math.min(paginaActual, totalPaginas);
-    const start = (page - 1) * POR_PAGINA;
-    const productosPagina = productosFiltrados.slice(start, start + POR_PAGINA);
-    
     return (
         <div className="home-crud">
             {/* HEADER */}
@@ -603,7 +601,7 @@ export default function AdminProductos() {
                     </tr>
                 </thead>
                 <tbody>
-                    {productosPagina.length === 0 ? (
+                    {pagina.length === 0 ? (
                         <tr>
                             <td
                                 colSpan={6}
@@ -629,7 +627,7 @@ export default function AdminProductos() {
                             </td>
                         </tr>
                     ) : (
-                        productosPagina.map((prod) => (
+                        pagina.map((prod) => (
                             <tr
                                 key={prod.id}
                                 style={{ borderBottom: "1px solid #222" }}
@@ -648,9 +646,16 @@ export default function AdminProductos() {
                                         padding: 10,
                                         textAlign: "left",
                                         verticalAlign: "middle",
+                                        maxWidth: 200,
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: "nowrap",
                                     }}
+                                    title={prod.descripcion}
                                 >
-                                    {prod.descripcion}
+                                    {prod.descripcion?.length > 90
+                                        ? prod.descripcion.slice(0, 90) + "..."
+                                        : prod.descripcion}
                                 </td>
                                 <td
                                     style={{
@@ -734,8 +739,8 @@ export default function AdminProductos() {
                         textAlign: "center",
                     }}
                 >
-                    Mostrando {productosPagina.length} de{" "}
-                    {productosFiltrados.length}
+                    Mostrando {pagina.length} de{" "}
+                    {listaFiltrada.length}
                 </span>
                 <div
                     style={{
@@ -752,7 +757,7 @@ export default function AdminProductos() {
                                 margin: "0 2px",
                                 padding: "6px 12px",
                                 borderRadius: 6,
-                                background: page === i + 1 ? "#5EA743" : "#444",
+                                background: paginaSegura === i + 1 ? "#5EA743" : "#444",
                                 color: "#fff",
                                 border: "none",
                                 cursor: "pointer",

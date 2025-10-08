@@ -290,7 +290,6 @@ function EditarServicioModal({ editForm, onChange, onSubmit, onCancel }) {
 }
 
 export default function AdminServicios() {
-    const serviciosPorPagina = 8;
     const qc = useQueryClient();
 
     const [paginaActual, setPaginaActual] = useState(1);
@@ -409,8 +408,8 @@ export default function AdminServicios() {
         setEditForm({ ...servicio, precio: servicio.precio ?? "" });
         setShowEditForm(true);
     };
-
-    const serviciosFiltrados = useMemo(() => {
+    // Filtro de búsqueda
+    const listaFiltrada = useMemo(() => {
         const q = busqueda.trim().toLowerCase();
         if (!q) return servicios;
         return servicios.filter(
@@ -419,15 +418,12 @@ export default function AdminServicios() {
                 (s.detalle || "").toLowerCase().includes(q)
         );
     }, [busqueda, servicios]);
-    
-    const totalPaginas =
-        Math.ceil(serviciosFiltrados.length / serviciosPorPagina) || 1;
-    const page = Math.min(paginaActual, totalPaginas);
-    const indexPrimero = (page - 1) * serviciosPorPagina;
-    const serviciosPagina = serviciosFiltrados.slice(
-        indexPrimero,
-        indexPrimero + serviciosPorPagina
-    );
+    // Paginación
+    const porPagina = 8;
+    const totalPaginas = Math.ceil(listaFiltrada.length / porPagina) || 1;
+    const paginaSegura = Math.min(paginaActual, totalPaginas);
+    const indice = (paginaSegura - 1) * porPagina;
+    const pagina = listaFiltrada.slice(indice, indice + porPagina);
 
     return (
         <div className="home-crud">
@@ -549,7 +545,7 @@ export default function AdminServicios() {
                     </tr>
                 </thead>
                 <tbody>
-                    {serviciosPagina.length === 0 ? (
+                    {pagina.length === 0 ? (
                         <tr>
                             <td
                                 colSpan={4}
@@ -575,7 +571,7 @@ export default function AdminServicios() {
                             </td>
                         </tr>
                     ) : (
-                        serviciosPagina.map((s) => (
+                        pagina.map((s) => (
                             <tr
                                 key={s.id}
                                 style={{ borderBottom: "1px solid #222" }}
@@ -673,8 +669,7 @@ export default function AdminServicios() {
                         textAlign: "center",
                     }}
                 >
-                    Mostrando {serviciosPagina.length} de{" "}
-                    {serviciosFiltrados.length}
+                    Mostrando {pagina.length} de {listaFiltrada.length}
                 </span>
                 <div
                     style={{

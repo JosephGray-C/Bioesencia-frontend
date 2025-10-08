@@ -180,7 +180,7 @@ export default function AdminOrdenes() {
         queryFn: fetchOrdenes,
         initialData: () => qc.getQueryData(["ordenes"]) || [],
     });
-    // 
+    //
     const showSpinner = isFetching && ordenes.length === 0;
 
     // MUTATION para actualizar estado
@@ -203,24 +203,6 @@ export default function AdminOrdenes() {
             );
         },
     });
-
-    // Filtrado en tiempo real por todos los campos relevantes
-    const ordenesFiltradas = useMemo(() => {
-        const q = busqueda.trim().toLowerCase();
-        if (!q) return ordenes;
-        return ordenes.filter(
-            (ord) =>
-                (ord.codigoOrden || "").toLowerCase().includes(q) ||
-                (ord.usuarioNombre || "").toLowerCase().includes(q) ||
-                (ord.usuarioApellido || "").toLowerCase().includes(q) ||
-                (ord.usuarioEmail || ord.usuarioCorreo || "")
-                    .toLowerCase()
-                    .includes(q) ||
-                (ord.estado || "").toLowerCase().includes(q) ||
-                (ord.total?.toString() || "").toLowerCase().includes(q) ||
-                (ord.fechaOrden || "").toLowerCase().includes(q)
-        );
-    }, [ordenes, busqueda]);
 
     const fmtCRC = (n) =>
         Number(n || 0).toLocaleString("es-CR", {
@@ -255,12 +237,26 @@ export default function AdminOrdenes() {
         e.preventDefault();
         mEstado.mutate({ id: editForm.id, estado: editForm.estado });
     };
-
+    console.log(ordenes);
+    // Filtrado de búsqueda
+    const listaFiltrada = useMemo(() => {
+        const q = busqueda.trim().toLowerCase();
+        if (!q) return ordenes;
+        return ordenes.filter(
+            (ord) =>
+                (ord.codigoOrden || "").toLowerCase().includes(q) ||
+                (ord.usuarioNombre || "").toLowerCase().includes(q) ||
+                (ord.estado || "").toLowerCase().includes(q) ||
+                (ord.total?.toString() || "").toLowerCase().includes(q) ||
+                (ord.fechaOrden || "").toLowerCase().includes(q)
+        );
+    }, [ordenes, busqueda]);
+    // Paginación
     const porPagina = 8;
-    const totalPaginas = Math.ceil(ordenesFiltradas.length / porPagina) || 1;
-    const pag = Math.min(paginaActual, totalPaginas);
-    const start = (pag - 1) * porPagina;
-    const pagina = ordenesFiltradas.slice(start, start + porPagina);
+    const totalPaginas = Math.ceil(listaFiltrada.length / porPagina) || 1;
+    const paginaSegura = Math.min(paginaActual, totalPaginas);
+    const indice = (paginaSegura - 1) * porPagina;
+    const pagina = listaFiltrada.slice(indice, indice + porPagina);
 
     return (
         <div className="home-crud">
@@ -430,7 +426,7 @@ export default function AdminOrdenes() {
                         textAlign: "center",
                     }}
                 >
-                    Mostrando {pagina.length} de {ordenesFiltradas.length}
+                    Mostrando {pagina.length} de {listaFiltrada.length}
                 </span>
                 <div
                     style={{
