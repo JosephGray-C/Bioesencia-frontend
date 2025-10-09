@@ -1,8 +1,6 @@
 import { formatoFechaHoraAmPm, formatoHoraAmPm } from "../utils/formatDateTime";
 
 export default function Taller({ taller, setSelectedTaller }) {
-    // Imagen placeholder si no hay imagen
-    const imagen = taller.imagenUrl || null;
     return (
         <article
             key={taller.id}
@@ -12,10 +10,10 @@ export default function Taller({ taller, setSelectedTaller }) {
             style={{ cursor: "pointer" }}
         >
             {/* Imagen */}
-            {imagen ? (
+            {taller.imagenUrl ? (
                 <div className="bu-card-media">
                     <img
-                        src={imagen}
+                        src={taller.imagenUrl}
                         alt={taller.titulo || "Imagen del taller"}
                         loading="lazy"
                     />

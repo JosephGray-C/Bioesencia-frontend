@@ -11,11 +11,13 @@ const sidebarOptions = [
   { path: "/calendario", label: "Calendario", icon: "📆" },
   { path: "/talleres", label: "Talleres", icon: "🛠️" },
   { path: "/productos", label: "Comprar", icon: "🛒" },
-  { path: "/carrito", label: "Carrito", icon: "🛍️" },
   { path: "/blogusuario", label: "Blog", icon: "📝" },
+  { path: "/carrito", label: "Carrito", icon: "🛍️" },
 ];
 
-const sidebarBottomOptions = [];
+const sidebarBottomOptions = [
+  
+];
 
 export default function UserSidebar({ open, onClose }) {
   const location = useLocation();

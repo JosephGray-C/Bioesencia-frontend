@@ -7,8 +7,8 @@ import {
     crearInscripcion,
 } from "../services/inscripciones";
 import { useUser } from "../context/UserContext";
-import ClipLoader from "react-spinners/ClipLoader";
 import { formatoFechaHoraAmPm, formatoHoraAmPm } from "../utils/formatDateTime";
+import Loading from "./Loading";
 
 const WINE = "var(--biosencia-wine, #5A0D0D)";
 const GREEN = "var(--biosencia-green, #A9C499)";
@@ -16,9 +16,11 @@ const TEXT = "#1f2937";
 const BORDER = "#e5e7eb";
 
 export default function TallerModal({ tallerSelected, onClose }) {
+    const [inscribiendo, setInscribiendo] = useState(false);
     const { user } = useUser();
-    const qc = useQueryClient();
 
+    // queries
+    const qc = useQueryClient();
     const {
         data: taller,
         isFetching: isFetchingTaller,
@@ -38,7 +40,6 @@ export default function TallerModal({ tallerSelected, onClose }) {
             });
         },
     });
-
     const { data: inscripciones = [], isFetching: isFetchingIns } = useQuery({
         queryKey: ["inscripcionesTaller", tallerSelected.id],
         queryFn: fetchInscripcionTaller,
@@ -46,9 +47,11 @@ export default function TallerModal({ tallerSelected, onClose }) {
         initialData: () =>
             qc.getQueryData(["inscripcionesTaller", tallerSelected.id]) || [],
     });
-
+    
+    // spinner
     const showSpinner = (isFetchingTaller || isFetchingIns) && !taller;
 
+    // lógica de inscripción
     const inscritosCount = inscripciones.length;
     const cupoMax = Number(taller?.cupoMaximo ?? 0);
     const cupoLleno = cupoMax > 0 ? inscritosCount >= cupoMax : false;
@@ -56,8 +59,7 @@ export default function TallerModal({ tallerSelected, onClose }) {
         ? inscripciones.some((i) => Number(i?.usuarioId) === user.id)
         : false;
 
-    const [inscribiendo, setInscribiendo] = useState(false);
-
+    // 
     const handleInscripcion = async () => {
         if (!user.id) {
             Swal.fire({
@@ -140,29 +142,7 @@ export default function TallerModal({ tallerSelected, onClose }) {
     };
 
     if (showSpinner) {
-        return (
-            <div
-                style={{
-                    minHeight: 260,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: TEXT,
-                    background: "#fff",
-                }}
-            >
-                <span
-                    style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 10,
-                    }}
-                >
-                    <ClipLoader size={24} color={GREEN} speedMultiplier={0.9} />
-                    <span>Cargando taller…</span>
-                </span>
-            </div>
-        );
+        return <Loading message="Cargando taller" />;
     }
 
     if (errorTaller || !taller) {

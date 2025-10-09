@@ -20,7 +20,6 @@ export default function Talleres() {
 
     const showSpinner = isFetching && talleres.length === 0;
 
-
     return (
         <div className="list-page">
 

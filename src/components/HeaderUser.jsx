@@ -97,9 +97,9 @@ export default function HeaderUser() {
                                 <Link to="/productos" className="hu__link">
                                     Comprar
                                 </Link>
-                                <Link to="/carrito" className="hu__link">
+                                {/* <Link to="/carrito" className="hu__link">
                                     Carrito
-                                </Link>
+                                </Link> */}
                                 <Link to="/blogusuario" className="hu__link">
                                     Blog
                                 </Link>
@@ -109,6 +109,18 @@ export default function HeaderUser() {
 
                     {/* Derecha: perfil + hamburguesa */}
                     <div className="hu__right">
+                        {!esAdmin && (
+                            <Link
+                                to="/carrito"
+                                className="hu__link cart-link"
+                                title="Carrito de compras"
+                            >
+                                <i
+                                    className="fas fa-shopping-cart"
+                                    style={{ fontSize: "18px" }}
+                                ></i>
+                            </Link>
+                        )}
                         {esAdmin ? (
                             <button
                                 type="button"
